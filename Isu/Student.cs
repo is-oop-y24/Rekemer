@@ -6,7 +6,7 @@ namespace Isu
     {
         public GroupID studentsGroup { get; private set; }
         public int id { get; private set; }
-        public string Name { get; private set; }
+        public string name { get; private set; }
 
 
         private Student()
@@ -16,8 +16,8 @@ namespace Isu
 
         public Student( string name,Group group)
         {
-            Name = name;
-            studentsGroup = new GroupID(group.groupInfo.courseNum, group.groupInfo.num);
+            this.name = name;
+            studentsGroup = new GroupID(group.GroupInfo.courseNum, group.GroupInfo.num);
             id = StringProccessor.GetID(name);
         }
     }

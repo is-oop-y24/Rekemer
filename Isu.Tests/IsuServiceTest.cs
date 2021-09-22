@@ -1,166 +1,86 @@
-using System;
 using System.Linq;
-using Isu.Services;
-using Isu.Tools;
 using NUnit.Framework;
 
 namespace Isu.Tests
 {
-    public class Tests_Isu
+    public class TestsIsu
     {
-        private IIsuService _isuService;
-
-        // [SetUp]
-        // public void Setup()
-        // {
-        //     //TODO: implement
-        //     _isuService = null;
-        // }
-        //
         [Test]
         public void AddStudentToGroup_StudentHasGroupAndGroupContainsStudent()
         {
-            try
-            {
-                ISU isu = new ISU();
-                isu.AddGroup("M3209");
-                Group group = new Group("M3209");
-                isu.AddStudent(group, "Ilia");
-                isu.AddStudent(group, "Ilia");
-                Assert.Fail();
-            }
-            catch (IsuException e)
-            {
-                
-            }
-            
+            GroupManager manager = new GroupManager();
+            manager.AddGroup("M3209");
+            Group group = new Group("M3209", 10);
+            manager.AddStudent(group, "Ilia");
+
+            Assert.AreEqual("Ilia", manager.FindGroup("M3209").students[0].name);
         }
-        
+
         [Test]
         public void ReachMaxStudentPerGroup_ThrowException()
         {
-            // Assert.Catch<IsuException>(() =>
-            // {
-            //     
-            // });
-            try
+            GroupManager manager = new GroupManager();
+            manager.AddGroup("M3209");
+            Group group = new Group("M3209", 10);
+            for (int i = 0; i < 21; i++)
             {
-                var isu = new ISU();
-                isu.AddGroup("M3209");
-                Group group = new Group("M3209");
-                for (int i = 0; i < 21; i++)
-                {
-                    isu.AddStudent(group, i.ToString());
-                }
-                Assert.Fail();
+                manager.AddStudent(group, i.ToString());
             }
-            catch (IsuException e)
-            {
-                
-            }
-            
         }
-        
+
         [Test]
         public void CreateGroupWithInvalidName_ThrowException()
         {
-            try
-            {
-                Group group = new Group("M1232");
-                Assert.Fail();
-            }
-            catch (IsuException e)
-            {
-               
-            }
+            Group group = new Group("M1232", 21);
         }
-        
+
         [Test]
         public void TransferStudentToAnotherGroup_GroupChanged()
         {
-            var isu = new ISU();
-            Group group0 = new Group("M3209");
-            Group group0_1 = new Group("M3212");
-            isu.AddGroup("M3209");
-            isu.AddGroup("M3212");
-            isu.AddStudent(group0, "ilia");
-            isu.AddStudent(group0_1, "kiriil");
+            GroupManager manager = new GroupManager();
+            Group group0 = new Group("M3209", 21);
+            Group group0_1 = new Group("M3212", 21);
+
+            manager.AddGroup("M3209");
+            manager.AddGroup("M3212");
+            manager.AddStudent(group0, "ilia");
+            manager.AddStudent(group0_1, "kiriil");
             Student student_0 = new Student("ilia", group0);
             Student student_1 = new Student("kiriil", group0_1);
-            isu.ChangeStudentGroup(student_0,group0_1);
-            isu.ChangeStudentGroup(student_1,group0);
-            var StudentsIn_09 = isu.FindStudents("M3209");
-            var StudentsIn_12 = isu.FindStudents("M3212");
-            if(StudentsIn_09.Count != 1)Assert.Fail();
-            if(StudentsIn_12.Count != 1)Assert.Fail();
-            bool isTransferred_fromM309 = isu.FindGroup("M3212").students.Any(t => t.Name == "ilia");
-            bool isTransferred_fromM312= isu.FindGroup("M3209").students.Any(t => t.Name == "kiriil");
-            Assert.AreEqual(isTransferred_fromM309,isTransferred_fromM312);
-          
-           
-            
-            
-            
+            manager.ChangeStudentGroup(student_0, group0_1);
+            manager.ChangeStudentGroup(student_1, group0);
+            var StudentsIn_09 = manager.FindStudents("M3209");
+            var StudentsIn_12 = manager.FindStudents("M3212");
+            if (StudentsIn_09.Count != 1) Assert.Fail();
+            if (StudentsIn_12.Count != 1) Assert.Fail();
+            bool isTransferred_fromM309 = manager.FindGroup("M3212").students.Any(t => t.name == "ilia");
+            bool isTransferred_fromM312 = manager.FindGroup("M3209").students.Any(t => t.name == "kiriil");
+            Assert.AreEqual(isTransferred_fromM309, isTransferred_fromM312);
         }
+
         [Test]
-        public void Can_Add_Group_More_Than_Once()
+        public void SameGroupesAreAdded_ThrowException()
         {
-            try
-            {
-                var isu = new ISU();
-                isu.AddGroup("M3209");
-                isu.AddGroup("M3209");
-                Assert.Fail();
-            }
-            catch (IsuException e)
-            {
-                
-            }
-           
-        }
-
-       
-}
-
-public class Group_Tests
-{
-    [Test]
-    public void Group_Is_Not_Named_Correctly()
-    {
-        try
-        {
-            Group b = new Group("M23b2");
-        }
-        catch (IsuException e)
-        {
+            GroupManager manager = new GroupManager();
+            manager.AddGroup("M3209");
+            manager.AddGroup("M3209");
         }
     }
 
-    [Test]
-    public void Group_Is_Named_Correctly()
+    public class Group_Tests
     {
-        try
+        [Test]
+        public void GroupIsNotNamedCorrectly_ThrowException()
+        {
+            Group b = new Group("M23b2", 21);
+        }
+
+        [Test]
+        public void CanGroupIdNumberBeFormed_IdNumberIsFormed()
         {
             Group b = new Group("M3398");
-            Assert.AreEqual("M3398", b.Name);
-        }
-        catch (IsuException e)
-        {
-            Assert.Fail();
-        }
-    } [Test]
-    public void Can_Group_Id_Number_Be_Formed()
-    {
-        try
-        {
-            Group b = new Group("M3398");
-            int courseNum = b.groupInfo.courseNum;
-            Assert.AreEqual(398, b.groupInfo.num +  courseNum* 100);
-        }
-        catch (IsuException e)
-        {
-            Assert.Fail();
+            int courseNum = b.GroupInfo.courseNum;
+            Assert.AreEqual(398, b.GroupInfo.num + courseNum * 100);
         }
     }
-}
 }

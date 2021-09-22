@@ -1,130 +1,104 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.Linq;
+
+using Isu.Services;
 using Isu.Tools;
 
 namespace Isu
 {
-    public class GroupManager
+    public class GroupManager : IIsuService
     {
-        public List<Group>[] dataOfGroupes;
+        private List<Group>[] _dataOfGroupes;
 
-        public GroupManager()
+        public List<Group>[] dataOfGroupes
         {
-            dataOfGroupes = new List<Group>[10];
+            get => _dataOfGroupes;
+            private set => _dataOfGroupes = value;
         }
 
-        public void CreateGroup(GroupID id )
-        {
-            Group group = new Group(id.courseNum, id.num);
-            dataOfGroupes[id.courseNum].Add(group);
-        }
-        public bool checkIfGroupExists(GroupID id)
-        {
-            var group = HasGroup(id);
-            if (group == null) return false;
-            return true;
-        }
-       
-        private Group HasGroup(GroupID id)
-        {
-            CourseNumber courseNum = id.courseNum;
-            var numberOfGroup = id.num;
-            if (dataOfGroupes[courseNum] == null) dataOfGroupes[courseNum] = new List<Group>();
-            if (dataOfGroupes[courseNum].Count == 0) return null;
-            var group = dataOfGroupes[courseNum].FirstOrDefault(t => t.groupInfo.num == numberOfGroup);
-            return group;
-        }
+        private GroupSearcher _groupSearcher;
+        private StudentSearcher _studentSearcher;
+        private Register _register;
+        private Checker _checker;
 
-        public void RegisterAStudent(Group group, Student student)
-        {
-            var existingGroup = HasGroup(group.groupInfo);
-            if(existingGroup == null) throw new IsuException($"group{StringProccessor.FormAName(group.groupInfo)} doesn't exist");
-           existingGroup.AddingAStudent(student);
-        }
 
-        public Student FindById(int id)
+        public GroupManager(int amountOfGroupes = 10)
         {
-            Student student = null;
-            student = FindByParametr(id, student);
+            _groupSearcher = new GroupSearcher();
+            _studentSearcher = new StudentSearcher();
+            _register = new Register();
+            _checker = new Checker();
 
-            return student;
-        }
-
-        private Student FindByParametr<T>(T id, Student student)
-        {
-            
-            for (int i = 0; i < dataOfGroupes.Length; i++)
+            _dataOfGroupes = new List<Group>[amountOfGroupes];
+            for (int i = 0; i < _dataOfGroupes.Length; i++)
             {
-                if (dataOfGroupes[i] == null) continue;
-                for (int j = 0; j < dataOfGroupes[i].Count; j++)
-                {
-                    var groups = dataOfGroupes[i];
-                    for (int k = 0; k < groups.Count; k++)
-                    {
-                        student = groups[k].students.FirstOrDefault(t => ( id is int ? Equals(t.id, id) : Equals(t.Name, id)  ));
-                    }
-                }
+                _dataOfGroupes[i] = new List<Group>();
             }
-
-            return student;
         }
 
-        public Student FindByName (string name) {
-            Student student = null;
-            student = FindByParametr(name, student);
 
-            return student;
-        }
-
-        public List<Student> GetStudentsOfgroup(string nameOfgroup)
+        public void AddGroup(string name)
         {
-            GroupID groupid = StringProccessor.ParseName(nameOfgroup);
-            Group group = dataOfGroupes[groupid.courseNum].FirstOrDefault( t=> t.Name == nameOfgroup);
-            if(group == null) throw  new IsuException($"{nameOfgroup} is empty");
-            return group.students;
-            
-        }
-
-        public List<Student> GetStudentsOfCourse(CourseNumber courseNumber)
-        {
-            List<Student> students = new List<Student>();
-            var currCourse = dataOfGroupes[courseNumber];
-            foreach (Group tGroup in currCourse)
+            GroupID id = StringProccessor.ParseName(name);
+            if (!(_checker.CheckIfGroupExists(id, this)))
             {
-                students.AddRange(tGroup.students);
+                _dataOfGroupes[id.courseNum].Add(new Group(id.courseNum, id.num));
             }
+            else throw new IsuException($"Group{name} already exists");
+        }
 
-            if (students.Count == 0) throw new IsuException($"There are no students on this {courseNumber} course");
+        public void AddStudent(Group group, string name)
+        {
+            Student student = new Student(name, group);
+            var existingGroup = _checker.HasGroup(group.GroupInfo, this);
+            if (existingGroup == null)
+                throw new IsuException
+                    ($"group{StringProccessor.FormAName(group.GroupInfo)} doesn't exist");
+            _register.RegisterAStudent(group, student, this, _checker);
+        }
+
+        public Student GetStudent(int id)
+        {
+            var student = _studentSearcher.FindById(id, this);
+            if (student == null) throw new Exception($"Student with ID{id} is not found");
+            return student;
+        }
+
+        public Student FindStudent(string name)
+        {
+            var student = _studentSearcher.FindByName(name, this);
+            if (student == null) throw new Exception($"Student with ID{name} is not found");
+            return student;
+        }
+
+        public List<Student> FindStudents(string groupName)
+        {
+            var students = _studentSearcher.GetStudentsOfgroup(groupName, this);
             return students;
         }
 
-        public Group GetGroup(string groupName)
+        public List<Student> FindStudents(CourseNumber courseNumber)
         {
+            var students = _studentSearcher.GetStudentsOfCourse(courseNumber, this);
+            return students;
+        }
 
-            GroupID id = StringProccessor.ParseName(groupName);
-            var group = dataOfGroupes[id.courseNum].FirstOrDefault(t => t.groupInfo.num == id.num);
-            if (group == null) throw new IsuException($"There is no group {groupName}");
+        public Group FindGroup(string groupName)
+        {
+            var group = _groupSearcher.GetGroup(groupName, this);
             return group;
         }
 
-        public List<Group> GetGroups(CourseNumber courseNumber)
+        public List<Group> FindGroups(CourseNumber courseNumber)
         {
-            var groups = dataOfGroupes[courseNumber];
-            if (groups == null) throw new IsuException($"There are no groups in course{courseNumber}");
+            var groups = _groupSearcher.GetGroups(courseNumber, this);
             return groups;
         }
 
-        public void DeregisterAStudent(Student student)
+        public void ChangeStudentGroup(Student student, Group newGroup)
         {
-            GroupID groupid = student.studentsGroup;
-            Group group = GetGroup(StringProccessor.FormAName(groupid));
-            if (group == null) throw new IsuException("There is no group in which this student exists");
-            
-            group.DeleteStudent(student);
-
+            _register.DeregisterAStudent(student, _groupSearcher, this);
+            _register.RegisterAStudent(newGroup, student, this, _checker);
         }
     }
-    
 }
