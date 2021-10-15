@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using System.Linq;
 using Isu.Services;
 using Isu.Tools;
 
@@ -18,16 +18,28 @@ namespace Isu
 
         private GroupSearcher _groupSearcher;
         private StudentSearcher _studentSearcher;
-        private Register _register;
-        private Checker _checker;
 
+        private bool CheckIfGroupExists(GroupID id, GroupManager manager)
+        {
+            var group = HasGroup(id, manager);
+            if (group == null) return false;
+            return true;
+        }
 
+        private Group HasGroup(GroupID id, GroupManager manager)
+        {
+            CourseNumber courseNum = id.courseNum;
+            var numberOfGroup = id.num;
+
+            if (manager.dataOfGroupes[courseNum].Count == 0) return null;
+            var group = manager.dataOfGroupes[courseNum].FirstOrDefault(t => t.GroupInfo.num == numberOfGroup);
+            return group;
+        }
         public GroupManager(int amountOfGroupes = 10)
         {
             _groupSearcher = new GroupSearcher();
             _studentSearcher = new StudentSearcher();
-            _register = new Register();
-            _checker = new Checker();
+
 
             _dataOfGroupes = new List<Group>[amountOfGroupes];
             for (int i = 0; i < _dataOfGroupes.Length; i++)
@@ -37,24 +49,26 @@ namespace Isu
         }
 
 
-        public void AddGroup(string name)
+        public Group AddGroup(Group group)
         {
-            GroupID id = StringProccessor.ParseName(name);
-            if (!(_checker.CheckIfGroupExists(id, this)))
+            GroupID id = group.GroupInfo;
+            
+            if (!(CheckIfGroupExists(id, this)))
             {
-                _dataOfGroupes[id.courseNum].Add(new Group(id.courseNum, id.num));
+                _dataOfGroupes[id.courseNum].Add(group);
             }
-            else throw new IsuException($"Group{name} already exists");
+            else throw new IsuException($"Group{group.GroupInfo.Name} already exists");
+
+            return group;
         }
 
-        public void AddStudent(Group group, string name)
+        public void AddStudent(Group group,Student student)
         {
-            Student student = new Student(name, group);
-            var existingGroup = _checker.HasGroup(group.GroupInfo, this);
+            var existingGroup = HasGroup(group.GroupInfo, this);
             if (existingGroup == null)
                 throw new IsuException
-                    ($"group{StringProccessor.FormAName(group.GroupInfo)} doesn't exist");
-            _register.RegisterAStudent(group, student, this, _checker);
+                    ($"group{group.GroupInfo.Name} doesn't exist");
+            group.AddingAStudent(student);
         }
 
         public Student GetStudent(int id)
@@ -85,7 +99,7 @@ namespace Isu
 
         public Group FindGroup(string groupName)
         {
-            var group = _groupSearcher.GetGroup(groupName, this);
+            var group = _groupSearcher.GetGroup(GroupID.ParseName(groupName), this);
             return group;
         }
 
@@ -97,8 +111,11 @@ namespace Isu
 
         public void ChangeStudentGroup(Student student, Group newGroup)
         {
-            _register.DeregisterAStudent(student, _groupSearcher, this);
-            _register.RegisterAStudent(newGroup, student, this, _checker);
+            GroupID groupid = student.studentsGroup;
+            Group group = _groupSearcher.GetGroup(groupid, this);
+            if (group == null) throw new IsuException("There is no group in which this student exists");
+            group.DeleteStudent(student);
+            newGroup.AddingAStudent(student);
         }
     }
 }

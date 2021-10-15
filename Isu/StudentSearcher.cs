@@ -43,8 +43,9 @@ namespace Isu
 
         public List<Student> GetStudentsOfgroup(string nameOfGroup, GroupManager manager)
         {
-            GroupID groupId = StringProccessor.ParseName(nameOfGroup);
-            Group group = manager.dataOfGroupes[groupId.courseNum].FirstOrDefault(t => t.Name == nameOfGroup);
+            GroupID groupId = GroupID.ParseName(nameOfGroup);
+            Group group = manager.dataOfGroupes[groupId.courseNum].
+                FirstOrDefault(t => t.GroupInfo.Name == nameOfGroup);
             if (group == null) throw new IsuException($"{nameOfGroup} is empty");
             return group.students;
         }

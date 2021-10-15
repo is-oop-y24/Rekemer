@@ -6,11 +6,11 @@ namespace Isu
 {
     public class GroupSearcher
     {
-        public Group GetGroup(string groupName, GroupManager manager)
+        public Group GetGroup( GroupID id, GroupManager manager)
         {
-            GroupID id = StringProccessor.ParseName(groupName);
+           
             var group = manager.dataOfGroupes[id.courseNum].FirstOrDefault(t => t.GroupInfo.num == id.num);
-            if (group == null) throw new IsuException($"There is no group {groupName}");
+            if (group == null) throw new IsuException($"There is no group {id.Name}");
             return group;
         }
 
