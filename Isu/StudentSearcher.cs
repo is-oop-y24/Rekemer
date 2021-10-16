@@ -44,7 +44,7 @@ namespace Isu
         public List<Student> GetStudentsOfgroup(string nameOfGroup, GroupManager manager)
         {
             GroupID groupId = GroupID.ParseName(nameOfGroup);
-            Group group = manager.dataOfGroupes[groupId.courseNum].
+            Group group = manager.dataOfGroupes[(int)groupId.courseNum].
                 FirstOrDefault(t => t.GroupInfo.Name == nameOfGroup);
             if (group == null) throw new IsuException($"{nameOfGroup} is empty");
             return group.students;
@@ -53,7 +53,7 @@ namespace Isu
         public List<Student> GetStudentsOfCourse(CourseNumber courseNumber, GroupManager manager)
         {
             List<Student> students = new List<Student>();
-            var currCourse = manager.dataOfGroupes[courseNumber];
+            var currCourse = manager.dataOfGroupes[(int)courseNumber];
             foreach (Group tGroup in currCourse)
             {
                 students.AddRange(tGroup.students);

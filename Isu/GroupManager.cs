@@ -16,10 +16,10 @@ namespace Isu
             private set => _dataOfGroupes = value;
         }
 
-        private GroupSearcher _groupSearcher;
+       
         private StudentSearcher _studentSearcher;
 
-        private bool CheckIfGroupExists(GroupID id, GroupManager manager)
+        private bool IsGroupExists(GroupID id, GroupManager manager)
         {
             var group = HasGroup(id, manager);
             if (group == null) return false;
@@ -31,13 +31,13 @@ namespace Isu
             CourseNumber courseNum = id.courseNum;
             var numberOfGroup = id.num;
 
-            if (manager.dataOfGroupes[courseNum].Count == 0) return null;
-            var group = manager.dataOfGroupes[courseNum].FirstOrDefault(t => t.GroupInfo.num == numberOfGroup);
+            if (manager.dataOfGroupes[(int)courseNum].Count == 0) return null;
+            var group = manager.dataOfGroupes[(int)courseNum].FirstOrDefault(t => t.GroupInfo.num == numberOfGroup);
             return group;
         }
         public GroupManager(int amountOfGroupes = 10)
         {
-            _groupSearcher = new GroupSearcher();
+            
             _studentSearcher = new StudentSearcher();
 
 
@@ -53,9 +53,9 @@ namespace Isu
         {
             GroupID id = group.GroupInfo;
             
-            if (!(CheckIfGroupExists(id, this)))
+            if (!(IsGroupExists(id, this)))
             {
-                _dataOfGroupes[id.courseNum].Add(group);
+                _dataOfGroupes[(int)id.courseNum].Add(group);
             }
             else throw new IsuException($"Group{group.GroupInfo.Name} already exists");
 
@@ -68,7 +68,7 @@ namespace Isu
             if (existingGroup == null)
                 throw new IsuException
                     ($"group{group.GroupInfo.Name} doesn't exist");
-            group.AddingAStudent(student);
+            group.AddStudent(student);
         }
 
         public Student GetStudent(int id)
@@ -97,25 +97,28 @@ namespace Isu
             return students;
         }
 
-        public Group FindGroup(string groupName)
+     
+        public void ChangeStudentGroup(Student student, Group newGroup)
         {
-            var group = _groupSearcher.GetGroup(GroupID.ParseName(groupName), this);
+            GroupID groupid = student.studentsGroup;
+            Group group = FindGroup(groupid);
+            if (group == null) throw new IsuException("There is no group in which this student exists");
+            group.DeleteStudent(student);
+            newGroup.AddStudent(student);
+        }
+        public Group FindGroup( GroupID id)
+        {
+           
+            var group = dataOfGroupes[(int)id.courseNum].FirstOrDefault(t => t.GroupInfo.num == id.num);
+            if (group == null) throw new IsuException($"There is no group {id.Name}");
             return group;
         }
 
         public List<Group> FindGroups(CourseNumber courseNumber)
         {
-            var groups = _groupSearcher.GetGroups(courseNumber, this);
+            var groups = dataOfGroupes[(int)courseNumber];
+            if (groups == null) throw new IsuException($"There are no groups in course{courseNumber}");
             return groups;
-        }
-
-        public void ChangeStudentGroup(Student student, Group newGroup)
-        {
-            GroupID groupid = student.studentsGroup;
-            Group group = _groupSearcher.GetGroup(groupid, this);
-            if (group == null) throw new IsuException("There is no group in which this student exists");
-            group.DeleteStudent(student);
-            newGroup.AddingAStudent(student);
         }
     }
 }
