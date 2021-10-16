@@ -9,11 +9,17 @@ namespace Isu
     public class Group
     {
         public readonly int maxStudents;
-        public GroupID GroupInfo { get; private set; }
+
+        private GroupID _groupInfo;
+        public GroupID GroupInfo
+        {
+            get=> new GroupID(_groupInfo);
+            private set => _groupInfo = value;
+        }
         
         private List<Student> _students;
 
-        public List<Student> students => _students;
+        public List<Student> students => new List<Student>(_students);
 
         private Group(GroupID id, int maxStudents, List<Student> students)
         {
@@ -21,7 +27,7 @@ namespace Isu
             this.maxStudents = maxStudents;
             _students = students;
         }
-        public void AddingAStudent(Student student)
+        public void AddStudent(Student student)
         {
             if (_students.Count == maxStudents)
                 throw new IsuException($"Student can not be added in the group {GroupInfo.Name}, the group is full");
@@ -73,51 +79,5 @@ namespace Isu
         }
 
        
-    }
-
-    public class GroupID
-    {
-        public readonly CourseNumber courseNum;
-        public readonly int num;
-        public string Name { get; private set; }
-
-        private GroupID(CourseNumber courseNum, int num)
-        {
-            this.courseNum = courseNum;
-            this.num = num;
-            Name = FormAName(courseNum, num);
-        }
-
-        public static implicit operator string(GroupID id)
-        {
-            return id.Name;
-        }
-        public static implicit operator GroupID(string name)
-        {
-            GroupID id = ParseName(name);
-            return id;
-        }
-        public static  GroupID ParseName(string name)
-        {
-            int number;
-            string numSubstring = name.Substring(1);
-            bool areInts = int.TryParse(numSubstring, out number);
-            if (name.Length != 5 || name[0] != 'M' || name[1] != '3' || !areInts)
-                throw new IsuException("Invalid group name (M3XYY)");
-
-            GroupID groupInfo = new GroupID(int.Parse(name[2].ToString()), byte.Parse(numSubstring.Substring(2)));
-            return groupInfo;
-        }
-
-        public static string FormAName(CourseNumber courseNum, int groupNumber )
-        {
-            int course = courseNum;
-            string name = "M3" + course.ToString();
-            if (groupNumber < 10) name += "0" + groupNumber.ToString();
-            else name += groupNumber.ToString();
-            return name;
-        }
-
-        
     }
 }

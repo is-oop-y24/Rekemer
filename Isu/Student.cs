@@ -1,10 +1,17 @@
 ﻿using System;
+using System.Reflection.Metadata.Ecma335;
 
 namespace Isu
 {
     public class Student
     {
-        public GroupID studentsGroup { get; private set; }
+        private GroupID _studentsGroup;
+        public GroupID studentsGroup
+        {
+            get=> new GroupID(_studentsGroup);
+            private set => _studentsGroup = value;
+        }
+
         public int id { get; private set; }
         public string name { get; private set; }
 
