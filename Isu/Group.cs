@@ -76,6 +76,11 @@ namespace Isu
             {
                 return builder.Build();
             }
+            public GroupBuilder ToBuild()
+            {
+                GroupBuilder studentBuilder = new GroupBuilder();
+                return studentBuilder.WithStudents(_students.ToArray()). WithMaxAmountOfStudents(_maxStudents).WithName(_groupID);
+            }
         }
 
        

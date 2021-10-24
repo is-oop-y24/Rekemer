@@ -17,7 +17,7 @@ namespace Isu
         }
 
        
-        private StudentSearcher _studentSearcher;
+
 
         private bool IsGroupExists(GroupID id, GroupManager manager)
         {
@@ -38,7 +38,7 @@ namespace Isu
         public GroupManager(int amountOfGroupes = 10)
         {
             
-            _studentSearcher = new StudentSearcher();
+            
 
 
             _dataOfGroupes = new List<Group>[amountOfGroupes];
@@ -73,30 +73,30 @@ namespace Isu
 
         public Student GetStudent(int id)
         {
-            var student = _studentSearcher.FindById(id, this);
+            var student = FindById(id, this);
             if (student == null) throw new Exception($"Student with ID{id} is not found");
             return student;
         }
 
         public Student FindStudent(string name)
         {
-            var student = _studentSearcher.FindByName(name, this);
+            var student = FindByName(name, this);
             if (student == null) throw new Exception($"Student with ID{name} is not found");
             return student;
         }
 
         public List<Student> FindStudents(string groupName)
         {
-            var students = _studentSearcher.GetStudentsOfgroup(groupName, this);
+            var students = GetStudentsOfgroup(groupName);
             return students;
         }
 
         public List<Student> FindStudents(CourseNumber courseNumber)
         {
-            var students = _studentSearcher.GetStudentsOfCourse(courseNumber, this);
+            var students = GetStudentsOfCourse(courseNumber);
             return students;
         }
-
+        
      
         public void ChangeStudentGroup(Student student, Group newGroup)
         {
@@ -119,6 +119,68 @@ namespace Isu
             var groups = dataOfGroupes[(int)courseNumber];
             if (groups == null) throw new IsuException($"There are no groups in course{courseNumber}");
             return groups;
+        }
+        private Student FindById(int id, GroupManager manager)
+        {
+            Student student = null;
+            for (int i = 0; i < manager.dataOfGroupes.Length; i++)
+            {
+                if (manager.dataOfGroupes[i] == null) continue;
+                for (int j = 0; j < manager.dataOfGroupes[i].Count; j++)
+                {
+                    var groups = manager.dataOfGroupes[i];
+                    for (int k = 0; k < groups.Count; k++)
+                    {
+                        student = groups[k].students
+                            .FirstOrDefault(t => t.id == id);
+                    }
+                }
+            }
+
+            return student;
+        }
+
+    
+        private Student FindByName(string name, GroupManager manager)
+        {
+            Student student = null;
+            for (int i = 0; i < manager.dataOfGroupes.Length; i++)
+            {
+                if (manager.dataOfGroupes[i] == null) continue;
+                for (int j = 0; j < manager.dataOfGroupes[i].Count; j++)
+                {
+                    var groups = manager.dataOfGroupes[i];
+                    for (int k = 0; k < groups.Count; k++)
+                    {
+                        student = groups[k].students
+                            .FirstOrDefault(t => t.name == name);
+                    }
+                }
+            }
+
+            return student;
+        }
+
+        private List<Student> GetStudentsOfgroup(string nameOfGroup)
+        {
+            GroupID groupId = GroupID.ParseName(nameOfGroup);
+            Group group = dataOfGroupes[(int)groupId.courseNum].
+                FirstOrDefault(t => t.GroupInfo.Name == nameOfGroup);
+            if (group == null) throw new IsuException($"{nameOfGroup} is empty");
+            return group.students;
+        }
+
+        private List<Student> GetStudentsOfCourse(CourseNumber courseNumber)
+        {
+            List<Student> students = new List<Student>();
+            var currCourse = dataOfGroupes[(int)courseNumber];
+            foreach (Group tGroup in currCourse)
+            {
+                students.AddRange(tGroup.students);
+            }
+
+            if (students.Count == 0) throw new IsuException($"There are no students on this {courseNumber} course");
+            return students;
         }
     }
 }

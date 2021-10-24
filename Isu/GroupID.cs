@@ -47,7 +47,7 @@ namespace Isu
             return groupInfo;
         }
 
-        public static string FormAName(CourseNumber courseNum, int groupNumber )
+        public string FormAName(CourseNumber courseNum, int groupNumber )
         {
             int course = (int)courseNum;
             string name = "M3" + course.ToString();

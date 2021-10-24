@@ -16,10 +16,7 @@ namespace Isu
         public string name { get; private set; }
 
 
-        private Student()
-        {
-            
-        }
+      
 
         private Student(string name, GroupID group)
         {
@@ -42,6 +39,12 @@ namespace Isu
                 _studentName = name;
                 return this;
             
+            }
+
+            public StudentBuilder ToBuild()
+            {
+                StudentBuilder studentBuilder = new StudentBuilder();
+                return studentBuilder.WithGroup(_groupID).WithName(_studentName);
             }
             public StudentBuilder WithGroup(GroupID id)
             {
