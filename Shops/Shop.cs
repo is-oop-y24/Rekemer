@@ -1,9 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using System.Runtime.InteropServices;
-
 
 namespace Shops
 {
@@ -15,12 +12,8 @@ namespace Shops
 
         private string _nameOfShop;
         private string _address;
-        private float _id;
-        public Dictionary<string, ProductParam> AmountOfGoods { get; private set; }
-
-        private Shop()
-        {
-        }
+        private Guid _id = new Guid();
+        public Dictionary<string, Product> AmountOfGoods { get; private set; }
 
         public void DecreaseMoney(float money)
         {
@@ -32,23 +25,32 @@ namespace Shops
             ProductsToBuy = new List<Product>(products);
         }
 
-        public Shop(string nameOfShop = "Ilia's shop", string address = "Street 5", float id = 25,
-            float startCapital = 500f)
+        public Shop(string nameOfShop = "Ilia's shop", string address = "Street 5", float startCapital = 500f)
         {
             Money = startCapital;
             this._nameOfShop = nameOfShop;
             this._address = address;
-            this._id = id;
-            AmountOfGoods = new Dictionary<string, ProductParam>();
+
+            AmountOfGoods = new Dictionary<string, Product>();
         }
 
-        public int GetAmountOfGoodWithThisName(NameOfProduct name)
+        public int GetAmountOfGoodWithThisName(string name)
         {
-            int amount = AmountOfGoods[name].amount;
-            return amount;
+            if (AmountOfGoods[name] != null)
+            {
+                int amount = AmountOfGoods[name].Amount;
+                return amount;
+            }
+
+            return 0;
         }
 
-        public void SetPriceForGoodsWithName(NameOfProduct name, float price)
+        public Guid GetID()
+        {
+            return _id;
+        }
+
+        public void SetPriceForGoodsWithName(string name, float price)
         {
             if (!AmountOfGoods.ContainsKey(name)) throw new Exception("There is no such good");
             AmountOfGoods[name].ChangePrice(price);
@@ -59,8 +61,8 @@ namespace Shops
             foreach (Product product in newGoods)
             {
                 var name = product.Name;
-                var amount = product.Param.amount;
-                var price = product.Param.price;
+                var amount = product.Amount;
+                var price = product.Price;
                 if (AmountOfGoods.ContainsKey(name))
                 {
                     if (amount > 0) AmountOfGoods[name].AddAmount(amount);
@@ -68,31 +70,36 @@ namespace Shops
                 }
                 else
                 {
-                    var param = new ProductParam(price, amount);
-                    AmountOfGoods.Add(name, param);
+                    AmountOfGoods.Add(name, product);
                 }
             }
         }
 
-        public Product GetGood(NameOfProduct nameOfGood)
+        public Product GetGood(string nameOfGood)
         {
             if (!AmountOfGoods.ContainsKey(nameOfGood)) return null;
-            var param = AmountOfGoods[nameOfGood];
-            Product good = new Product(nameOfGood, param);
+            var product = AmountOfGoods[nameOfGood];
+            Product good = new Product(product);
             return good;
         }
 
         public void ServeGood(ICanBuy customer)
         {
-            float totalSum = customer.ProductsToBuy.Sum(t => t.Param.price * t.Param.amount);
+            float totalSum = customer.ProductsToBuy.Sum(t => GetGood(t.Name).Price * t.Amount);
             var goods = customer.ProductsToBuy;
             if (totalSum > customer.Money) throw new Exception("Not enough money for purchase");
             foreach (var good in goods)
             {
                 var name = good.Name;
-                var amountOfGood = good.Param.amount;
-                if (AmountOfGoods[name].amount < amountOfGood)
-                    throw new Exception("Not enough good in shop for buying");
+                var amountOfGood = good.Amount;
+                if (!AmountOfGoods.ContainsKey(name))
+                {
+                    throw new Exception($"there is no products with name: {name}");
+                }
+
+
+                if (AmountOfGoods[name].Amount < amountOfGood)
+                    throw new Exception("Not enough goods in shop for buying");
                 AmountOfGoods[name].DecreaseAmount(amountOfGood);
             }
 
@@ -112,8 +119,8 @@ namespace Shops
             {
                 if (!AmountOfGoods.ContainsKey(product.Name))
                     throw new Exception($"There is no{product.Name} in {_nameOfShop}");
-                var amount = AmountOfGoods[product.Name].amount;
-                var price = AmountOfGoods[product.Name].price;
+                var amount = AmountOfGoods[product.Name].Amount;
+                var price = AmountOfGoods[product.Name].Price;
                 sum += amount * price;
             }
 
@@ -136,6 +143,60 @@ namespace Shops
             }
 
             return shopToRemember;
+        }
+    }
+
+    public class ShopBuilder
+    {
+        public float Money { get; private set; }
+        public List<Product> ProductsToBuy { get; private set; }
+        private string _nameOfShop;
+        private string _address;
+
+        public ShopBuilder WithMoney(float money)
+        {
+            Money = money;
+            return this;
+        }
+
+        public ShopBuilder WithProducts(params Product[] newGoods)
+        {
+            ProductsToBuy = new List<Product>(newGoods);
+            return this;
+        }
+
+        public ShopBuilder WithProducts(List<Product> newGoods)
+        {
+            ProductsToBuy = newGoods;
+            return this;
+        }
+
+        public ShopBuilder WithName(string name)
+        {
+            _nameOfShop = name;
+            return this;
+        }
+
+        public ShopBuilder WithAddress(string addres)
+        {
+            _address = addres;
+            return this;
+        }
+
+        public Shop Build()
+        {
+            return new Shop(_nameOfShop, _address, Money);
+        }
+
+        public static implicit operator Shop(ShopBuilder builder)
+        {
+            return builder.Build();
+        }
+
+        public ShopBuilder ToBuild()
+        {
+            ShopBuilder shopBuilder = new ShopBuilder();
+            return shopBuilder.WithName(_nameOfShop).WithMoney(Money).WithAddress(_address);
         }
     }
 }
