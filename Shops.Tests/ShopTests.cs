@@ -24,10 +24,10 @@ namespace Shops.Tests
             Shop shop = _shopBuilder.WithName("Ilia's shop");
             Product apple = _productBuilder.WithName("apple").WithAmount(7);
             Product[] goods = new Product[] {apple};
-            shop.AddGoods(goods);
+            shop.GetProducts(goods);
             Product lemon = _productBuilder.WithName("lemon").WithAmount(2);
             Product[] goods1 = new Product[] {lemon};
-            shop.AddGoods(goods1);
+            shop.GetProducts(goods1);
             var amountOfgoods = shop.Goods.Count;
             Assert.Greater(amountOfgoods, 0);
         }
@@ -37,7 +37,7 @@ namespace Shops.Tests
             Shop shop = _shopBuilder.WithName("Ilia's shop");
             Product lemon = _productBuilder.WithName("lemon").WithAmount(4);
             Product[] goods = new Product[] {lemon};
-            shop.AddGoods(goods);
+            shop.GetProducts(goods);
             Assert.AreEqual("lemon", shop.GetGood("lemon").Name);
         }
 
@@ -47,7 +47,7 @@ namespace Shops.Tests
             Shop shop = _shopBuilder.WithName("Ilia's shop").WithMoney(500f);
             Product apple = _productBuilder.WithName("apple").WithAmount(7).WithPrice(3f);
             Product[] goods = new Product[] {apple};
-            shop.AddGoods(goods);
+            shop.GetProducts(goods);
             shop.SetPriceForGoodsWithName("apple", 10f);
             Assert.AreEqual(10f, shop.GetGood("apple").Price);
         }
@@ -58,7 +58,7 @@ namespace Shops.Tests
             Shop shop = _shopBuilder.WithName("Ilia's shop").WithMoney(100f);
             Product apple = _productBuilder.WithName("apple").WithAmount(5).WithPrice(10f);
             Product[] goods = new Product[] {apple};
-            shop.AddGoods(goods);
+            shop.GetProducts(goods);
             Assert.AreEqual(5, shop.GetAmountOfGoodWithThisName("apple"));
         }
 
@@ -84,7 +84,7 @@ namespace Shops.Tests
             Product[] goods = new Product[] {apple};
             Product[] goodsOfShop = new Product[] {apple0};
             Customer customer = new Customer(500f, goods);
-            shop.AddGoods(goodsOfShop);
+            shop.GetProducts(goodsOfShop);
             shop.ServeGood(customer);
             Assert.AreEqual(3, shop.GetAmountOfGoodWithThisName("apple"));
         }
@@ -97,7 +97,7 @@ namespace Shops.Tests
             Product[] goodsToBuy = new Product[] {apple};
             var goodsOfShop = new Product[] {appleOfShop};
             var customer = new Customer(10f, goodsToBuy);
-            shop.AddGoods(appleOfShop);
+            shop.GetProducts(appleOfShop);
             shop.ServeGood(customer);
             return null;
         }
@@ -119,17 +119,17 @@ namespace Shops.Tests
             Product[] goods = new Product[] {apple};
             Product[] goodsOfShop = new Product[] {appleToImport};
             Customer customer = new Customer(500f, goods);
-            shop.AddGoods(goodsOfShop);
+            shop.GetProducts(goodsOfShop);
             shop.ServeGood(customer);
-            Assert.AreEqual(515, shop.Money);
+            Assert.AreEqual(500-24+15, shop.Money);
         }
 
         [Test]
         public void FewShops_FoundCheapestPrice()
         {
-            Shop shop = _shopBuilder.WithName("Ilia's shop").WithMoney(1000f);
-            Shop notExpensiveShop = _shopBuilder.WithName("Fane's Shop").WithMoney(101f).WithAddress("Street 22");
-            Shop expensiveShop = _shopBuilder.WithName("Shepard'sShop").WithMoney(342).WithAddress("Street 11");
+            Shop shop = _shopBuilder.WithName("Ilia's shop").WithMoney(700f);
+            Shop notExpensiveShop = _shopBuilder.WithName("Fane's Shop").WithMoney(500f).WithAddress("Street 22");
+            Shop expensiveShop = _shopBuilder.WithName("Shepard'sShop").WithMoney(1000).WithAddress("Street 11");
             Product apple = _productBuilder.WithName("apple").WithAmount(5).WithPrice(10f);
             Product lessExpensinveApple = _productBuilder.WithName("apple").WithAmount(8).WithPrice(50f);
             Product expensinveApple = _productBuilder.WithName("apple").WithAmount(8).WithPrice(100f);
@@ -137,8 +137,8 @@ namespace Shops.Tests
             Product[] goodsOfShop = new Product[] {lessExpensinveApple};
             Product[] goodsOfMoreExpensiveShop = new Product[] {expensinveApple};
             shop.SetProductsToBuy(goodsToBuy);
-            notExpensiveShop.AddGoods(goodsOfShop);
-            expensiveShop.AddGoods(goodsOfMoreExpensiveShop);
+            notExpensiveShop.GetProducts(goodsOfShop);
+            expensiveShop.GetProducts(goodsOfMoreExpensiveShop);
             var shops = new Shop[] {notExpensiveShop, expensiveShop};
             var cheapestShop = shop.FindCheapestCollectionOfGoodInShoops(shops);
             bool check = cheapestShop == notExpensiveShop;
