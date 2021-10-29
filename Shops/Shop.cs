@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace Shops
@@ -13,7 +14,7 @@ namespace Shops
         private string _nameOfShop;
         private string _address;
         private Guid _id = new Guid();
-        public Dictionary<string, Product> AmountOfGoods { get; private set; }
+        public Dictionary<string, Product> Goods { get; private set; }
 
         public void DecreaseMoney(float money)
         {
@@ -31,14 +32,14 @@ namespace Shops
             this._nameOfShop = nameOfShop;
             this._address = address;
 
-            AmountOfGoods = new Dictionary<string, Product>();
+            Goods = new Dictionary<string, Product>();
         }
 
         public int GetAmountOfGoodWithThisName(string name)
         {
-            if (AmountOfGoods[name] != null)
+            if (Goods[name] != null)
             {
-                int amount = AmountOfGoods[name].Amount;
+                int amount = Goods[name].Amount;
                 return amount;
             }
 
@@ -52,64 +53,95 @@ namespace Shops
 
         public void SetPriceForGoodsWithName(string name, float price)
         {
-            if (!AmountOfGoods.ContainsKey(name)) throw new Exception("There is no such good");
-            AmountOfGoods[name].ChangePrice(price);
+            if (!Goods.ContainsKey(name)) throw new Exception("There is no such good");
+            Goods[name].ChangePrice(price);
+        }
+
+        public void GetProducts(params Product[] newGoods)
+        {
+            float priceOverall = newGoods.Sum(t => t.Price * t.Amount);
+            if (priceOverall > Money) throw new Exception("Not enough money to pay for products");
+            DecreaseMoney(priceOverall);
+            AddGoods(newGoods);
         }
 
         public void AddGoods(params Product[] newGoods)
         {
             foreach (Product product in newGoods)
             {
+                if (product == null)
+                {
+                    Debug.WriteLine("AddGodds in Shop: adding null product");
+                    continue;
+                }
+
                 var name = product.Name;
                 var amount = product.Amount;
                 var price = product.Price;
-                if (AmountOfGoods.ContainsKey(name))
+                if (Goods.ContainsKey(name))
                 {
-                    if (amount > 0) AmountOfGoods[name].AddAmount(amount);
-                    AmountOfGoods[name].ChangePrice(price);
+                    if (amount > 0) Goods[name].AddAmount(amount);
+                    Goods[name].ChangePrice(price);
                 }
                 else
                 {
-                    AmountOfGoods.Add(name, product);
+                    Goods.Add(name, product);
                 }
             }
         }
 
         public Product GetGood(string nameOfGood)
         {
-            if (!AmountOfGoods.ContainsKey(nameOfGood)) return null;
-            var product = AmountOfGoods[nameOfGood];
+            if (!Goods.ContainsKey(nameOfGood)) return null;
+            var product = Goods[nameOfGood];
             Product good = new Product(product);
             return good;
         }
 
+
         public void ServeGood(ICanBuy customer)
         {
-            float totalSum = customer.ProductsToBuy.Sum(t => GetGood(t.Name).Price * t.Amount);
+            if (customer == null) return;
+            float totalSum = customer.ProductsToBuy.Sum(t => Goods[t.Name].Price * Goods[t.Name].Amount);
             var goods = customer.ProductsToBuy;
             if (totalSum > customer.Money) throw new Exception("Not enough money for purchase");
             foreach (var good in goods)
             {
                 var name = good.Name;
                 var amountOfGood = good.Amount;
-                if (!AmountOfGoods.ContainsKey(name))
+                if (!Goods.ContainsKey(name))
                 {
                     throw new Exception($"there is no products with name: {name}");
                 }
 
 
-                if (AmountOfGoods[name].Amount < amountOfGood)
+                if (Goods[name].Amount < amountOfGood)
                     throw new Exception("Not enough goods in shop for buying");
-                AmountOfGoods[name].DecreaseAmount(amountOfGood);
+                TradeOperationWith(customer, Goods[name], amountOfGood, Goods[name].Price);
             }
-
-            Money += totalSum;
-            customer.DecreaseMoney(totalSum);
         }
 
-        public void UpdateGoods()
+        public void AddMoney(float money)
         {
-            AddGoods(ProductsToBuy.ToArray());
+            Money += money;
+        }
+
+        private void TradeOperationWith(ICanBuy customer, Product productToBeBought, int amountOfProduct,
+            float pricePerProduct)
+        {
+            if (customer == null || productToBeBought == null) return;
+            float totalSum = amountOfProduct * pricePerProduct;
+
+            if (customer.Money >= totalSum)
+            {
+                ProductBuilder productBuilder = new ProductBuilder();
+                var productToAdd = productBuilder.WithAmount(amountOfProduct).WithName(productToBeBought.Name)
+                    .WithPrice(pricePerProduct);
+                customer.AddProducts(productToAdd);
+                customer.DecreaseMoney(totalSum);
+                Goods[productToBeBought.Name].DecreaseAmount(amountOfProduct);
+                AddMoney(totalSum);
+            }
         }
 
         public float CalculateSum(Product[] productsToBuy)
@@ -117,10 +149,11 @@ namespace Shops
             float sum = 0;
             foreach (var product in productsToBuy)
             {
-                if (!AmountOfGoods.ContainsKey(product.Name))
+                if (product == null) continue;
+                if (!Goods.ContainsKey(product.Name))
                     throw new Exception($"There is no{product.Name} in {_nameOfShop}");
-                var amount = AmountOfGoods[product.Name].Amount;
-                var price = AmountOfGoods[product.Name].Price;
+                var amount = Goods[product.Name].Amount;
+                var price = Goods[product.Name].Price;
                 sum += amount * price;
             }
 
@@ -134,6 +167,7 @@ namespace Shops
             Shop shopToRemember = new Shop();
             foreach (var shop in shops)
             {
+                if (shop == null) continue;
                 float price = shop.CalculateSum(productsToBuy.ToArray());
                 if (price <= cheapestSPrice)
                 {
@@ -143,6 +177,14 @@ namespace Shops
             }
 
             return shopToRemember;
+        }
+
+        public void AddProducts(Product newGood)
+        {
+            if (newGood != null)
+            {
+                Goods[newGood.Name] = newGood;
+            }
         }
     }
 

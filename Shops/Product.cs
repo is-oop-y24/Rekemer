@@ -28,11 +28,7 @@ namespace Shops
             this.Price = price;
         }
 
-        public string GetName()
-        {
-            throw new System.NotImplementedException();
-        }
-
+    
         public void ChangePrice(float price)
         {
             this.Price = price;

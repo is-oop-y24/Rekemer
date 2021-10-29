@@ -28,7 +28,7 @@ namespace Shops.Tests
             Product lemon = _productBuilder.WithName("lemon").WithAmount(2);
             Product[] goods1 = new Product[] {lemon};
             shop.AddGoods(goods1);
-            var amountOfgoods = shop.AmountOfGoods.Count;
+            var amountOfgoods = shop.Goods.Count;
             Assert.Greater(amountOfgoods, 0);
         }
         [Test]
@@ -44,7 +44,7 @@ namespace Shops.Tests
         [Test]
         public void ChangePriceForGoodWithName_PriceIsChanged()
         {
-            Shop shop = _shopBuilder.WithName("Ilia's shop");
+            Shop shop = _shopBuilder.WithName("Ilia's shop").WithMoney(500f);
             Product apple = _productBuilder.WithName("apple").WithAmount(7).WithPrice(3f);
             Product[] goods = new Product[] {apple};
             shop.AddGoods(goods);
@@ -55,11 +55,24 @@ namespace Shops.Tests
         [Test]
         public void AddProducts_AmountIsCorrect()
         {
-            Shop shop = _shopBuilder.WithName("Ilia's shop");
-            Product apple = _productBuilder.WithName("apple").WithAmount(5);
+            Shop shop = _shopBuilder.WithName("Ilia's shop").WithMoney(100f);
+            Product apple = _productBuilder.WithName("apple").WithAmount(5).WithPrice(10f);
             Product[] goods = new Product[] {apple};
             shop.AddGoods(goods);
             Assert.AreEqual(5, shop.GetAmountOfGoodWithThisName("apple"));
+        }
+
+        private void TryToBuy( Shop shop, params Product[] products)
+        {
+            shop.GetProducts(products);
+        }
+        [Test]
+        public void ShopIsGettingTooExpensiveProducts_ThrowExceprion()
+        {
+            Shop shop = _shopBuilder.WithName("Ilia's shop").WithMoney(100f);
+            Product apple = _productBuilder.WithName("apple").WithAmount(5).WithPrice(25f);
+            Product[] goods = new Product[] {apple};
+            Assert.Throws<Exception>(delegate { TryToBuy(shop,goods);});
         }
 
         [Test]
@@ -75,8 +88,6 @@ namespace Shops.Tests
             shop.ServeGood(customer);
             Assert.AreEqual(3, shop.GetAmountOfGoodWithThisName("apple"));
         }
-
-        [Test]
         
         private TestDelegate TryToBuy()
         {
@@ -103,10 +114,10 @@ namespace Shops.Tests
         public void CustomerBoughtGoods_ShopGotMoney()
         {
             Shop shop = _shopBuilder.WithName("Ilia's shop").WithMoney(500f);
-            Product apple = _productBuilder.WithName("apple").WithAmount(5);
-            Product apple0 = _productBuilder.WithName("apple").WithAmount(8).WithPrice(3f);
+            Product apple = _productBuilder.WithName("apple").WithAmount(5).WithPrice(5f);
+            Product appleToImport = _productBuilder.WithName("apple").WithAmount(8).WithPrice(3f);
             Product[] goods = new Product[] {apple};
-            Product[] goodsOfShop = new Product[] {apple0};
+            Product[] goodsOfShop = new Product[] {appleToImport};
             Customer customer = new Customer(500f, goods);
             shop.AddGoods(goodsOfShop);
             shop.ServeGood(customer);
@@ -137,18 +148,18 @@ namespace Shops.Tests
         [Test]
         public void ShopbuyFromAnotherShop_StatesAreChanged()
         {
-            Product apple = _productBuilder.WithName("apple").WithAmount(4).WithPrice(2f);
+            Product apple = _productBuilder.WithName("apple").WithAmount(6).WithPrice(2f);
             Product appleOfImporter = _productBuilder.WithName("apple").WithAmount(8).WithPrice(24f);
             Product[] goodsToBuy = new Product[] {apple};
             Product[] goodsOfImporter = new Product[] {appleOfImporter};
             Shop shop = new Shop("Ilia's Shop", "Street 5", 1000f);
             shop.SetProductsToBuy(goodsToBuy);
-            Shop importer = new Shop("Fane's Shop", "Street 22", 101);
-            importer.AddGoods(goodsOfImporter);
+            Shop importer = new Shop("Fane's Shop", "Street 22", 1000);
+            importer.GetProducts(goodsOfImporter);
             importer.ServeGood(shop);
-            shop.UpdateGoods();
-            Assert.AreEqual(4, importer.GetGood("apple").Amount);
-            Assert.AreEqual(4, shop.GetGood("apple").Amount);
+            Assert.AreEqual(2, importer.GetGood("apple").Amount);
+            Assert.AreEqual(6, shop.GetGood("apple").Amount);
+            Assert.AreEqual(1000 - 6*24, shop.Money);
         }
     }
 }
