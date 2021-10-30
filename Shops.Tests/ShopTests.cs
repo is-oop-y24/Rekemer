@@ -24,10 +24,10 @@ namespace Shops.Tests
             Shop shop = _shopBuilder.WithName("Ilia's shop");
             Product apple = _productBuilder.WithName("apple").WithAmount(7);
             Product[] goods = new Product[] {apple};
-            shop.ImportToShop(goods);
+            shop.ImportToShop(goods.ToList());
             Product lemon = _productBuilder.WithName("lemon").WithAmount(2);
             Product[] goods1 = new Product[] {lemon};
-            shop.ImportToShop(goods1);
+            shop.ImportToShop(goods1.ToList());
             var amountOfgoods = shop.Goods.Count;
             Assert.Greater(amountOfgoods, 0);
         }
@@ -37,7 +37,7 @@ namespace Shops.Tests
             Shop shop = _shopBuilder.WithName("Ilia's shop");
             Product lemon = _productBuilder.WithName("lemon").WithAmount(4);
             Product[] goods = new Product[] {lemon};
-            shop.ImportToShop(goods);
+            shop.ImportToShop(goods.ToList());
             Assert.AreEqual("lemon", shop.GetGood("lemon").Name);
         }
 
@@ -47,7 +47,7 @@ namespace Shops.Tests
             Shop shop = _shopBuilder.WithName("Ilia's shop").WithMoney(500f);
             Product apple = _productBuilder.WithName("apple").WithAmount(7).WithPrice(3f);
             Product[] goods = new Product[] {apple};
-            shop.ImportToShop(goods);
+            shop.ImportToShop(goods.ToList());
             shop.SetPriceForGoodsWithName("apple", 10f);
             Assert.AreEqual(10f, shop.GetGood("apple").Price);
         }
@@ -58,13 +58,13 @@ namespace Shops.Tests
             Shop shop = _shopBuilder.WithName("Ilia's shop").WithMoney(100f);
             Product apple = _productBuilder.WithName("apple").WithAmount(5).WithPrice(10f);
             Product[] goods = new Product[] {apple};
-            shop.ImportToShop(goods);
+            shop.ImportToShop(goods.ToList());
             Assert.AreEqual(5, shop.GetAmountOfGoodWithThisName("apple"));
         }
 
         private void TryToBuy( Shop shop, params Product[] products)
         {
-            shop.ImportToShop(products);
+            shop.ImportToShop(products.ToList());
         }
         [Test]
         public void ShopIsGettingTooExpensiveProducts_ThrowExceprion()
@@ -84,7 +84,7 @@ namespace Shops.Tests
             Product[] goods = new Product[] {apple};
             Product[] goodsOfShop = new Product[] {apple0};
             Customer customer = new Customer(500f, goods);
-            shop.ImportToShop(goodsOfShop);
+            shop.ImportToShop(goodsOfShop.ToList());
             shop.ServeGood(customer);
             Assert.AreEqual(3, shop.GetAmountOfGoodWithThisName("apple"));
         }
@@ -97,7 +97,7 @@ namespace Shops.Tests
             Product[] goodsToBuy = new Product[] {apple};
             var goodsOfShop = new Product[] {appleOfShop};
             var customer = new Customer(10f, goodsToBuy);
-            shop.ImportToShop(appleOfShop);
+            shop.ImportToShop(goodsOfShop.ToList());
             shop.ServeGood(customer);
             return null;
         }
@@ -119,7 +119,7 @@ namespace Shops.Tests
             Product[] goods = new Product[] {apple};
             Product[] goodsOfShop = new Product[] {appleToImport};
             Customer customer = new Customer(500f, goods);
-            shop.ImportToShop(goodsOfShop);
+            shop.ImportToShop(goodsOfShop.ToList());
             shop.ServeGood(customer);
             Assert.AreEqual(500-24+15, shop.Money);
         }
@@ -137,8 +137,8 @@ namespace Shops.Tests
             Product[] goodsOfShop = new Product[] {lessExpensinveApple};
             Product[] goodsOfMoreExpensiveShop = new Product[] {expensinveApple};
             shop.SetProductsToBuy(goodsToBuy);
-            notExpensiveShop.ImportToShop(goodsOfShop);
-            expensiveShop.ImportToShop(goodsOfMoreExpensiveShop);
+            notExpensiveShop.ImportToShop(goodsOfShop.ToList());
+            expensiveShop.ImportToShop(goodsOfMoreExpensiveShop.ToList());
             var shops = new Shop[] {notExpensiveShop, expensiveShop};
             var cheapestShop = shop.FindCheapestCollectionOfGoodInShoops(shops);
             bool check = cheapestShop == notExpensiveShop;
@@ -155,7 +155,7 @@ namespace Shops.Tests
             Shop shop = new Shop("Ilia's Shop", "Street 5", 1000f);
             shop.SetProductsToBuy(goodsToBuy);
             Shop importer = new Shop("Fane's Shop", "Street 22", 1000);
-            importer.ImportToShop(goodsOfImporter);
+            importer.ImportToShop(goodsOfImporter.ToList());
             importer.ServeGood(shop);
             Assert.AreEqual(2, importer.GetGood("apple").Amount);
             Assert.AreEqual(6, shop.GetGood("apple").Amount);

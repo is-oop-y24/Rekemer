@@ -13,7 +13,7 @@ namespace Shops
 
         private string _nameOfShop;
         private string _address;
-        private Guid _id = new Guid();
+        public Guid _id { get; private set; }
         public Dictionary<string, Product> Goods { get; private set; }
 
         public void DecreaseMoney(float money)
@@ -46,10 +46,7 @@ namespace Shops
             return 0;
         }
 
-        public Guid GetID()
-        {
-            return _id;
-        }
+       
 
         public void SetPriceForGoodsWithName(string name, float price)
         {
@@ -57,7 +54,7 @@ namespace Shops
             Goods[name].ChangePrice(price);
         }
 
-        public void ImportToShop(params Product[] newGoods)
+        public void ImportToShop(List<Product> newGoods)
         {
             float priceOverall = newGoods.Sum(t => t.Price * t.Amount);
             if (priceOverall > Money) throw new Exception("Not enough money to pay for products");
@@ -65,7 +62,7 @@ namespace Shops
             AddGoods(newGoods);
         }
 
-        public void AddGoods(params Product[] newGoods)
+        public void AddGoods(List<Product> newGoods)
         {
             foreach (Product product in newGoods)
             {
