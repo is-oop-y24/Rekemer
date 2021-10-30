@@ -114,15 +114,11 @@ namespace Shops
                 {
                     throw new Exception($"there is no products with name: {name}");
                 }
-
-
                 if (Goods[name].Amount < amountOfGood)
                     throw new Exception("Not enough goods in shop for buying");
                 good.ChangePrice(Goods[name].Price);
-
                 productsToBuy.Add(good);
             }
-
             Handle(customer, productsToBuy);
         }
 
