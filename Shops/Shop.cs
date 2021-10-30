@@ -57,7 +57,7 @@ namespace Shops
             Goods[name].ChangePrice(price);
         }
 
-        public void GetProducts(params Product[] newGoods)
+        public void ImportToShop(params Product[] newGoods)
         {
             float priceOverall = newGoods.Sum(t => t.Price * t.Amount);
             if (priceOverall > Money) throw new Exception("Not enough money to pay for products");
@@ -104,6 +104,7 @@ namespace Shops
             if (customer == null) return;
             float totalSum = customer.ProductsToBuy.Sum(t => Goods[t.Name].Price * Goods[t.Name].Amount);
             var goods = customer.ProductsToBuy;
+            var productsToBuy = new List<Product>();
             if (totalSum > customer.Money) throw new Exception("Not enough money for purchase");
             foreach (var good in goods)
             {
@@ -117,8 +118,12 @@ namespace Shops
 
                 if (Goods[name].Amount < amountOfGood)
                     throw new Exception("Not enough goods in shop for buying");
-                TradeOperationWith(customer, Goods[name], amountOfGood, Goods[name].Price);
+                good.ChangePrice(Goods[name].Price);
+
+                productsToBuy.Add(good);
             }
+
+            Handle(customer, productsToBuy);
         }
 
         public void AddMoney(float money)
@@ -126,23 +131,26 @@ namespace Shops
             Money += money;
         }
 
-        private void TradeOperationWith(ICanBuy customer, Product productToBeBought, int amountOfProduct,
-            float pricePerProduct)
+        private void Handle(ICanBuy customer, List<Product> products)
         {
-            if (customer == null || productToBeBought == null) return;
-            float totalSum = amountOfProduct * pricePerProduct;
-
-            if (customer.Money >= totalSum)
+            if (customer == null || products == null) return;
+            foreach (var product in products)
             {
-                ProductBuilder productBuilder = new ProductBuilder();
-                var productToAdd = productBuilder.WithAmount(amountOfProduct).WithName(productToBeBought.Name)
-                    .WithPrice(pricePerProduct);
-                customer.AddProducts(productToAdd);
-                customer.DecreaseMoney(totalSum);
-                Goods[productToBeBought.Name].DecreaseAmount(amountOfProduct);
-                AddMoney(totalSum);
+                if (product == null) continue;
+                float totalSum = product.Amount * product.Price;
+                if (customer.Money >= totalSum)
+                {
+                    ProductBuilder productBuilder = new ProductBuilder();
+                    var productToAdd = productBuilder.WithAmount(product.Amount).WithName(product.Name)
+                        .WithPrice(product.Price);
+                    customer.AddProducts(productToAdd);
+                    customer.DecreaseMoney(totalSum);
+                    Goods[product.Name].DecreaseAmount(product.Amount);
+                    AddMoney(totalSum);
+                }
             }
         }
+
 
         public float CalculateSum(Product[] productsToBuy)
         {
