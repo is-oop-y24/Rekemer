@@ -4,12 +4,6 @@ using System.Linq;
 
 namespace Backups
 {
-    public enum Algorithm
-    {
-        singleStorage,
-        splitStorage
-    }
-
     public class BackupJob
     {
         private List<RestorePoint> restorePoints = new List<RestorePoint>();
