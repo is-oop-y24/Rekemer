@@ -14,13 +14,15 @@ namespace Backups.Tests
         {
             string directoryWithFiles = @"C:\lab-3\texts";
             string repositoryDirectory = @"C:\lab-3";
+            IAlgorithm algorithm = new SplitStorageSave();
             IRepository repository = new Repository(repositoryDirectory);
             BackupJob backupJob = new BackupJob(repository);
             DirectoryInfo directoryInfo = new DirectoryInfo(directoryWithFiles);
             List<FileInfo> files = new List<FileInfo>();
             files.Add(directoryInfo.GetFiles().First(t => t.Name == "note.txt"));
             backupJob.AddFiles(files);
-            backupJob.Save(Algorithm.splitStorage);
+            backupJob.SetAlghoritm(algorithm);
+            backupJob.Save();
             bool isSaved = File.Exists(Path.Combine(repositoryDirectory, "note.zip"));
             Assert.AreEqual(true, isSaved);
         }
@@ -35,7 +37,9 @@ namespace Backups.Tests
             DirectoryInfo directoryInfo = new DirectoryInfo(directoryWithFiles);
             List<FileInfo> files = new List<FileInfo>(directoryInfo.GetFiles());
             backupJob.AddFiles(files);
-            backupJob.Save(Algorithm.singleStorage);
+            IAlgorithm algorithm = new SingleStorageSave();
+            backupJob.SetAlghoritm(algorithm);
+            backupJob.Save();
             bool isExists = File.Exists(Path.Combine(repositoryDirectory, "myzip.zip"));
             Assert.AreEqual(true, isExists);
         }
@@ -50,7 +54,9 @@ namespace Backups.Tests
             DirectoryInfo directoryInfo = new DirectoryInfo(directoryWithFiles);
             List<FileInfo> files = new List<FileInfo>(directoryInfo.GetFiles());
             backupJob.AddFiles(files);
-            backupJob.Save(Algorithm.singleStorage);
+            IAlgorithm algorithm = new SingleStorageSave();
+            backupJob.SetAlghoritm(algorithm);
+            backupJob.Save();
             Assert.AreEqual(2, ZipFileCount(@"C:\lab-3/myzip.zip"));
         }
 
@@ -77,9 +83,11 @@ namespace Backups.Tests
             DirectoryInfo directoryInfo = new DirectoryInfo(directoryWithFiles);
             List<FileInfo> files = new List<FileInfo>(directoryInfo.GetFiles());
             backupJob.AddFiles(files);
-            backupJob.Save(Algorithm.singleStorage);
+            IAlgorithm algorithm = new SingleStorageSave();
+            backupJob.SetAlghoritm(algorithm);
+            backupJob.Save();
             backupJob.RemoveFile(files[0]);
-            backupJob.Save(Algorithm.singleStorage);
+            backupJob.Save();
             Assert.AreEqual(2, backupJob.RestorePoints.Count);
         }
 
@@ -93,11 +101,14 @@ namespace Backups.Tests
             DirectoryInfo directoryInfo = new DirectoryInfo(directoryWithFiles);
             List<FileInfo> files = new List<FileInfo>(directoryInfo.GetFiles());
             backupJob.AddFiles(files);
-            backupJob.Save(Algorithm.singleStorage);
+            IAlgorithm algorithm = new SingleStorageSave();
+            backupJob.SetAlghoritm(algorithm);
+            backupJob.Save();
             backupJob.RemoveFile(files[0]);
-            backupJob.Save(Algorithm.singleStorage);
+            backupJob.Save();
             List<RestorePoint> restorePoints = backupJob.RestorePoints;
-            Assert.AreNotEqual(restorePoints[0].Files.Count, restorePoints[1].Files.Count);
+            Assert.AreNotEqual(ZipFileCount(restorePoints[0].Files[0].ToString()),
+                ZipFileCount(restorePoints[1].Files[0].ToString()));
         }
 
         [Test]
@@ -110,13 +121,19 @@ namespace Backups.Tests
             DirectoryInfo directoryInfo = new DirectoryInfo(directoryWithFiles);
             List<FileInfo> files = new List<FileInfo>(directoryInfo.GetFiles());
             backupJob.AddFiles(files);
-            backupJob.Save(Algorithm.singleStorage);
-            backupJob.RemoveFile(files[0]);
-            backupJob.Save(Algorithm.splitStorage);
-            List<RestorePoint> restorePoints = backupJob.RestorePoints;
-            int fCount = Directory
+            IAlgorithm algorithm = new SingleStorageSave();
+            backupJob.SetAlghoritm(algorithm);
+            int fCountBefore = Directory
                 .GetFiles(backupJob.Repository.DirectoryInfo.FullName, "*", SearchOption.TopDirectoryOnly).Length;
-            Assert.AreEqual(restorePoints[0].Files.Count + restorePoints[1].Files.Count, fCount);
+            backupJob.Save();
+            backupJob.RemoveFile(files[0]);
+            algorithm = new SplitStorageSave();
+            backupJob.SetAlghoritm(algorithm);
+            backupJob.Save();
+            List<RestorePoint> restorePoints = backupJob.RestorePoints;
+            int fCountAfter = Directory
+                .GetFiles(backupJob.Repository.DirectoryInfo.FullName, "*", SearchOption.TopDirectoryOnly).Length;
+            Assert.AreEqual(restorePoints[0].Files.Count + restorePoints[1].Files.Count, fCountAfter - fCountBefore);
         }
     }
 }

@@ -10,65 +10,25 @@ namespace Backups
     {
         private IRepository repository;
         private List<FileInfo> filesToSave;
-        private Algorithm _algorithm;
+        private IAlgorithm _algorithm;
 
-        public Job(IRepository repository, List<FileInfo> filesToSave, Algorithm algorithm)
+        public Job(IRepository repository, List<FileInfo> filesToSave, IAlgorithm algorithm)
         {
             this.repository = repository;
             this.filesToSave = filesToSave;
-
             _algorithm = algorithm;
         }
 
         public RestorePoint Launch()
         {
-            if (_algorithm == Algorithm.singleStorage)
+            var files = _algorithm.Operation(filesToSave, repository);
+            if (files == null) return null;
+            var directoryName = files[0].DirectoryName;
+            if (directoryName != null)
             {
-                string path = SingleStorageSave(filesToSave);
-                path = Path.GetDirectoryName(path);
-                if (path == null) return null;
-                DirectoryInfo directoryInfo = new DirectoryInfo(path);
-                RestorePoint point = new RestorePoint(DateTime.Now, path, directoryInfo.GetFiles().ToList());
-                return point;
-            }
-            else if (_algorithm == Algorithm.splitStorage)
-            {
-                var files = SplitStorageSave(filesToSave);
-                string path = null;
-                foreach (var fileInfo in files)
-                {
-                    if (fileInfo != null)
-                    {
-                        path = fileInfo.DirectoryName;
-                        break;
-                    }
-                }
-
+                string path = directoryName.ToString();
                 RestorePoint restorePoint = new RestorePoint(DateTime.Now, path, files);
                 return restorePoint;
-            }
-
-            return null;
-        }
-
-        public List<FileInfo> SplitStorageSave(List<FileInfo> files)
-        {
-            List<FileInfo> names = new List<FileInfo>();
-            foreach (var fileInfo in files)
-            {
-                string name = fileInfo.Name;
-                names.Add(new FileInfo(repository.CreateZipCopyOfFile(fileInfo)));
-            }
-
-            return names;
-        }
-
-        string SingleStorageSave(List<FileInfo> files)
-        {
-            string directory = repository.AddFilesToArchive(files);
-            if (directory != null)
-            {
-                return directory;
             }
 
             return null;

@@ -13,6 +13,7 @@ namespace Backups
     public class BackupJob
     {
         private List<RestorePoint> restorePoints = new List<RestorePoint>();
+        private IAlgorithm _algorithm;
 
         public List<RestorePoint> RestorePoints
         {
@@ -45,9 +46,14 @@ namespace Backups
             filesToSave.Remove(file);
         }
 
-        public void Save(Algorithm algorithm)
+        public void SetAlghoritm(IAlgorithm algorithm)
         {
-            Job job = new Job(repository, filesToSave, algorithm);
+            _algorithm = algorithm;
+        }
+
+        public void Save()
+        {
+            Job job = new Job(repository, filesToSave, _algorithm);
             RestorePoint restorePoint = job.Launch();
             if (restorePoint != null)
             {
