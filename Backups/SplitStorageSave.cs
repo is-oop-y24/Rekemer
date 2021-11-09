@@ -10,7 +10,6 @@ namespace Backups
             List<FileInfo> names = new List<FileInfo>();
             foreach (var fileInfo in files)
             {
-                string name = fileInfo.Name;
                 names.Add(new FileInfo(repository.CreateZipCopyOfFile(fileInfo)));
             }
 

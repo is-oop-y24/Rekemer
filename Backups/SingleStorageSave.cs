@@ -14,6 +14,7 @@ namespace Backups
                 file.Add(new FileInfo(directory));
                 return file;
             }
+
             return file;
         }
     }
