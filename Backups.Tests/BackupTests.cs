@@ -16,12 +16,11 @@ namespace Backups.Tests
             string repositoryDirectory = @"C:\lab-3";
             IAlgorithm algorithm = new SplitStorageSave();
             IRepository repository = new Repository(repositoryDirectory);
-            BackupJob backupJob = new BackupJob(repository);
+            BackupJob backupJob = new BackupJob(repository, algorithm);
             DirectoryInfo directoryInfo = new DirectoryInfo(directoryWithFiles);
             List<FileInfo> files = new List<FileInfo>();
             files.Add(directoryInfo.GetFiles().First(t => t.Name == "note.txt"));
             backupJob.AddFiles(files);
-            backupJob.SetAlghoritm(algorithm);
             backupJob.Save();
             bool isSaved = File.Exists(Path.Combine(repositoryDirectory, "note.zip"));
             Assert.AreEqual(true, isSaved);
@@ -33,12 +32,12 @@ namespace Backups.Tests
             string directoryWithFiles = @"C:\lab-3\texts";
             string repositoryDirectory = @"C:\lab-3";
             IRepository repository = new Repository(repositoryDirectory);
-            BackupJob backupJob = new BackupJob(repository);
+
             DirectoryInfo directoryInfo = new DirectoryInfo(directoryWithFiles);
             List<FileInfo> files = new List<FileInfo>(directoryInfo.GetFiles());
-            backupJob.AddFiles(files);
             IAlgorithm algorithm = new SingleStorageSave();
-            backupJob.SetAlghoritm(algorithm);
+            BackupJob backupJob = new BackupJob(repository, algorithm);
+            backupJob.AddFiles(files);
             backupJob.Save();
             bool isExists = File.Exists(Path.Combine(repositoryDirectory, "myzip.zip"));
             Assert.AreEqual(true, isExists);
@@ -50,12 +49,12 @@ namespace Backups.Tests
             string directoryWithFiles = @"C:\lab-3\texts";
             string repositoryDirectory = @"C:\lab-3";
             IRepository repository = new Repository(repositoryDirectory);
-            BackupJob backupJob = new BackupJob(repository);
+
             DirectoryInfo directoryInfo = new DirectoryInfo(directoryWithFiles);
             List<FileInfo> files = new List<FileInfo>(directoryInfo.GetFiles());
-            backupJob.AddFiles(files);
             IAlgorithm algorithm = new SingleStorageSave();
-            backupJob.SetAlghoritm(algorithm);
+            BackupJob backupJob = new BackupJob(repository, algorithm);
+            backupJob.AddFiles(files);
             backupJob.Save();
             Assert.AreEqual(2, ZipFileCount(@"C:\lab-3/myzip.zip"));
         }
@@ -79,12 +78,11 @@ namespace Backups.Tests
             string directoryWithFiles = @"C:\lab-3\texts";
             string repositoryDirectory = @"C:\lab-3";
             IRepository repository = new Repository(repositoryDirectory);
-            BackupJob backupJob = new BackupJob(repository);
+            IAlgorithm algorithm = new SingleStorageSave();
+            BackupJob backupJob = new BackupJob(repository, algorithm);
             DirectoryInfo directoryInfo = new DirectoryInfo(directoryWithFiles);
             List<FileInfo> files = new List<FileInfo>(directoryInfo.GetFiles());
             backupJob.AddFiles(files);
-            IAlgorithm algorithm = new SingleStorageSave();
-            backupJob.SetAlghoritm(algorithm);
             backupJob.Save();
             backupJob.RemoveFile(files[0]);
             backupJob.Save();
@@ -97,12 +95,11 @@ namespace Backups.Tests
             string directoryWithFiles = @"C:\lab-3\texts";
             string repositoryDirectory = @"C:\lab-3";
             IRepository repository = new Repository(repositoryDirectory);
-            BackupJob backupJob = new BackupJob(repository);
+            IAlgorithm algorithm = new SingleStorageSave();
+            BackupJob backupJob = new BackupJob(repository, algorithm);
             DirectoryInfo directoryInfo = new DirectoryInfo(directoryWithFiles);
             List<FileInfo> files = new List<FileInfo>(directoryInfo.GetFiles());
             backupJob.AddFiles(files);
-            IAlgorithm algorithm = new SingleStorageSave();
-            backupJob.SetAlghoritm(algorithm);
             backupJob.Save();
             backupJob.RemoveFile(files[0]);
             backupJob.Save();
@@ -118,12 +115,11 @@ namespace Backups.Tests
             
             string repositoryDirectory = @"C:\lab-3";
             IRepository repository = new Repository(repositoryDirectory);
-            BackupJob backupJob = new BackupJob(repository);
+            IAlgorithm algorithm = new SingleStorageSave();
+            BackupJob backupJob = new BackupJob(repository,algorithm);
             DirectoryInfo directoryInfo = new DirectoryInfo(directoryWithFiles);
             List<FileInfo> files = new List<FileInfo>(directoryInfo.GetFiles());
             backupJob.AddFiles(files);
-            IAlgorithm algorithm = new SingleStorageSave();
-            backupJob.SetAlghoritm(algorithm);
             int fCountBefore = Directory
                 .GetFiles(backupJob.Repository.DirectoryInfo.FullName, "*", SearchOption.TopDirectoryOnly).Length;
             backupJob.Save();

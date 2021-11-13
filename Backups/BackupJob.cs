@@ -23,9 +23,10 @@ namespace Backups
 
         private List<FileInfo> filesToSave = new List<FileInfo>();
 
-        public BackupJob(IRepository repository)
+        public BackupJob(IRepository repository,IAlgorithm algorithm)
         {
             this.repository = repository;
+            _algorithm = algorithm;
         }
 
         public void AddFiles(List<FileInfo> fileInfos)
