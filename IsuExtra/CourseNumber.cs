@@ -7,16 +7,5 @@
         Third = 3,
         Fourth = 4
     }
-
-    public enum PrefixOfName
-    {
-        C,
-        T,
-        B,
-        S
-    }
-    // CompTech,
-    // TranslInf,
-    // BioTech,
-    // sciLife,
+    
 }
