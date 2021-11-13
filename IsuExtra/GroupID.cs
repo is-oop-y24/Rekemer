@@ -9,9 +9,8 @@ namespace IsuExtra
         public readonly CourseNumber CourseNum;
         public readonly int Num;
 
-        public readonly MegaFaculty Faculty;
+        public readonly string Faculty;
 
-        //private PrefixOfName _prefixOfName;
         public string Name { get; private set; }
 
         public GroupID(GroupID groupId)
@@ -21,7 +20,7 @@ namespace IsuExtra
             this.Name = groupId.Name;
         }
 
-        private GroupID(CourseNumber courseNum, int num, MegaFaculty megaFaculty)
+        private GroupID(CourseNumber courseNum, int num, string megaFaculty)
         {
             this.CourseNum = courseNum;
             this.Num = num;
@@ -48,32 +47,22 @@ namespace IsuExtra
             char courseNum = name[2];
             int intCourseNum = courseNum - '0';
             bool isCourseNumberExists = intCourseNum < myEnumMemberCount;
-            MegaFaculty megaFaculty;
-            if (name.Length != 5 || name[0] != 'C' && name[0] != 'T' && name[0] != 'B' && name[0] != 'S' ||
-                !isCourseNumberExists || !areInts)
-                throw new IsuException("Invalid group name (K3XYY)");
-            switch (name[0])
+            if (MegaFaculty.Instance != null)
             {
-                case 'C':
-                    megaFaculty = MegaFaculty.CompTech;
-                    break;
-                case 'T':
-                    megaFaculty = MegaFaculty.TranslInf;
-                    break;
-                case 'B':
-                    megaFaculty = MegaFaculty.BioTech;
-                    break;
-                case 'S':
-                    megaFaculty = MegaFaculty.SciLife;
-                    break;
-                default:
-                    megaFaculty = MegaFaculty.None;
-                    throw new Exception($"Groups with prefix {name[0]} do not exist");
+                bool isTherePrefix = MegaFaculty.Instance.IsTherePrefix(name[0]);
+            
+                if (name.Length != 5 || !isTherePrefix ||
+                    !isCourseNumberExists || !areInts)
+                    throw new IsuException("Invalid group name (K3XYY)");
+                string megaFaculty = MegaFaculty.Instance.GetMegafaculty(name[0]);
+                if (megaFaculty != null)
+                {
+                    GroupID groupInfo = new GroupID((CourseNumber) int.Parse(name[2].ToString()),
+                        byte.Parse(numSubstring.Substring(2)), megaFaculty);
+                    return groupInfo;
+                }
             }
-
-            GroupID groupInfo = new GroupID((CourseNumber) int.Parse(name[2].ToString()),
-                byte.Parse(numSubstring.Substring(2)), megaFaculty);
-            return groupInfo;
+            return null;
         }
     }
 }

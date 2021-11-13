@@ -7,9 +7,15 @@ namespace IsuExtra
     {
         public readonly int Num;
         public List<Student> Students { get; set; }
+        
         public List<Lesson> Lessons { get; private set; }
         public int AmountOfStudents { get; private set; }
+        private int _maxAmountStudents;
 
+        public int maxStudents
+        {
+            get => _maxAmountStudents;
+        }
 
         public Thread(int num)
         {
@@ -22,11 +28,23 @@ namespace IsuExtra
         {
             if (student != null)
             {
-                Students.Add(student);
-                AmountOfStudents++;
+                if (AmountOfStudents + 1 <= _maxAmountStudents)
+                {
+                    Students.Add(student);
+                    AmountOfStudents++;
+                }
             }
         }
 
+        public void ReduceAmountOfStudents(int num)
+        {
+            AmountOfStudents -= num;
+        }
+
+        public void RescaleSizeOfGroup(int num)
+        {
+            _maxAmountStudents = num;
+        }
 
         public void AddClass(Lesson lesson)
         {

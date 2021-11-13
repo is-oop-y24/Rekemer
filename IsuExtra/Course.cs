@@ -4,31 +4,23 @@ using System.Linq;
 
 namespace IsuExtra
 {
-    public enum MegaFaculty
-    {
-        CompTech,
-        TranslInf,
-        BioTech,
-        SciLife,
-        None
-    }
-
     public class Course
     {
-        public readonly MegaFaculty Faculty;
+        public readonly string Faculty;
         private List<Thread> _threads = new List<Thread>();
-        private int maxAmountStudents;
 
-        public Course(MegaFaculty faculty, int amountOfThreads, int maxAmountStudents)
+        public Course(string faculty, int amountOfThreads, params int[] sizeOfGroups)
         {
             Faculty = faculty;
-            for (int i = 0; i < amountOfThreads; i++)
+            if (amountOfThreads == sizeOfGroups.Length)
             {
-                var thread = new Thread(i + 1);
-                _threads.Add(thread);
+                for (int i = 0; i < amountOfThreads; i++)
+                {
+                    var thread = new Thread(i + 1);
+                    thread.RescaleSizeOfGroup(sizeOfGroups[i]);
+                    _threads.Add(thread);
+                }
             }
-
-            this.maxAmountStudents = maxAmountStudents;
         }
 
         public Thread GetThread(int num)
@@ -58,21 +50,22 @@ namespace IsuExtra
 
         public bool CheckSpaceIfStudentIsAdded(int num)
         {
-            int amountOfStudents = 0;
-            Thread threadToGet = new Thread(0);
+            Thread threadToGet = new Thread(-1);
             foreach (var thread in _threads)
             {
-                if (thread.Num != num)
+                if (thread.Num == num)
                 {
                     threadToGet = thread;
+                    break;
                 }
-
-                amountOfStudents += thread.AmountOfStudents;
             }
 
-            if (amountOfStudents + 1 > maxAmountStudents)
+            if (threadToGet.Num == -1) throw new Exception($"There is no group {num} in faculty{Faculty}");
+
+            if (threadToGet.AmountOfStudents + 1 > threadToGet.maxStudents)
             {
-                throw new Exception($"Faculty{Faculty} is full");
+                throw new Exception(
+                    $"Group {threadToGet.Num} in Faculty{Faculty} hasn't got any spaces for adding student");
             }
 
             return true;
@@ -105,6 +98,7 @@ namespace IsuExtra
         void RemoveFrom(Thread thread, Student student)
         {
             var thread0 = GetThread(thread.Num);
+            thread0.ReduceAmountOfStudents(1);
             thread0.Students.Remove(student);
         }
     }

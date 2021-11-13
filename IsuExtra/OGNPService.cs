@@ -5,10 +5,10 @@ using Isu.Tools;
 
 namespace IsuExtra
 {
-    public class GroupManager : IOGNP
+    public class OgnpService : IOGNPService
     {
         private List<Group>[] _dataOfGroupes;
-        public List<Course> courses { get; private set; }
+        public List<Course> Courses { get; private set; }
 
         public List<Group>[] dataOfGroupes
         {
@@ -16,14 +16,14 @@ namespace IsuExtra
             private set => _dataOfGroupes = value;
         }
 
-        private bool IsGroupExists(GroupID id, GroupManager manager)
+        private bool IsGroupExists(GroupID id, OgnpService manager)
         {
             var group = HasGroup(id, manager);
             if (group == null) return false;
             return true;
         }
 
-        private Group HasGroup(GroupID id, GroupManager manager)
+        private Group HasGroup(GroupID id, OgnpService manager)
         {
             CourseNumber courseNum = id.CourseNum;
             var numberOfGroup = id.Num;
@@ -33,7 +33,7 @@ namespace IsuExtra
             return group;
         }
 
-        public GroupManager(int amountOfGroupes = 10)
+        public OgnpService(int amountOfGroupes = 10)
         {
             _dataOfGroupes = new List<Group>[amountOfGroupes];
             for (int i = 0; i < _dataOfGroupes.Length; i++)
@@ -41,7 +41,7 @@ namespace IsuExtra
                 _dataOfGroupes[i] = new List<Group>();
             }
 
-            courses = new List<Course>();
+            Courses = new List<Course>();
         }
 
         public Group AddGroup(Group group)
@@ -73,7 +73,7 @@ namespace IsuExtra
             return students;
         }
 
-        public void AddClassToCourse(Lesson lesson, MegaFaculty megaFaculty, int numThread)
+        public void AddClassToCourse(Lesson lesson, string megaFaculty, int numThread)
         {
             var course = FindCourse(megaFaculty);
             course.AddClassToThread(lesson, numThread);
@@ -100,12 +100,13 @@ namespace IsuExtra
             return students;
         }
 
-        public void AddCourse(MegaFaculty megaFaculty, int amountOfThreads, int maxStudentsAmount)
+        public void AddCourse(string megaFaculty, int amountOfThreads, params int[] sizeOfGroups)
         {
-            var amountOfFaculties = Enum.GetNames(typeof(MegaFaculty)).Length;
-            if (megaFaculty != MegaFaculty.None && amountOfFaculties > courses.Count)
+            var amountOfFaculties = MegaFaculty.Instance.Faculties.Count;
+            megaFaculty = megaFaculty.ToLower();
+            if (MegaFaculty.Instance.IsFacultyExists(megaFaculty) && amountOfFaculties > Courses.Count)
             {
-                foreach (var course1 in courses)
+                foreach (var course1 in Courses)
                 {
                     if (course1.Faculty == megaFaculty)
                     {
@@ -113,12 +114,12 @@ namespace IsuExtra
                     }
                 }
 
-                Course course = new Course(megaFaculty, amountOfThreads, maxStudentsAmount);
-                courses.Add(course);
+                Course course = new Course(megaFaculty, amountOfThreads, sizeOfGroups);
+                Courses.Add(course);
             }
         }
 
-        public void AddStudentToCourse(MegaFaculty faculty, int threadNum, Student student)
+        public void AddStudentToCourse(string faculty, int threadNum, Student student)
         {
             // check if student has other megafaculty
             if (student.GroupId != null)
@@ -127,7 +128,7 @@ namespace IsuExtra
                 if (course != null)
                 {
                     var megaFaculty = student.GroupId.Faculty;
-                    if (course.Faculty != MegaFaculty.None && course.Faculty != megaFaculty)
+                    if (MegaFaculty.Instance.IsFacultyExists(course.Faculty) && course.Faculty != megaFaculty)
                     {
                         //checkTimeOfStudentGroup
                         if (CanAddStudent(student, course, threadNum))
@@ -157,7 +158,6 @@ namespace IsuExtra
 
             if (threadForStudent == null) throw new Exception($"there is no thread with number{threadNum}");
             // check schedule
-            List<Lesson> lessons = threadForStudent.Lessons;
             var StudentsGroup = FindGroup(student.GroupId);
             var threadLessons = threadForStudent.Lessons;
             foreach (var studentsGroupLesson in StudentsGroup.Lessons)
@@ -174,9 +174,10 @@ namespace IsuExtra
             return true;
         }
 
-        public Course FindCourse(MegaFaculty faculty)
+        public Course FindCourse(string faculty)
         {
-            foreach (var course in courses)
+            faculty = faculty.ToLower();
+            foreach (var course in Courses)
             {
                 if (faculty == course.Faculty)
                 {
@@ -187,14 +188,15 @@ namespace IsuExtra
             return null;
         }
 
-        public void RemoveStudentFromCourse(MegaFaculty faculty, Student student)
+        public void RemoveStudentFromCourse(string faculty, Student student)
         {
+            faculty = faculty.ToLower();
             var course = FindCourse(faculty);
             course.RemoveStudent(student);
             student.Deregister(faculty);
         }
 
-        public List<Thread> GetThreads(MegaFaculty faculty)
+        public List<Thread> GetThreads(string faculty)
         {
             var course = FindCourse(faculty);
             if (course != null) return course.GetThreads();
@@ -202,7 +204,7 @@ namespace IsuExtra
         }
 
 
-        public List<Student> GetStudentOfThread(MegaFaculty faculty, int threadNum)
+        public List<Student> GetStudentOfThread(string faculty, int threadNum)
         {
             var course = FindCourse(faculty);
             return course.GetThread(threadNum).Students;
@@ -218,25 +220,31 @@ namespace IsuExtra
                 allStudents = allStudents.Union(FindStudents((CourseNumber) i + 1)).ToList();
             }
 
-            var amountOfOGNPCourses = Enum.GetNames(typeof(MegaFaculty)).Length;
-            var OGNPstudents = new List<Student>();
-            for (int i = 0; i < amountOfOGNPCourses; i++)
+            if (MegaFaculty.Instance != null)
             {
-                var threads = GetThreads((MegaFaculty) i + 1);
-                if (threads == null) continue;
-                foreach (var thread in threads)
+                var amountOfOGNPCourses = MegaFaculty.Instance.Faculties.Count;
+                var OGNPstudents = new List<Student>();
+                for (int i = 0; i < amountOfOGNPCourses; i++)
                 {
-                    OGNPstudents = OGNPstudents.Union(thread.Students).ToList();
+                    var threads = GetThreads(MegaFaculty.Instance.Faculties[i]);
+                    if (threads == null) continue;
+                    foreach (var thread in threads)
+                    {
+                        OGNPstudents = OGNPstudents.Union(thread.Students).ToList();
+                    }
                 }
+
+                var nonIntersecting = allStudents.Union(OGNPstudents).Except(allStudents.Intersect(OGNPstudents))
+                    .ToList();
+                return nonIntersecting;
             }
 
-            var nonIntersecting = allStudents.Union(OGNPstudents).Except(allStudents.Intersect(OGNPstudents)).ToList();
-            return nonIntersecting;
+            return null;
         }
 
         public void UpdateCourse(Course course, Thread thread)
         {
-            foreach (var course1 in courses)
+            foreach (var course1 in Courses)
             {
                 if (course1.Faculty == course.Faculty)
                 {

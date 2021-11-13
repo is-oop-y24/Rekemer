@@ -5,11 +5,11 @@ namespace IsuExtra
 {
     public class Student
     {
-        public GroupID GroupId;
-        public Course Course1;
-        public Course Course2;
-        public Thread Thread1;
-        public Thread Thread2;
+        public GroupID GroupId{get; private set;}
+        public Course Course1{get; private set;}
+        public Course Course2{get; private set;}
+        public Thread Thread1{get; private set;}
+        public Thread Thread2{get; private set;}
 
         public GroupID StudentsGroup
         {
@@ -21,13 +21,12 @@ namespace IsuExtra
 
         public string Name { get; private set; }
 
-        public void Register(GroupManager manager, Course course, Thread thread)
+        public void Register(OgnpService manager, Course course, Thread thread)
         {
             if (Course1 == null && Thread1 == null)
             {
                 Course1 = course;
                 Thread1 = thread;
-                //course.AddStudent(this,thread.num);
                 thread.AddStudent(this);
                 manager.UpdateCourse(course, thread);
             }
@@ -40,7 +39,7 @@ namespace IsuExtra
             }
         }
 
-        public void Deregister(MegaFaculty faculty)
+        public void Deregister(string faculty)
         {
             if (Course1 != null)
             {
@@ -53,7 +52,7 @@ namespace IsuExtra
 
             else if (Course2 != null)
             {
-                if (Course1.Faculty == faculty)
+                if (Course2.Faculty == faculty)
                 {
                     Course2 = null;
                     Thread2 = null;
