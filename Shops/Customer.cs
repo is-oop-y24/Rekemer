@@ -19,5 +19,10 @@ namespace Shops
             if (this.Money < money) throw new Exception("Customer Doesnt have enough money");
             this.Money -= money;
         }
+
+        public void AddProducts(Product newGood)
+        {
+            
+        }
     }
 }
