@@ -12,7 +12,9 @@ namespace Banks
             "FindBanks",
             "q"
         };
+
         private static ConsoleUI _instance;
+
         public static ConsoleUI Instance
         {
             get
@@ -25,6 +27,7 @@ namespace Banks
                 return _instance;
             }
         }
+
         public void MainMenu()
         {
             Console.Clear();
@@ -32,6 +35,7 @@ namespace Banks
             {
                 Console.WriteLine(menuItem);
             }
+
             while (true)
             {
                 string selectedMenuItem = Console.ReadLine();
@@ -68,8 +72,8 @@ namespace Banks
                 var bank = banks.FirstOrDefault(t => t.Name == selectedBank);
                 if (bank != null)
                 {
-                   bank.Menu();
-                   break;
+                    bank.UI.Menu();
+                    break;
                 }
                 else
                 {
@@ -77,7 +81,5 @@ namespace Banks
                 }
             }
         }
-
-       
     }
 }

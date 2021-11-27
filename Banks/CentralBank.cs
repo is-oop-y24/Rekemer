@@ -38,5 +38,28 @@ namespace Banks
                 bank.Update();
             }
         }
+
+        public Account.Account FindAccount(string id)
+        {
+            // get all accounts and find the right one by id
+            List<Account.Account> allAccounts = new List<Account.Account>();
+            foreach (var bank in Banks)
+            {
+                var bankAccounts = bank.GetAllAccounts();
+                if (bankAccounts.Count > 0)
+                {
+                    allAccounts = allAccounts.Union(bankAccounts).ToList();
+                }
+            }
+
+            foreach (var account in allAccounts)
+            {
+                if (account.Id.ToString() == id)
+                {
+                    return account;
+                }
+            }
+            return null;
+        }
     }
 }

@@ -9,8 +9,9 @@ namespace Banks
         private string _passport = String.Empty;
         private ClientStatus _status = ClientStatus.Dubious;
         private List<Account.Account> _accounts = new List<Account.Account>();
-        public double PocketMoney { get; private set; }
-
+        public decimal PocketMoney { get; private set; }
+        public readonly ClientUI UI;
+        public Guid id = Guid.NewGuid();
         public List<Account.Account> Accounts
         {
             get => _accounts;
@@ -22,8 +23,8 @@ namespace Banks
             private set => _status = value;
         }
 
-        public string Name { get; private set; }
-        public string Surname { get; private set; }
+        public string Name { get; set; }
+        public string Surname { get; set; }
 
         public string Address
         {
@@ -41,6 +42,7 @@ namespace Banks
         {
             Name = name;
             Surname = surname;
+            UI = new ClientUI(this);
         }
 
         public void SetPassport(string passport)
@@ -66,7 +68,7 @@ namespace Banks
             }
         }
 
-        public void AddMoney(double money)
+        public void AddMoney(decimal money)
         {
             PocketMoney += money;
         }
@@ -76,161 +78,9 @@ namespace Banks
             _accounts.Add(account);
         }
 
-        public void Menu(Bank bank)
+        public void Substract(decimal money)
         {
-            Console.WriteLine("welcome to client menu");
-            Console.WriteLine("1) your surname: " + Surname);
-            Console.WriteLine("2) your name: " + Name);
-            Console.WriteLine("3) your address: " + Address);
-            Console.WriteLine("4) your passport: " + Passport);
-            Console.WriteLine("Do you want to change something? y/ or q to exit");
-            string input = Console.ReadLine();
-            while (true)
-            {
-                if (input == "y")
-                {
-                    Console.WriteLine("Which field?");
-                    input = Console.ReadLine();
-                    switch (input)
-                    {
-                        case "1":
-                            while (true)
-                            {
-                                Console.WriteLine(" your new surname is");
-                                input = Console.ReadLine();
-                                var newUserData = input;
-                                Console.WriteLine($" your new surname {newUserData} is ok? y/n or q");
-                                input = Console.ReadLine();
-                                if (input == "q")
-                                {
-                                    bank.Menu();
-                                    break;
-                                }
-                                else if (input == "y")
-                                {
-                                    // save new data
-                                    Surname = newUserData;
-                                    break;
-                                }
-                                else if (input == "n")
-                                {
-                                }
-                                else
-                                {
-                                    Console.WriteLine("wrong input");
-                                }
-                            }
-
-                            break;
-                        case "2":
-                            while (true)
-                            {
-                                Console.WriteLine(" your new name is");
-                                input = Console.ReadLine();
-                                var newUserData = input;
-                                Console.WriteLine($" your new name {newUserData} is ok? y/n or q");
-                                input = Console.ReadLine();
-                                if (input == "q")
-                                {
-                                    // do something
-                                    bank.Menu();
-                                    break;
-                                }
-                                else if (input == "y")
-                                {
-                                    // save new data
-                                    Name = newUserData;
-                                    break;
-                                }
-                                else if (input == "n")
-                                {
-                                }
-                                else
-                                {
-                                    Console.WriteLine("wrong input");
-                                }
-                            }
-
-                            break;
-                        case "3":
-                            while (true)
-                            {
-                                Console.WriteLine(" your new address is");
-                                input = Console.ReadLine();
-                                var newUserData = input;
-                                Console.WriteLine($" your new address {newUserData}is ok? y/n or q");
-                                input = Console.ReadLine();
-                                if (input == "q")
-                                {
-                                    // do something
-                                    bank.Menu();
-                                    break;
-                                }
-                                else if (input == "y")
-                                {
-                                    // save new data
-                                    SetAddress(newUserData);
-                                    break;
-                                }
-                                else if (input == "n")
-                                {
-                                }
-                                else
-                                {
-                                    Console.WriteLine("wrong input");
-                                }
-                            }
-
-                            break;
-                        case "4":
-                            while (true)
-                            {
-                                Console.WriteLine(" your new passport is");
-                                input = Console.ReadLine();
-                                var newUserData = input;
-                                Console.WriteLine($" your new passport{newUserData} is ok? y/n or q");
-                                input = Console.ReadLine();
-                                if (input == "q")
-                                {
-                                    // do something
-                                    bank.Menu();
-                                    break;
-                                }
-                                else if (input == "y")
-                                {
-                                    // save new data
-                                    SetPassport(newUserData);
-                                    break;
-                                }
-                                else if (input == "n")
-                                {
-                                }
-                                else
-                                {
-                                    Console.WriteLine("wrong input");
-                                }
-                            }
-
-                            break;
-                        default:
-                            Console.WriteLine("there is no such option");
-                            break;
-                    }
-                }
-                else if (input == "q")
-                {
-                    bank.Menu();
-                    break;
-                }
-                else if (input == "n")
-                {
-                    break;
-                }
-                else
-                {
-                    Console.WriteLine("wrong input");
-                }
-            }
+            PocketMoney -= money;
         }
     }
 }

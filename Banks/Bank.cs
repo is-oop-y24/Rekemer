@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Numerics;
 using Banks.Account;
 using Microsoft.VisualBasic.CompilerServices;
@@ -9,45 +10,48 @@ namespace Banks
 {
     public class Bank
     {
-        private Dictionary<Client, List<Account.Account>> _accountsOfClients = new Dictionary<Client, List<Account.Account>>();
+        private Dictionary<Client, List<Account.Account>> _accountsOfClients =
+            new Dictionary<Client, List<Account.Account>>();
 
         // setting for debAccount
 
         public Bank(string name)
         {
             Name = name;
+            UI = new UIBank(this);
         }
 
+        public readonly UIBank UI;
         public float PercentDebAccount { get; private set; }
-        public Vector3 validTimeDeb { get; private set; }
+        public Vector3 ValidTimeDeb { get; private set; }
 
         // setting for depAccount
-        public List<double> MoneyThresholdsDepAcc { get; set; } = new List<double>();
+        public List<decimal> MoneyThresholdsDepAcc { get; set; } = new List<decimal>();
 
         public List<float> PercentThreshldsDepAcc { get; set; } = new List<float>();
 
-        public Vector3 validTimeDep { get; private set; }
+        public Vector3 ValidTimeDep { get; private set; }
 
         // setting for credit account
-        public double Limit { get; private set; }
+        public decimal Limit { get; private set; }
 
-        public double Commission { get; private set; }
+        public decimal Commission { get; private set; }
 
         public string Name { get; private set; }
 
-        public Vector3 validTimeCredit { get; private set; }
+        public Vector3 ValidTimeCredit { get; private set; }
 
 
         // set settings for doubtful clients
-        public double LimitForWithdrawAndTransfer { get; private set; }
+        public decimal LimitForWithdrawAndTransfer { get; private set; }
 
-        public void CnahgevValidTimeCredit(int year, int month, int days)
+        public void ChangeValidTimeCredit(int year, int month, int days)
         {
-            validTimeCredit = new Vector3(year, month, days);
+            ValidTimeCredit = new Vector3(year, month, days);
             // notify
             var clients = new List<Client>(_accountsOfClients.Keys);
             string notification =
-                $"in bank {Name} new duration for credit accounts: {validTimeCredit.X} years {validTimeCredit.Y} months {validTimeCredit.Z} days";
+                $"in bank {Name} new duration for credit accounts: {ValidTimeCredit.X} years {ValidTimeCredit.Y} months {ValidTimeCredit.Z} days";
             foreach (var client in clients)
             {
                 client.Update(notification);
@@ -55,33 +59,21 @@ namespace Banks
         }
 
 
-        public void CnahgeValidTimeDeb(int year, int month, int days)
+        public void ChangeValidTimeDeb(int year, int month, int days)
         {
-            validTimeDeb = new Vector3(year, month, days);
+            ValidTimeDeb = new Vector3(year, month, days);
             // notify
             var clients = new List<Client>(_accountsOfClients.Keys);
             string notification =
-                $"in bank {Name} new duration for debit accounts: {validTimeDeb.X} years {validTimeDeb.Y} months {validTimeDeb.Z} days";
+                $"in bank {Name} new duration for debit accounts: {ValidTimeDeb.X} years {ValidTimeDeb.Y} months {ValidTimeDeb.Z} days";
             foreach (var client in clients)
             {
                 client.Update(notification);
             }
         }
 
-        public void CnahgeValidTimeDep(int year, int month, int days)
-        {
-            validTimeDep = new Vector3(year, month, days);
-            // notify
-            var clients = new List<Client>(_accountsOfClients.Keys);
-            string notification =
-                $"in bank {Name} new duration for deposit accounts: {validTimeDep.X} years {validTimeDep.Y} months {validTimeDep.Z} days";
-            foreach (var client in clients)
-            {
-                client.Update(notification);
-            }
-        }
 
-        public void CnahgeDebAccSetitings(float percent)
+        public void ChangeDebAccSettings(float percent)
         {
             PercentDebAccount = percent;
             // notify
@@ -94,7 +86,7 @@ namespace Banks
         }
 
 
-        public void CnahgeDepAccSetitings(List<double> moneyThresholds, List<float> percentThresholds)
+        public void ChangeDepAccSettings(List<decimal> moneyThresholds, List<float> percentThresholds)
         {
             if (moneyThresholds.Count + 1 == percentThresholds.Count)
             {
@@ -106,19 +98,9 @@ namespace Banks
                     }
                 }
 
+                // change percent of current accounts
                 MoneyThresholdsDepAcc = moneyThresholds;
                 PercentThreshldsDepAcc = percentThresholds;
-                // change percent of current accounts
-                foreach (KeyValuePair<Client, List<Account.Account>> accountsOfClient in _accountsOfClients)
-                {
-                    foreach (Account.Account account in accountsOfClient.Value)
-                    {
-                        if (account is DepositAccount)
-                        {
-                            account.UpdatePercent(DeterminePercent(account.Money));
-                        }
-                    }
-                }
             }
 
             // notify
@@ -137,7 +119,7 @@ namespace Banks
             }
         }
 
-        public void CnahgeCredAccSetitings(double limit, double commission)
+        public void ChangeCredAccSettings(decimal limit, decimal commission)
         {
             Limit = limit;
             Commission = commission;
@@ -150,7 +132,7 @@ namespace Banks
             }
         }
 
-        public void CnahgeLimitForShadyAccountsSettings(double limit)
+        public void ChangeLimitForShadyAccountsSettings(decimal limit)
         {
             LimitForWithdrawAndTransfer = limit;
             // notify
@@ -163,7 +145,7 @@ namespace Banks
         }
 
 
-        public float DeterminePercent(double amount)
+        public float DeterminePercent(decimal amount)
         {
             if (amount == 0) return 0f;
             var moneyThresholds = MoneyThresholdsDepAcc;
@@ -235,186 +217,7 @@ namespace Banks
             }
         }
 
-        public List<Account.Account> ShowAccounts(Client client)
-        {
-            var accounts = GetAccountsOfUser(client);
-            int i = 0;
-            foreach (var account in accounts)
-            {
-                Console.WriteLine($"{i}) " + account);
-                i++;
-            }
-
-            return accounts;
-        }
-
-        public Client ReadClientsInput()
-        {
-            while (true)
-            {
-                bool isNameOk = false;
-                bool isSurnameOk = false;
-                bool isAddressOk = false;
-                bool isPassportOk = false;
-                string input;
-                string name = String.Empty;
-                string surname = String.Empty;
-                string address = String.Empty;
-                string passport = String.Empty;
-
-                #region readingName
-
-                while (!isNameOk)
-                {
-                    Console.WriteLine("please, input your name");
-                    name = Console.ReadLine();
-                    Console.WriteLine($"is {name} good name for you? y/n or q to exit");
-                    input = Console.ReadLine();
-                    if (input == "y")
-                    {
-                        isNameOk = true;
-                        break;
-                    }
-                    else if (input == "n")
-                    {
-                        continue;
-                    }
-                    else if (input == "q")
-                    {
-                        name = String.Empty;
-                        break;
-                    }
-                }
-
-                #endregion
-
-                #region readingSurname
-
-                while (!isSurnameOk)
-                {
-                    Console.WriteLine("please, input your surname");
-                    surname = Console.ReadLine();
-                    Console.WriteLine($"is {surname} good surname for you? y/n or q to exit");
-                    input = Console.ReadLine();
-                    if (input == "y")
-                    {
-                        isSurnameOk = true;
-                        break;
-                    }
-                    else if (input == "n")
-                    {
-                        continue;
-                    }
-                    else if (input == "q")
-                    {
-                        surname = string.Empty;
-                        break;
-                    }
-                }
-
-                #endregion
-
-                #region readingOptionalData
-
-                while (!isAddressOk && !isPassportOk)
-                {
-                    Console.WriteLine("to have unlimited account, please input your address and passport [OPTIONAL]");
-                    Console.WriteLine("Do you want to have full status of your account? y/n ");
-                    input = Console.ReadLine();
-                    if (input == "y")
-                    {
-                        #region readingAddress
-
-                        while (!isAddressOk)
-                        {
-                            Console.WriteLine("please, input your address");
-                            address = Console.ReadLine();
-                            Console.WriteLine($"is {address} good address for you? y/n or q to exit");
-                            input = Console.ReadLine();
-                            if (input == "y")
-                            {
-                                isAddressOk = true;
-                            }
-                            else if (input == "n")
-                            {
-                                continue;
-                            }
-                            else if (input == "q")
-                            {
-                                address = String.Empty;
-                                break;
-                            }
-                        }
-
-                        #endregion
-
-                        #region readingPassport
-
-                        while (!isPassportOk)
-                        {
-                            Console.WriteLine("please, input your passport ");
-                            passport = Console.ReadLine();
-                            Console.WriteLine($"is {address} good passport for you? y/n or q to exit");
-                            input = Console.ReadLine();
-                            if (input == "y")
-                            {
-                                isPassportOk = true;
-                            }
-                            else if (input == "n")
-                            {
-                                continue;
-                            }
-                            else if (input == "q")
-                            {
-                                passport = String.Empty;
-                                break;
-                            }
-                        }
-
-                        #endregion
-                    }
-                    else if (input == "n")
-                    {
-                        break;
-                    }
-                }
-
-                #endregion
-
-                // check if data is correct
-                Console.WriteLine("is your data correct? y/n or q to exit");
-                Console.WriteLine("name: " + name);
-                Console.WriteLine("surname: " + surname);
-                Console.WriteLine("address: " + address);
-                Console.WriteLine("passport: " + passport);
-                input = Console.ReadLine();
-                if (input == "y")
-                {
-                    Client client = new Client(name, surname);
-                    if (address != String.Empty)
-                    {
-                        client.SetAddress(address);
-                    }
-
-                    if (passport != String.Empty)
-                    {
-                        client.SetPassport(passport);
-                    }
-                }
-                else if (input == "n")
-                {
-                    continue;
-                }
-                else if (input == "q")
-                {
-                    break;
-                }
-            }
-
-            return null;
-        }
-
-        public Client CheckExistenceOfUser(string name, string surname)
+        public Client IsUserExist(string name, string surname)
         {
             if (_accountsOfClients == null) return null;
             foreach (var key in _accountsOfClients.Keys)
@@ -427,149 +230,34 @@ namespace Banks
 
             return null;
         }
-
-        private void ChooseAccount(List<Account.Account> accounts, int nAccount)
+        
+        public Client IsUserExist(string id)
         {
-            if (accounts == null) return;
-            if (nAccount > accounts.Count) return;
-            var account = accounts[nAccount];
-            account.Menu();
+            if (_accountsOfClients == null) return null;
+            foreach (var client in _accountsOfClients.Keys)
+            {
+                if (client.id.ToString() == id)
+                {
+                    return client;
+                }
+            }
+
+            return null;
         }
 
-        public void Menu()
+        
+        public List<Account.Account> GetAllAccounts()
         {
-            // check if user already is logged in
-            Console.WriteLine("please, input your name");
-            string name = Console.ReadLine();
-            Console.WriteLine("please, input your surname");
-            string surname = Console.ReadLine();
-            var user = CheckExistenceOfUser(name, surname);
-            if (user != null)
+            List<Account.Account> accounts = new List<Account.Account>();
+            foreach (var key in _accountsOfClients.Keys)
             {
-                // show his accounts
-                int input;
-                var accounts = ShowAccounts(user);
-                while (true)
-                {
-                    Console.WriteLine("Which account do you want to check?");
-                    input = Convert.ToInt32(Console.ReadLine());
-                    if (input >= accounts.Count)
-                    {
-                        Console.WriteLine("There is no such option, try another number");
-                    }
-                    else
-                    {
-                        break;
-                    }
-                }
-
-                ChooseAccount(accounts, input);
+             
+                accounts = accounts.Union(_accountsOfClients[key]).ToList();
             }
 
-            // get information about bank
+            return accounts;
 
-            #region ShowingConditionAccountToUser
-
-            Console.WriteLine("Debit account condition: ");
-            Console.WriteLine(PercentDebAccount);
-
-            #region ShowingDepositAccountCondition
-
-            var moneyThresholds = MoneyThresholdsDepAcc;
-            var percentThresholds = PercentThreshldsDepAcc;
-            if (moneyThresholds != null && percentThresholds != null)
-            {
-                for (int i = 0; i < moneyThresholds.Count; i++)
-                {
-                    if (i > 0 && i != moneyThresholds.Count - 1)
-                    {
-                        Console.WriteLine(
-                            $"{percentThresholds[i]}: {moneyThresholds[i - 1]} < deposit < {moneyThresholds[i]}");
-                    }
-                    else if (i == moneyThresholds.Count - 1)
-                    {
-                        Console.WriteLine($"{percentThresholds[i]}: deposit > {moneyThresholds[i]}");
-                    }
-                    else
-                    {
-                        Console.WriteLine($"{percentThresholds[i]}: deposit < {moneyThresholds[i]}");
-                    }
-                }
-            }
-
-            #endregion
-
-
-            Console.WriteLine($"Credit account condition: ");
-            Console.WriteLine($"Limit of spending {Limit}");
-            Console.WriteLine($"Commission of spending limit {Commission}");
-
-            #endregion
-
-            while (true)
-            {
-                Console.WriteLine($"Would you like to get account in {Name}? y/n");
-                string input = Console.ReadLine();
-                if (input == "y")
-                {
-                    var client = ReadClientsInput();
-                    // which account will user get ?
-                    Account.Account account = null;
-                    Console.WriteLine($"1 - debit, 2 - credit, 3 - deposit?");
-                    input = Console.ReadLine();
-
-                    bool isChooseMoney = false;
-                    double amount = 0;
-                    while (!isChooseMoney)
-                    {
-                        Console.WriteLine("How much money will you keep there?");
-                        amount = Convert.ToDouble(Console.ReadLine());
-                        Console.WriteLine($"{amount}, are you sure? y/n");
-                        input = Console.ReadLine();
-                        if (input == "y")
-                        {
-                            isChooseMoney = true;
-                        }
-                        else continue;
-                    }
-
-                    if (input == "1")
-                    {
-                        DateTime endTime = DateTime.Now;
-                        endTime = endTime.AddYears((int) validTimeDeb.X).AddMonths((int) validTimeDeb.Y)
-                            .AddDays((int) validTimeDeb.Z);
-                        account = new DebitAccount(endTime, this, amount, client);
-                    }
-                    else if (input == "2")
-                    {
-                        DateTime endTime = DateTime.Now;
-                        endTime = endTime.AddYears((int) validTimeCredit.X).AddMonths((int) validTimeCredit.Y)
-                            .AddDays((int) validTimeCredit.Z);
-
-                        account = new CreditAccount(endTime, this, amount, Commission, client);
-                    }
-                    else if (input == "3")
-                    {
-                        DateTime endTime = DateTime.Now;
-                        endTime = endTime.AddYears((int) validTimeDep.X).AddMonths((int) validTimeDep.Y)
-                            .AddDays((int) validTimeDep.Z);
-                        float percent = DeterminePercent(amount);
-                        account = new DepositAccount(endTime, this, amount, client);
-                    }
-
-                    if (account != null && client != null)
-                    {
-                        // register
-                        Register(client, account);
-                    }
-                }
-                else if (input == "q" || input == "n")
-                {
-                    ConsoleUI.Instance.BanksMenu();
-                }
-            }
         }
-
         public List<Account.Account> GetAccountsOfUser(Client client)
         {
             List<Account.Account> accounts = new List<Account.Account>();

@@ -14,8 +14,8 @@ namespace Banks.Tests
         {
             Bank bank = new Bank("ilia Bank");
             Client client = new Client("someone", "who");
-            bank.CnahgeDebAccSetitings(3.65f);
-            Account.Account account = new DebitAccount(DateTime.Today.AddYears(4), bank, 100000d, client);
+            bank.ChangeDebAccSettings(3.65f);
+            Account.Account account = new DebitAccount(DateTime.Today.AddYears(4), bank, 100000, client);
             CentralBank.Instance.AddBanks(new List<Bank>() {bank});
             bank.Register(client, account);
             Time.Instance.ResetTime();
@@ -28,9 +28,9 @@ namespace Banks.Tests
         {
             Bank bank = new Bank("Ilia's Bank");
             Client client = new Client("someone", "who");
-            Account.Account account = new DebitAccount(DateTime.Today.AddDays(2), bank, 4d, client);
+            Account.Account account = new DebitAccount(DateTime.Today.AddDays(2), bank, 4, client);
             bank.Register(client, account);
-            Assert.AreEqual(client, bank.CheckExistenceOfUser(client.Name, client.Surname));
+            Assert.AreEqual(client, bank.IsUserExist(client.Name, client.Surname));
         }
 
         [Test]
@@ -38,7 +38,7 @@ namespace Banks.Tests
         {
             Bank bank = new Bank("Ilia's Bank");
             Client client = new Client("someone", "who");
-            Account.Account account = new DebitAccount(DateTime.Today.AddDays(2), bank, 4d, client);
+            Account.Account account = new DebitAccount(DateTime.Today.AddDays(2), bank, 4, client);
             bank.Register(client, account);
             List<Account.Account> accounts = bank.GetAccountsOfUser(client);
             Assert.AreEqual(account, accounts[0]);
@@ -49,9 +49,9 @@ namespace Banks.Tests
         {
             Bank bank = new Bank("Ilia's Bank");
             Client client = new Client("someone", "who");
-            Account.Account account = new DebitAccount(DateTime.Today.AddDays(2), bank, 4d, client);
+            Account.Account account = new DebitAccount(DateTime.Today.AddDays(2), bank, 4, client);
             bank.Register(client, account);
-            Assert.AreEqual(ClientStatus.Dubious, bank.CheckExistenceOfUser(client.Name, client.Surname).Status);
+            Assert.AreEqual(ClientStatus.Dubious, bank.IsUserExist(client.Name, client.Surname).Status);
         }
 
         [Test]
@@ -59,11 +59,11 @@ namespace Banks.Tests
         {
             Bank bank = new Bank("Ilia's Bank");
             Client client = new Client("someone", "who");
-            Account.Account account = new DebitAccount(DateTime.Today.AddDays(2), bank, 4d, client);
+            Account.Account account = new DebitAccount(DateTime.Today.AddDays(2), bank, 4, client);
             bank.Register(client, account);
             client.SetAddress("ulitsa");
             client.SetPassport("2323113");
-            Assert.AreEqual(ClientStatus.Full, bank.CheckExistenceOfUser(client.Name, client.Surname).Status);
+            Assert.AreEqual(ClientStatus.Full, bank.IsUserExist(client.Name, client.Surname).Status);
         }
 
         [Test]
@@ -72,14 +72,14 @@ namespace Banks.Tests
             Bank bank = new Bank("Ilia's Bank");
             Bank bank2 = new Bank("bad Bank");
             Client client = new Client("someone", "who");
-            Account.Account account = new DebitAccount(DateTime.Today.AddDays(2), bank, 4d, client);
-            Account.Account account2 = new DebitAccount(DateTime.Today.AddDays(2), bank2, 4d, client);
+            Account.Account account = new DebitAccount(DateTime.Today.AddDays(2), bank, 4, client);
+            Account.Account account2 = new DebitAccount(DateTime.Today.AddDays(2), bank2, 4, client);
             bank.Register(client, account);
             bank2.Register(client, account2);
             client.SetAddress("ulitsa");
             client.SetPassport("2323113");
-            bool isAwareOfFirstBank = client.Accounts.First(t => t.nameOfBank == bank.Name) == account;
-            bool isAwareOfSecondBank = client.Accounts.First(t => t.nameOfBank == bank2.Name) == account2;
+            bool isAwareOfFirstBank = client.Accounts.First(t => t.NameOfBank == bank.Name) == account;
+            bool isAwareOfSecondBank = client.Accounts.First(t => t.NameOfBank == bank2.Name) == account2;
             Assert.AreEqual(isAwareOfFirstBank, isAwareOfSecondBank);
         }
 
@@ -88,10 +88,10 @@ namespace Banks.Tests
         {
             Bank bank = new Bank("Ilia's Bank");
             Client client = new Client("someone", "who");
-            Account.Account account = new DebitAccount(DateTime.Today.AddDays(2), bank, 10d, client);
-            bank.CnahgeLimitForShadyAccountsSettings(5d);
+            Account.Account account = new DebitAccount(DateTime.Today.AddDays(2), bank, 10, client);
+            bank.ChangeLimitForShadyAccountsSettings(5);
             bank.Register(client, account);
-            Assert.AreEqual(false, account.CanWithdraw(10d));
+            Assert.AreEqual(false, account.CanWithdraw(10));
         }
         
         [Test]
@@ -99,11 +99,11 @@ namespace Banks.Tests
         {
             Bank bank1 = new Bank("ilia Bank");
             Client client = new Client("someon", "who");
-            bank1.CnahgeDebAccSetitings(3.65f);
-            List<double> moneyThresholds = new List<double>() {10, 20, 40};
+            bank1.ChangeDebAccSettings(3.65f);
+            List<decimal> moneyThresholds = new List<decimal>() {10, 20, 40};
             List<float> percentThresholds = new List<float>() {2.2f, 2.6f, 2.7f, 4f};
-            bank1.CnahgeDepAccSetitings(moneyThresholds, percentThresholds);
-            Account.Account account = new DepositAccount(DateTime.Today.AddYears(1), bank1, 100000d, client);
+            bank1.ChangeDepAccSettings(moneyThresholds, percentThresholds);
+            Account.Account account = new DepositAccount(DateTime.Today.AddYears(1), bank1, 100000, client);
             CentralBank.Instance.AddBanks(new List<Bank>() {bank1});
             bank1.Register(client, account);
             Time.Instance.AddTime(0, 11, 1);
@@ -117,11 +117,11 @@ namespace Banks.Tests
         {
             Bank bank1 = new Bank("ilia Bank");
             Client client = new Client("someon", "who");
-            bank1.CnahgeDebAccSetitings(3.65f);
-            List<double> moneyThresholds = new List<double>() {10, 20, 40};
+            bank1.ChangeDebAccSettings(3.65f);
+            List<decimal> moneyThresholds = new List<decimal>() {10, 20, 40};
             List<float> percentThresholds = new List<float>() {2.2f, 2.6f, 2.7f, 4f};
-            bank1.CnahgeDepAccSetitings(moneyThresholds, percentThresholds);
-            Account.Account account = new DepositAccount(DateTime.Today.AddYears(1), bank1, 21d, client);
+            bank1.ChangeDepAccSettings(moneyThresholds, percentThresholds);
+            Account.Account account = new DepositAccount(DateTime.Today.AddYears(1), bank1, 21, client);
             Assert.AreEqual(2.7f, account.Percent);
         }
 
@@ -130,12 +130,12 @@ namespace Banks.Tests
         {
             Bank bank = new Bank("ilia Bank");
             Client client = new Client("someon", "who");
-            bank.CnahgeDebAccSetitings(3.65f);
-            List<double> moneyThresholds = new List<double>() {10, 20, 40};
+            bank.ChangeDebAccSettings(3.65f);
+            List<decimal> moneyThresholds = new List<decimal>() {10, 20, 40};
             List<float> percentThresholds = new List<float>() {2.2f, 2.6f, 2.7f, 4f};
-            bank.CnahgeDepAccSetitings(moneyThresholds, percentThresholds);
+            bank.ChangeDepAccSettings(moneyThresholds, percentThresholds);
             CentralBank.Instance.AddBanks(new List<Bank>() {bank});
-            Account.Account account = new DebitAccount(DateTime.Today.AddYears(1), bank, 100000d, client);
+            Account.Account account = new DebitAccount(DateTime.Today.AddYears(1), bank, 100000, client);
             bank.Register(client, account);
             Time.Instance.ResetTime();
             Time.Instance.AddTime(0, 0, 31);
@@ -148,12 +148,12 @@ namespace Banks.Tests
         {
             Bank bank = new Bank("ilia Bank");
             Client client = new Client("someon", "who");
-            bank.CnahgeDebAccSetitings(3.65f);
-            List<double> moneyThresholds = new List<double>() {10, 20, 40};
+            bank.ChangeDebAccSettings(3.65f);
+            List<decimal> moneyThresholds = new List<decimal>() {10, 20, 40};
             List<float> percentThresholds = new List<float>() {2.2f, 2.6f, 2.7f, 4f};
-            bank.CnahgeDepAccSetitings(moneyThresholds, percentThresholds);
+            bank.ChangeDepAccSettings(moneyThresholds, percentThresholds);
             CentralBank.Instance.AddBanks(new List<Bank>() {bank});
-            Account.Account account = new DebitAccount(DateTime.Today.AddYears(1), bank, 100000d, client);
+            Account.Account account = new DebitAccount(DateTime.Today.AddYears(1), bank, 100000, client);
             bank.Register(client, account);
             Time.Instance.ResetTime();
             Time.Instance.AddTime(0, 0, 31);
@@ -166,18 +166,18 @@ namespace Banks.Tests
         {
             Bank bank = new Bank("ilia Bank");
             Client client = new Client("someon", "who");
-            bank.CnahgeDebAccSetitings(3.65f);
-            List<double> moneyThresholds = new List<double>() {10, 20, 40};
+            bank.ChangeDebAccSettings(3.65f);
+            List<decimal> moneyThresholds = new List<decimal>() {10, 20, 40};
             List<float> percentThresholds = new List<float>() {2.2f, 2.6f, 2.7f, 4f};
-            bank.CnahgeDepAccSetitings(moneyThresholds, percentThresholds);
+            bank.ChangeDepAccSettings(moneyThresholds, percentThresholds);
             CentralBank.Instance.AddBanks(new List<Bank>() {bank});
-            Account.Account account = new DebitAccount(DateTime.Today.AddYears(1), bank, 100010d, client);
-            Account.Account account1 = new DebitAccount(DateTime.Today.AddYears(1), bank, 100000d, client);
+            Account.Account account = new DebitAccount(DateTime.Today.AddYears(1), bank, 100010, client);
+            Account.Account account1 = new DebitAccount(DateTime.Today.AddYears(1), bank, 100000, client);
             bank.Register(client, account);
             bank.Register(client, account1);
-            double before = account.Money - account1.Money;
-            account.TestFunc(new TransferCommand(account,account1,10d));
-            double after =account.Money - account1.Money;
+            decimal before = account.Money - account1.Money;
+            account.TestFunc(new TransferCommand(account,account1,10));
+            decimal after =account.Money - account1.Money;
             Assert.AreEqual(before ,-after);
         }
         [Test]
@@ -187,16 +187,16 @@ namespace Banks.Tests
             Client client = new Client("someon", "who");
             client.SetAddress("sdsd");
             client.SetPassport("111");
-            bank.CnahgeDebAccSetitings(3.65f);
-            List<double> moneyThresholds = new List<double>() {10, 20, 40};
+            bank.ChangeDebAccSettings(3.65f);
+            List<decimal> moneyThresholds = new List<decimal>() {10, 20, 40};
             List<float> percentThresholds = new List<float>() {2.2f, 2.6f, 2.7f, 4f};
-            bank.CnahgeDepAccSetitings(moneyThresholds, percentThresholds);
+            bank.ChangeDepAccSettings(moneyThresholds, percentThresholds);
             CentralBank.Instance.AddBanks(new List<Bank>() {bank});
-            Account.Account account = new DebitAccount(DateTime.Today.AddYears(1), bank, 100010d, client);
+            Account.Account account = new DebitAccount(DateTime.Today.AddYears(1), bank, 100010, client);
             bank.Register(client, account);
-            double before = client.PocketMoney;
-            account.TestFunc(new WithdrawCommand(account,10d));
-            Assert.AreEqual(before + 10d ,client.PocketMoney);
+            decimal before = client.PocketMoney;
+            account.TestFunc(new WithdrawCommand(account,10));
+            Assert.AreEqual(before + 10 ,client.PocketMoney);
         }
         [Test]
         public void ReplenishCommandExecuted_MoneyMoved()
@@ -205,14 +205,14 @@ namespace Banks.Tests
             Client client = new Client("someon", "who");
             client.SetAddress("sdsd");
             client.SetPassport("111");
-            bank.CnahgeDebAccSetitings(3.65f);
-            List<double> moneyThresholds = new List<double>() {10, 20, 40};
+            bank.ChangeDebAccSettings(3.65f);
+            List<decimal> moneyThresholds = new List<decimal>() {10, 20, 40};
             List<float> percentThresholds = new List<float>() {2.2f, 2.6f, 2.7f, 4f};
-            bank.CnahgeDepAccSetitings(moneyThresholds, percentThresholds);
+            bank.ChangeDepAccSettings(moneyThresholds, percentThresholds);
             CentralBank.Instance.AddBanks(new List<Bank>() {bank});
             Account.Account account = new DebitAccount(DateTime.Today.AddYears(1), bank, 0, client);
             bank.Register(client, account); 
-            account.TestFunc(new ReplenishCommand(account,10d));
+            account.TestFunc(new ReplenishCommand(account,10));
             Assert.AreEqual(10d ,account.Money);
         }
     }

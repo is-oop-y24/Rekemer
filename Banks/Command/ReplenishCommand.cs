@@ -4,9 +4,9 @@ namespace Banks
 {
     public class ReplenishCommand: Command.Command
     {
-        private readonly double _money;
+        private readonly decimal _money;
         private bool _isUndo;
-        public ReplenishCommand(Account.Account account,   double money) : base(account)
+        public ReplenishCommand(Account.Account account,   decimal money) : base(account)
         {
             _money = money;
         }

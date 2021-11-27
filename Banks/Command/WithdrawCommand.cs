@@ -2,10 +2,10 @@ namespace Banks.Command
 {
     public class WithdrawCommand: Command
     {
-        private readonly double _money;
+        private readonly decimal _money;
         private readonly Client _client;
         private bool _isUndo;
-        public WithdrawCommand(Account.Account account,double money) : base(account)
+        public WithdrawCommand(Account.Account account,decimal money) : base(account)
         {
             _money = money;
             _client = account.Client;
@@ -27,7 +27,7 @@ namespace Banks.Command
             if (_isUndo == false)
             {
                  _account.AddMoney(_money);
-                _client.AddMoney(-_money);
+                _client.Substract(_money);
                 _isUndo = true;
             }
         }

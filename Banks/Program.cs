@@ -11,16 +11,16 @@ namespace Banks
         {
             Bank bank = new Bank("Bank");
             Client client = new Client("Ilia", "Zhidelev");
-            client.AddMoney(100d);
-            bank.CnahgeDebAccSetitings(3.65f);
-            List<double> moneyThresholds = new List<double>() {10, 20, 40}; 
+            client.AddMoney(100);
+            bank.ChangeDebAccSettings(3.65f);
+            List<decimal> moneyThresholds = new List<decimal>() {10, 20, 40}; 
             List<float> percentThresholds = new List<float>() {2.2f, 2.6f , 2.7f, 4f};
-            bank.CnahgeDepAccSetitings(moneyThresholds,percentThresholds);
-            bank.CnahgeCredAccSetitings(200,2);
-            bank.CnahgeLimitForShadyAccountsSettings(100d);
+            bank.ChangeDepAccSettings(moneyThresholds,percentThresholds);
+            bank.ChangeCredAccSettings(200,2);
+            bank.ChangeLimitForShadyAccountsSettings(100);
             CentralBank.Instance.AddBanks(new List<Bank>() {bank});
-            Account.Account debitAccount = new DebitAccount(DateTime.Today.AddYears(2), bank, 100000d,  client);
-            Account.Account creditAccount = new CreditAccount(DateTime.Today.AddYears(1), bank, 100000d, bank.Commission ,client);
+            Account.Account debitAccount = new DebitAccount(DateTime.Today.AddYears(2), bank, 100000,  client);
+            Account.Account creditAccount = new CreditAccount(DateTime.Today.AddYears(1), bank, 100000,client);
             bank.Register(client, debitAccount);
             bank.Register(client, creditAccount);
             Time.Instance.ResetTime();

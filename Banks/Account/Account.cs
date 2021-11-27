@@ -5,61 +5,66 @@ namespace Banks.Account
 {
     public abstract class Account
     {
-        protected CommandProccesor CommandProccesor { get; } = new CommandProccesor();
+        public CommandProccesor CommandProccesor { get; } = new CommandProccesor();
         protected List<Command.Command> CommandsToExecuteInTheEndOfMonth = new List<Command.Command>();
-        protected DateTime StartTime;
-        protected DateTime EndTime;
-        protected Bank _bank;
+        public readonly DateTime StartTime;
+        public readonly DateTime EndTime;
+        public readonly Bank Bank;
         protected bool _isBonusMoney = true;
-        protected double _money;
-
-        public readonly double Limit;
+        protected decimal _money;
+        public abstract AccountUI UI { get; }
+        public readonly decimal Limit;
         public readonly Client Client;
-        protected abstract float _percent { get; set; }
+        public abstract float Percent { get; }
 
-        public float Percent
-        {
-            get => _percent;
-        }
+        public readonly Guid Id = Guid.NewGuid();
 
         public List<Command.Command> HistoryCommands
         {
             get => CommandProccesor.Commands;
         }
 
-        public abstract double Money { get; }
+        public abstract decimal Money { get; }
 
 
-        public string nameOfBank
+        public string NameOfBank
         {
-            get => _bank.Name;
+            get => Bank.Name;
         }
 
 
-        protected Account(DateTime endTime, Bank bank, double initialMoney, Client client)
+        protected Account(DateTime endTime, Bank bank, decimal initialMoney, Client client)
         {
             StartTime = DateTime.Now;
             EndTime = endTime;
-            _bank = bank;
+            Bank = bank;
             Client = client;
             Client.AddAccount(this);
             _money = initialMoney;
             Limit = bank.Limit;
         }
 
-        public abstract void AddMoney(double money);
-        public abstract bool CanWithdraw(double money);
-        public abstract void Update();
-        public abstract bool Update(double money);
-        protected abstract double CalculateMoneyWithProcents(int days);
-        public abstract void Menu();
+        public bool IsValid()
+        {
+            if (Time.Instance.CurrentTime >= EndTime)
+            {
+                return false;
+            }
 
-        public abstract void UpdatePercent(float percent);
+            return true;
+        }
+
+        public abstract void AddMoney(decimal money);
+        public abstract bool CanWithdraw(decimal money);
+        public abstract void Update();
+        public abstract bool Update(decimal money);
+        protected abstract decimal CalculateMoney();
 
         public void UndoCommand(Command.Command command)
         {
             CommandProccesor.Undo(command);
         }
+
         public void UndoAll()
         {
             CommandProccesor.Undo();
@@ -67,7 +72,7 @@ namespace Banks.Account
 
         public void TestFunc(Command.Command command)
         {
-          CommandProccesor.ExecuteCommand(command);   
+            CommandProccesor.ExecuteCommand(command);
         }
     }
 }

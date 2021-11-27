@@ -5,9 +5,9 @@ namespace Banks
     public class TransferCommand : Command.Command
     {
         private Account.Account _accountTo;
-        private readonly double _money;
+        private readonly decimal _money;
 
-        public TransferCommand(Account.Account account, Account.Account accountTo,  double money) : base(account)
+        public TransferCommand(Account.Account account, Account.Account accountTo,  decimal money) : base(account)
         {
             _accountTo = accountTo;
             _money = money;
