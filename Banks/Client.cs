@@ -10,7 +10,7 @@ namespace Banks
         private ClientStatus _status = ClientStatus.Dubious;
         private List<Account.Account> _accounts = new List<Account.Account>();
         public decimal PocketMoney { get; private set; }
-        public readonly ClientUI UI;
+        
         public Guid id = Guid.NewGuid();
         public List<Account.Account> Accounts
         {
@@ -42,7 +42,7 @@ namespace Banks
         {
             Name = name;
             Surname = surname;
-            UI = new ClientUI(this);
+           
         }
 
         public void SetPassport(string passport)

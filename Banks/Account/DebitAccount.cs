@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Banks.Command;
+using Banks.UI;
 
 namespace Banks.Account
 {
@@ -12,16 +13,16 @@ namespace Banks.Account
             get => _money;
         }
 
-        public override AccountUI UI
-        {
-            get => _UI;
-        }
-
-        private DebitAccountUI _UI;
+       
 
         public override float Percent
         {
             get => Bank.PercentDebAccount;
+        }
+
+        public override AccountUI DeriveUI()
+        {
+            return new DebitAccountUI(this);
         }
 
         public override void AddMoney(decimal money)
@@ -107,7 +108,7 @@ namespace Banks.Account
             bank, money,
             client)
         {
-            _UI = new DebitAccountUI(this);
+           
         }
 
         protected override decimal CalculateMoney()

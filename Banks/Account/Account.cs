@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Banks.UI;
 
 namespace Banks.Account
 {
@@ -12,7 +13,7 @@ namespace Banks.Account
         public readonly Bank Bank;
         protected bool _isBonusMoney = true;
         protected decimal _money;
-        public abstract AccountUI UI { get; }
+       
         public readonly decimal Limit;
         public readonly Client Client;
         public abstract float Percent { get; }
@@ -54,6 +55,9 @@ namespace Banks.Account
             return true;
         }
 
+        public abstract AccountUI DeriveUI();
+        
+        
         public abstract void AddMoney(decimal money);
         public abstract bool CanWithdraw(decimal money);
         public abstract void Update();
@@ -70,6 +74,7 @@ namespace Banks.Account
             CommandProccesor.Undo();
         }
 
+        // for tests
         public void TestFunc(Command.Command command)
         {
             CommandProccesor.ExecuteCommand(command);

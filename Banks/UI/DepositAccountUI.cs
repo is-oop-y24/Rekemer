@@ -2,11 +2,11 @@ using System;
 using System.Collections.Generic;
 using Banks.Command;
 
-namespace Banks
+namespace Banks.UI
 {
     public class DepositAccountUI : AccountUI
     {
-        public DepositAccountUI(Account.Account account) : base(account)
+        public DepositAccountUI(DepositAccount account) : base(account)
         {
         }
 
@@ -23,7 +23,11 @@ namespace Banks
                 if (Console.ReadLine() == "y")
                 {
                     // let him go and check
-                    _account.Client.UI.Menu(_account.Bank);
+                    if (UIManager.Instance != null)
+                    {
+                        UIManager.Instance.ShowClientMenu(new ClientUI(_account.Client),_account.Bank);
+                    }
+
                 }
             }
 
@@ -249,7 +253,10 @@ namespace Banks
                 }
                 else if (input == "q")
                 {
-                    _account.Bank.UI.Menu();
+                    if (UIManager.Instance != null)
+                    {
+                        UIManager.Instance.ShowBankMenu(new UIBank(_account.Bank));
+                    }
                     return;
                 }
                 else

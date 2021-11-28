@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Banks.Account;
+using Banks.UI;
 
 namespace Banks
 {
@@ -26,7 +27,12 @@ namespace Banks
             Time.Instance.ResetTime();
             Time.Instance.AddTime(0,0,31);
             Time.Instance.AddTime(0,0,31);
-            ConsoleUI.Instance.MainMenu();
+            if (UIManager.Instance != null)
+            {
+                UIManager.Instance.MainMenu();
+            }
+            
+           
         }
     }
 

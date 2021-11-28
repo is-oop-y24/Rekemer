@@ -1,33 +1,46 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
 
-namespace Banks
+namespace Banks.UI
 {
-    public class ConsoleUI
+    public class UIManager
     {
+        private static UIManager _instance;
+
         List<string> menuItems = new List<string>()
         {
             "FindBanks",
             "q"
         };
-
-        private static ConsoleUI _instance;
-
-        public static ConsoleUI Instance
+        public static UIManager Instance
         {
             get
             {
                 if (_instance == null)
                 {
-                    _instance = new ConsoleUI();
+                    _instance = new UIManager();
                 }
 
                 return _instance;
             }
         }
 
+        public void ShowAccountMenu(AccountUI accountUI)
+        {
+            accountUI.Menu();
+        }
+
+        public void ShowClientMenu(ClientUI clientUI, Bank bank)
+        {
+            clientUI.Menu(bank);
+        }
+
+        public void ShowBankMenu(UIBank UIBank)
+        {
+            UIBank.Menu();
+        }
+        
         public void MainMenu()
         {
             Console.Clear();
@@ -72,7 +85,10 @@ namespace Banks
                 var bank = banks.FirstOrDefault(t => t.Name == selectedBank);
                 if (bank != null)
                 {
-                    bank.UI.Menu();
+                    if (UIManager.Instance != null)
+                    {
+                        UIManager.Instance.ShowBankMenu(new UIBank(bank));
+                    }
                     break;
                 }
                 else

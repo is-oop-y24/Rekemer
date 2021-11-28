@@ -1,12 +1,13 @@
 using System;
 using System.Collections.Generic;
+using Banks.Account;
 using Banks.Command;
 
-namespace Banks
+namespace Banks.UI
 {
     public class DebitAccountUI : AccountUI
     {
-        public DebitAccountUI(Account.Account account) : base(account)
+        public DebitAccountUI(DebitAccount account) : base(account)
         {
         }
 
@@ -23,7 +24,11 @@ namespace Banks
                 if (Console.ReadLine() == "y")
                 {
                     // let him go and check
-                    _account.Client.UI.Menu(_account.Bank);
+                    if (UIManager.Instance != null)
+                    {
+                        UIManager.Instance.ShowClientMenu(new ClientUI(_account.Client),_account.Bank);
+                    }
+
                 }
             }
 
@@ -230,7 +235,11 @@ namespace Banks
                 }
                 else if (input == "q")
                 {
-                    _account.Bank.UI.Menu();
+                    
+                    if (UIManager.Instance != null)
+                    {
+                        UIManager.Instance.ShowBankMenu(new UIBank(_account.Bank));
+                    }
                     return;
                 }
                 else

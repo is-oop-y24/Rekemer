@@ -1,6 +1,6 @@
 using System;
 
-namespace Banks
+namespace Banks.UI
 {
     public class ClientUI
     {
@@ -38,22 +38,35 @@ namespace Banks
                                 input = Console.ReadLine();
                                 if (input == "q")
                                 {
-                                    bank.UI.Menu();
+                                    if (UIManager.Instance != null)
+                                    {
+                                        UIManager.Instance.ShowBankMenu(new UIBank(bank));
+                                    }
                                     break;
                                 }
-                                else if (input == "y")
+
+                                if (input != String.Empty)
                                 {
-                                    // save new data
-                                    _client.Surname = newUserData;
-                                    break;
-                                }
-                                else if (input == "n")
-                                {
+                                    if (input == "y")
+                                    {
+                                        // save new data
+                                        _client.Surname = newUserData;
+                                        break;
+                                    }
+                                    else if (input == "n")
+                                    {
+                                    }
+                                    else
+                                    {
+                                        Console.WriteLine("wrong input");
+                                    }
                                 }
                                 else
                                 {
-                                    Console.WriteLine("wrong input");
+                                    Console.WriteLine("surname is empty, enter surname please");
                                 }
+
+                               
                             }
 
                             break;
@@ -68,21 +81,32 @@ namespace Banks
                                 if (input == "q")
                                 {
                                     // do something
-                                    bank.UI.Menu();
+                                    if (UIManager.Instance != null)
+                                    {
+                                        UIManager.Instance.ShowBankMenu(new UIBank(bank));
+                                    }
                                     break;
                                 }
-                                else if (input == "y")
+                                if (input != String.Empty)
                                 {
-                                    // save new data
-                                    _client.Name = newUserData;
-                                    break;
-                                }
-                                else if (input == "n")
-                                {
+                                    if (input == "y")
+                                    {
+                                        // save new data
+                                        _client.Name = newUserData;
+                                        break;
+                                    }
+                                    else if (input == "n")
+                                    {
+                                        continue;
+                                    }
+                                    else
+                                    {
+                                        Console.WriteLine("wrong input");
+                                    }
                                 }
                                 else
                                 {
-                                    Console.WriteLine("wrong input");
+                                    Console.WriteLine("name is empty, enter name please");
                                 }
                             }
 
@@ -98,22 +122,35 @@ namespace Banks
                                 if (input == "q")
                                 {
                                     // do something
-                                    bank.UI.Menu();
+                                    if (UIManager.Instance != null)
+                                    {
+                                        UIManager.Instance.ShowBankMenu(new UIBank(bank));
+                                    }
                                     break;
                                 }
-                                else if (input == "y")
+
+                                if (newUserData != String.Empty)
                                 {
-                                    // save new data
-                                    _client.SetAddress(newUserData);
-                                    break;
-                                }
-                                else if (input == "n")
-                                {
+                                    if (input == "y")
+                                    {
+                                        // save new data
+                                        _client.SetAddress(newUserData);
+                                        break;
+                                    }
+                                    else if (input == "n")
+                                    {
+                                        continue;
+                                    }
+                                    else
+                                    {
+                                        Console.WriteLine("wrong input");
+                                    }
                                 }
                                 else
                                 {
-                                    Console.WriteLine("wrong input");
+                                    Console.WriteLine("address is empty, enter address please");
                                 }
+                               
                             }
 
                             break;
@@ -128,21 +165,32 @@ namespace Banks
                                 if (input == "q")
                                 {
                                     // do something
-                                    bank.UI.Menu();
+                                    if (UIManager.Instance != null)
+                                    {
+                                        UIManager.Instance.ShowBankMenu(new UIBank(bank));
+                                    }
                                     break;
                                 }
-                                else if (input == "y")
+                                if (newUserData != String.Empty)
                                 {
-                                    // save new data
-                                    _client.SetPassport(newUserData);
-                                    break;
-                                }
-                                else if (input == "n")
-                                {
+                                    if (input == "y")
+                                    {
+                                        // save new data
+                                        _client.SetPassport(newUserData);
+                                        break;
+                                    }
+                                    else if (input == "n")
+                                    {
+                                        continue;
+                                    }
+                                    else
+                                    {
+                                        Console.WriteLine("wrong input");
+                                    }
                                 }
                                 else
                                 {
-                                    Console.WriteLine("wrong input");
+                                    Console.WriteLine("passport is empty, enter passport please");
                                 }
                             }
 
@@ -154,7 +202,10 @@ namespace Banks
                 }
                 else if (input == "q")
                 {
-                    bank.UI.Menu();
+                    if (UIManager.Instance != null)
+                    {
+                        UIManager.Instance.ShowBankMenu(new UIBank(bank));
+                    }
                     break;
                 }
                 else if (input == "n")

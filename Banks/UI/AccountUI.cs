@@ -1,4 +1,4 @@
-namespace Banks
+namespace Banks.UI
 {
     public abstract class AccountUI
     {

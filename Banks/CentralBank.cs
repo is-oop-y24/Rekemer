@@ -48,15 +48,12 @@ namespace Banks
                 var bankAccounts = bank.GetAllAccounts();
                 if (bankAccounts.Count > 0)
                 {
+                    var accountToReturn = bankAccounts.FirstOrDefault(t => t.Id.ToString() == id);
+                    if (accountToReturn != null)
+                    {
+                        return accountToReturn;
+                    }
                     allAccounts = allAccounts.Union(bankAccounts).ToList();
-                }
-            }
-
-            foreach (var account in allAccounts)
-            {
-                if (account.Id.ToString() == id)
-                {
-                    return account;
                 }
             }
             return null;

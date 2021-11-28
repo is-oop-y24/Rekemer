@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using Banks.Account;
 
-namespace Banks
+namespace Banks.UI
 {
     public class UIBank
     {
@@ -19,7 +19,7 @@ namespace Banks
             if (accounts == null) return;
             if (nAccount > accounts.Count) return;
             var account = accounts[nAccount];
-            account.UI.Menu();
+            UIManager.Instance.ShowAccountMenu(account.DeriveUI());
         }
 
         public List<Account.Account> ShowAccounts(Client client)
@@ -165,7 +165,11 @@ namespace Banks
                 }
                 else if (input == "q" || input == "n")
                 {
-                    ConsoleUI.Instance.BanksMenu();
+                    if (UIManager.Instance != null)
+                    {
+                        UIManager.Instance.BanksMenu();
+                    }
+                   
                 }
             }
         }
@@ -192,19 +196,27 @@ namespace Banks
                     name = Console.ReadLine();
                     Console.WriteLine($"is {name} good name for you? y/n or q to exit");
                     input = Console.ReadLine();
-                    if (input == "y")
-                    {
-                        isNameOk = true;
-                        break;
-                    }
-                    else if (input == "n")
-                    {
-                        continue;
-                    }
-                    else if (input == "q")
+                    if (input == "q")
                     {
                         name = String.Empty;
                         break;
+                    }
+                    if (name != String.Empty)
+                    {
+                        if (input == "y")
+                        {
+                            isNameOk = true;
+                            break;
+                        }
+                        else if (input == "n")
+                        {
+                            continue;
+                        }
+                        
+                    }
+                    else
+                    {
+                        Console.WriteLine("name is empty, input name please");
                     }
                 }
 
@@ -218,19 +230,27 @@ namespace Banks
                     surname = Console.ReadLine();
                     Console.WriteLine($"is {surname} good surname for you? y/n or q to exit");
                     input = Console.ReadLine();
-                    if (input == "y")
+                    if (input == "q")
                     {
-                        isSurnameOk = true;
+                        surname = String.Empty;
                         break;
                     }
-                    else if (input == "n")
+                    if (surname != String.Empty)
                     {
-                        continue;
+                        if (input == "y")
+                        {
+                            isSurnameOk= true;
+                            break;
+                        }
+                        else if (input == "n")
+                        {
+                            continue;
+                        }
+                        
                     }
-                    else if (input == "q")
+                    else
                     {
-                        surname = string.Empty;
-                        break;
+                        Console.WriteLine("surname is empty, input surname please");
                     }
                 }
 
@@ -253,18 +273,27 @@ namespace Banks
                             address = Console.ReadLine();
                             Console.WriteLine($"is {address} good address for you? y/n or q to exit");
                             input = Console.ReadLine();
-                            if (input == "y")
-                            {
-                                isAddressOk = true;
-                            }
-                            else if (input == "n")
-                            {
-                                continue;
-                            }
-                            else if (input == "q")
+                             if (input == "q")
                             {
                                 address = String.Empty;
                                 break;
+                            }
+                            if (address != String.Empty)
+                            {
+                                if (input == "y")
+                                {
+                                    isAddressOk = true;
+                                    break;
+                                }
+                                else if (input == "n")
+                                {
+                                    continue;
+                                }
+                              
+                            }
+                            else
+                            {
+                                Console.WriteLine("address is empty, input address please");
                             }
                         }
 
@@ -278,18 +307,27 @@ namespace Banks
                             passport = Console.ReadLine();
                             Console.WriteLine($"is {passport} good passport for you? y/n or q to exit");
                             input = Console.ReadLine();
-                            if (input == "y")
-                            {
-                                isPassportOk = true;
-                            }
-                            else if (input == "n")
-                            {
-                                continue;
-                            }
-                            else if (input == "q")
+                            if (input == "q")
                             {
                                 passport = String.Empty;
                                 break;
+                            }
+                            if (passport != String.Empty)
+                            {
+                                if (input == "y")
+                                {
+                                    isPassportOk = true;
+                                    break;
+                                }
+                                else if (input == "n")
+                                {
+                                    continue;
+                                }
+                             
+                            }
+                            else
+                            {
+                                Console.WriteLine("passport is empty, input passport please");
                             }
                         }
 
@@ -310,6 +348,10 @@ namespace Banks
                 Console.WriteLine("address: " + address);
                 Console.WriteLine("passport: " + passport);
                 input = Console.ReadLine();
+                if (input == "q")
+                {
+                    break;
+                }
                 if (input == "y")
                 {
                     Client client = new Client(name, surname);
@@ -327,10 +369,7 @@ namespace Banks
                 {
                     continue;
                 }
-                else if (input == "q")
-                {
-                    break;
-                }
+               
             }
 
             return null;

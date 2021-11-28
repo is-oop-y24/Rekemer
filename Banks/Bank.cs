@@ -18,10 +18,8 @@ namespace Banks
         public Bank(string name)
         {
             Name = name;
-            UI = new UIBank(this);
         }
-
-        public readonly UIBank UI;
+        
         public float PercentDebAccount { get; private set; }
         public Vector3 ValidTimeDeb { get; private set; }
 

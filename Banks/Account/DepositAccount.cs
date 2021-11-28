@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Banks.Command;
+using Banks.UI;
 
 namespace Banks
 {
@@ -13,7 +14,7 @@ namespace Banks
         public DepositAccount(DateTime endTime, Bank bank, decimal money, Client client) : base(endTime,
             bank, money, client)
         {
-            _UI = new DepositAccountUI(this);
+            
         }
 
         public override decimal Money
@@ -29,11 +30,15 @@ namespace Banks
             }
         }
 
-        public override AccountUI UI { get => _UI; }
-        private DepositAccountUI _UI;
+      
         public override float Percent
         {
             get => Bank.DeterminePercent(_money);
+        }
+
+        public override AccountUI DeriveUI()
+        {
+            return new DepositAccountUI(this);
         }
 
         public override void AddMoney(decimal money)

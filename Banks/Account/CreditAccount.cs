@@ -1,20 +1,18 @@
 using System;
 using System.Collections.Generic;
 using Banks.Command;
+using Banks.UI;
 
 namespace Banks.Account
 {
     public class CreditAccount : Account
     {
-        public override AccountUI UI
-        {
-            get => _UI;
-        }
+      
 
         public CreditAccount(DateTime endTime, Bank bank, decimal initialMoney, Client client) : base(endTime, bank,
             initialMoney, client)
         {
-            _UI = new CreditAccountUI(this);
+            
         }
 
         public override decimal Money
@@ -27,7 +25,11 @@ namespace Banks.Account
             get => 0f;
         }
 
-        private readonly CreditAccountUI _UI;
+
+        public override AccountUI DeriveUI()
+        {
+            return new CreditAccountUI(this);
+        }
 
         public override void AddMoney(decimal money)
         {
