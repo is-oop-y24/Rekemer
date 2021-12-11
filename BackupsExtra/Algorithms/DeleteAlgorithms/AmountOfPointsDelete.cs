@@ -22,7 +22,7 @@ namespace BackupsExtra.Algorithms.DeleteAlgorithms
             var restorePointsToDelete = GetRestorePointsToDelete(restorePoints);
             ProccessOldPoints(ref restorePoints, restorePointsToDelete);
         }
-
+        
         public List<RestorePoint> GetRestorePointsToDelete(List<RestorePoint> restorePoints)
         {
             List<RestorePoint> points = new List<RestorePoint>();

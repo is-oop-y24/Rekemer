@@ -1,4 +1,3 @@
-
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
@@ -7,13 +6,11 @@ using System.Runtime.Serialization;
 
 namespace BackupsExtra
 {
-    
     [DataContract]
     public class Repository : IRepository
     {
-        [DataMember]
-        private string _directoryInfo;
-       
+        [DataMember] private string _directoryInfo;
+
         public string DirectoryInfo
         {
             get { return _directoryInfo; }
@@ -21,13 +18,11 @@ namespace BackupsExtra
 
         public Repository()
         {
-            
         }
+
         public Repository(string directory)
         {
-            
-                _directoryInfo =directory;
-            
+            _directoryInfo = directory;
         }
 
         public string CreateZipCopyOfFile(string file)

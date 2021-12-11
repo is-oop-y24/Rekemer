@@ -2,7 +2,6 @@ using System.Collections.Generic;
 
 namespace BackupsExtra.Algorithms.SaveAlgorithms
 {
-    
     public class SplitStorageSave : IAlgorithm
     {
         public List<string> Operation(List<string> files, IRepository repository)
@@ -15,6 +14,7 @@ namespace BackupsExtra.Algorithms.SaveAlgorithms
 
             return names;
         }
+
         public string NameOfAlgorithm()
         {
             return "SplitStorageSave";

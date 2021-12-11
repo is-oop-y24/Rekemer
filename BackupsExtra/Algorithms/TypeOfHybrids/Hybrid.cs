@@ -3,7 +3,7 @@ using System.Numerics;
 
 namespace BackupsExtra.Algorithms.TypeOfHybrids
 {
-    public abstract class Hybrid: ICanGetRestorePointsToDelete
+    public abstract class Hybrid : ICanGetRestorePointsToDelete
     {
         public readonly int AmountOfPoints;
         public readonly Vector3 ValidTime;
@@ -15,8 +15,5 @@ namespace BackupsExtra.Algorithms.TypeOfHybrids
         }
 
         public abstract List<RestorePoint> GetRestorePointsToDelete(List<RestorePoint> restorePoints);
-
-
-
     }
 }

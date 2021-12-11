@@ -5,11 +5,12 @@ using BackupsExtra.Algorithms.DeleteAlgorithms;
 
 namespace BackupsExtra.Algorithms.TypeOfHybrids
 {
-    public class PartialHybrid: Hybrid
+    public class PartialHybrid : Hybrid
     {
         public PartialHybrid(int amountOfPoints, Vector3 validTime) : base(amountOfPoints, validTime)
         {
         }
+
         public override List<RestorePoint> GetRestorePointsToDelete(List<RestorePoint> restorePoints)
         {
             ICanGetRestorePointsToDelete timeDelete = new ValidTimeDelete(ValidTime);
@@ -19,7 +20,5 @@ namespace BackupsExtra.Algorithms.TypeOfHybrids
             var intersectedPoints = pointsTime.Union(pointsAmount).ToList();
             return intersectedPoints;
         }
-
-       
     }
 }

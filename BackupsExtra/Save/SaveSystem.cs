@@ -6,7 +6,6 @@ using System.Runtime.Serialization.Formatters.Binary;
 using BackupsExtra.Algorithms.LogInterface;
 
 
-
 namespace BackupsExtra.Save
 {
     public static class SaveSystem
@@ -18,7 +17,7 @@ namespace BackupsExtra.Save
             BinaryFormatter formatter = GetBinaryFormatter();
             using (FileStream fs = new FileStream(PathOfSaving, FileMode.OpenOrCreate))
             {
-                formatter.Serialize(fs,saveData);
+                formatter.Serialize(fs, saveData);
                 string message = SaveDataIsCreated();
                 Log.Instance.Log(message);
             }
@@ -30,24 +29,24 @@ namespace BackupsExtra.Save
             message += $"saveData is succesfully created in {PathOfSaving}";
             return message;
         }
+
         public static BinaryFormatter GetBinaryFormatter()
         {
             BinaryFormatter formatter = new BinaryFormatter();
             SurrogateSelector selector = new SurrogateSelector();
             Vector3SerializationSurrogate surrogate = new Vector3SerializationSurrogate();
-            selector.AddSurrogate(typeof(Vector3),new StreamingContext(StreamingContextStates.All),surrogate);
+            selector.AddSurrogate(typeof(Vector3), new StreamingContext(StreamingContextStates.All), surrogate);
             formatter.SurrogateSelector = selector;
             return formatter;
         }
 
         public static SaveData Load()
         {
-           
-            if (File.Exists( PathOfSaving))
+            if (File.Exists(PathOfSaving))
             {
                 BinaryFormatter formatter = GetBinaryFormatter();
-                
-                FileStream stream = File.Open( PathOfSaving, FileMode.Open);
+
+                FileStream stream = File.Open(PathOfSaving, FileMode.Open);
                 //var saveData1 = formatter.Deserialize(stream) as Job;
                 var saveData = formatter.Deserialize(stream) as SaveData;
                 stream.Close();

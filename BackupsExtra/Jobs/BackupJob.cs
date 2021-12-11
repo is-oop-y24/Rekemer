@@ -24,7 +24,6 @@ namespace BackupsExtra.Jobs
             get { return _restorePoints; }
         }
 
-        
 
         public IRepository Repository
         {
@@ -33,17 +32,15 @@ namespace BackupsExtra.Jobs
 
         public BackupJob()
         {
-            
         }
 
-        public BackupJob(Repository repository,IAlgorithm algorithm,   IDeleteAlgorithm deleteAlgorithm)
+        public BackupJob(Repository repository, IAlgorithm algorithm, IDeleteAlgorithm deleteAlgorithm)
         {
             this._repository = repository;
             _algorithm = algorithm;
-            
-            
+
+
             _deleteAlgorithm = deleteAlgorithm;
-            
         }
 
         public void AddFiles(List<string> fileInfos)
@@ -56,7 +53,7 @@ namespace BackupsExtra.Jobs
 
         private string AddedFiles(List<string> fileInfos)
         {
-            string message="FilesToSave are added to BackupJob" + Environment.NewLine;
+            string message = "FilesToSave are added to BackupJob" + Environment.NewLine;
             foreach (var fileInfo in fileInfos)
             {
                 message += fileInfo + Environment.NewLine;
@@ -64,7 +61,7 @@ namespace BackupsExtra.Jobs
 
             return message;
         }
-        
+
         private string RestorePointIsAdded(RestorePoint restorePoint)
         {
             string message = "job is added" + Environment.NewLine;
@@ -74,13 +71,14 @@ namespace BackupsExtra.Jobs
             message += "Time: " + time + " algorithm: " + alghoritm + "files: " + files;
             return message;
         }
+
         private string SystemIsSaved()
         {
             string message = "system is saved in ";
             return message;
         }
 
-        
+
         public void RemoveFile(string fileInfo)
         {
             var file = _filesToSave.First(t => t == fileInfo);
@@ -91,15 +89,17 @@ namespace BackupsExtra.Jobs
         {
             _algorithm = algorithm;
         }
+
         public void SetDeleteAlghoritm(IDeleteAlgorithm algorithm)
         {
             _deleteAlgorithm = algorithm;
         }
+
         public void Save()
         {
             Job job = new Job(_repository.DirectoryInfo, _filesToSave, _algorithm);
             RestorePoint restorePoint = job.Launch();
-           
+
             // add in log
             string message = RestorePointIsAdded(restorePoint);
             Log.Instance.Log(message);
@@ -107,11 +107,11 @@ namespace BackupsExtra.Jobs
             {
                 _restorePoints.Add(restorePoint);
             }
+
             _jobs.Add(job);
-            SaveData saveData = new SaveData(_jobs,_repository.DirectoryInfo,_algorithm,_restorePoints );
+            SaveData saveData = new SaveData(_jobs, _repository.DirectoryInfo, _algorithm, _restorePoints);
             SaveSystem.Save(saveData);
-            _deleteAlgorithm.Delete( ref _restorePoints);
-           
+            _deleteAlgorithm.Delete(ref _restorePoints);
         }
 
         public bool Load()
@@ -120,19 +120,19 @@ namespace BackupsExtra.Jobs
             if (saveData != null)
             {
                 _jobs = saveData.Jobs;
-                _repository = new Repository( saveData.Repository);
+                _repository = new Repository(saveData.Repository);
                 _algorithm = saveData.Algorithm;
                 _restorePoints = saveData.RestorePoints;
-                
+
                 return true;
             }
+
             return false;
-            
         }
-        
+
         public void Restore(RestorePoint restorePoint, Restore restore)
         {
-                restore.RestoreFiles(restorePoint);
+            restore.RestoreFiles(restorePoint);
         }
     }
 }

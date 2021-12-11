@@ -6,6 +6,7 @@ namespace BackupsExtra.Algorithms.LogInterface
     {
         private static ILog _log;
         public static bool IsTimePrefix { get; set; }
+
         public static ILog Instance
         {
             get

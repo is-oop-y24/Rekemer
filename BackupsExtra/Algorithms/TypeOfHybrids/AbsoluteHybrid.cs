@@ -10,6 +10,7 @@ namespace BackupsExtra.Algorithms.TypeOfHybrids
         public AbsoluteHybrid(int amountOfPoints, Vector3 validTime) : base(amountOfPoints, validTime)
         {
         }
+
         public override List<RestorePoint> GetRestorePointsToDelete(List<RestorePoint> restorePoints)
         {
             ICanGetRestorePointsToDelete timeDelete = new ValidTimeDelete(ValidTime);

@@ -2,7 +2,6 @@ using System.Collections.Generic;
 
 namespace BackupsExtra.Algorithms.SaveAlgorithms
 {
-   
     public class SingleStorageSave : IAlgorithm
     {
         public List<string> Operation(List<string> files, IRepository repository)
