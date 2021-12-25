@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using ServerApplication.Common.Commands;
 using ServerApplication.Common.Models;
+using ServerApplication.DataLayer.DataContext;
 using ServerApplication.DataLayer.LogSystem;
 using ServerApplication.DataLayer.Repository;
 
@@ -205,6 +206,15 @@ namespace ServerApplication.BusinessLayer.Controllers
         public void Load()
         {
             _tasks.Load();
+        }
+
+        public void DeleteWorkerFromTasks(string id)
+        {
+            var tasks = GetAllTasks();
+            foreach (Task task in tasks)
+            {
+                task.AssignedWorkers.RemoveAll(k => k.ID == id);
+            }
         }
     }
 }

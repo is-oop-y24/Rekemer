@@ -4,7 +4,7 @@ namespace ServerApplication.DataLayer.Repository
 {
     public class Tasks: Repository<Task>
     {
-        public Tasks(DataContext dataContext) : base(dataContext)
+        public Tasks(DataContext.DataContext dataContext) : base(dataContext)
         {
         }
 

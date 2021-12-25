@@ -4,10 +4,10 @@ namespace ServerApplication.DataLayer.Repository
 {
     public abstract class Repository<T> where T : IHaveID
     {
-        protected DataContext _dataContext;
+        protected DataContext.DataContext _dataContext;
         public List<T> Entities => _dataContext.Set<T>();
 
-        public Repository(DataContext dataContext)
+        public Repository(DataContext.DataContext dataContext)
         {
             _dataContext = dataContext;
         }
@@ -24,9 +24,19 @@ namespace ServerApplication.DataLayer.Repository
 
         public abstract void Load();
 
-        public void Delete(T obj)
+        public bool Delete(string obj)
         {
-            Entities.Remove(obj);
+            foreach (var entity in Entities)
+            {
+                if (entity.ID == obj)
+                {
+                    Entities.Remove(entity);
+                    return true;
+                }
+                
+            }
+
+            return false;
         }
 
         public void Create(T obj)

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using ServerApplication.Common.Models;
+using ServerApplication.DataLayer.DataContext;
 using ServerApplication.DataLayer.Repository;
 
 namespace ServerApplication.BusinessLayer.Controllers
@@ -20,6 +21,7 @@ namespace ServerApplication.BusinessLayer.Controllers
             if (leader is TeamLead)
             {
                 _teamLead = leader;
+                UpdateHierarchy();
             }
 
             if (leader != null && _workers.Entities.Find(t => t.ID == leader.ID) == null)
@@ -68,14 +70,19 @@ namespace ServerApplication.BusinessLayer.Controllers
             return _workers.Entities.Find(t => t.ID == id);
         }
 
-        public void Delete(Worker worker)
+        public bool Delete(string workerId)
         {
-            _workers.Delete(worker);
+            return _workers.Delete(workerId);
         }
 
-        public void Create(Worker worker)
+        public void Create(string name, bool isLeader = false)
         {
+            var worker = new Worker(name, isLeader);
             _workers.Create(worker);
+            if (worker is TeamLead)
+            {
+                UpdateHierarchy();
+            }
         }
 
         public void Save()
@@ -102,7 +109,7 @@ namespace ServerApplication.BusinessLayer.Controllers
             return reports;
         }
 
-        public void UpdateHierarchy()
+        private void UpdateHierarchy()
         {
             if (_teamLead != null)
             {

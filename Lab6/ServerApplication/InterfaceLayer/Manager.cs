@@ -1,5 +1,6 @@
 ﻿using ServerApplication.BusinessLayer.Controllers;
 using ServerApplication.Common.Models;
+using ServerApplication.DataLayer.DataContext;
 using ServerApplication.DataLayer.Repository;
 
 namespace ServerApplication.InterfaceLayer

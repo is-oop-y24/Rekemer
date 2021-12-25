@@ -1,10 +1,8 @@
 using System.Collections.Generic;
 using NUnit.Framework;
-using ServerApplication;
-using ServerApplication.BusinessLayer;
 using ServerApplication.Common.Models;
+using ServerApplication.DataLayer.DataContext;
 using ServerApplication.DataLayer.LogSystem;
-using ServerApplication.DataLayer.Repository;
 using ServerApplication.InterfaceLayer;
 
 namespace LAB6Tests
@@ -82,7 +80,7 @@ namespace LAB6Tests
             manager.TasksController.AddTask(task);
             manager.TasksController.ChangeStateOfTask(task,TaskState.Active, workerLeader);
             manager.Save();
-            manager.WorkersController.Delete(workerLeader);
+            manager.WorkersController.Delete(workerLeader.ID);
             manager.Load();
             if ( manager.WorkersController.GetWorkers().Count == 1)
             {
@@ -128,7 +126,7 @@ namespace LAB6Tests
             manager.WorkersController.AddWorker(workerLeader, worker);
             manager.WorkersController.AddWorker(workerLeader, worker2);
             manager.WorkersController.AddWorker(worker, worker2);
-            manager.WorkersController.UpdateHierarchy();
+            //manager.WorkersController.UpdateHierarchy();
             Assert.AreEqual(true,lead.Subordinates.Find( t=> t.ID == workerLeader.ID) != null);
         }
         //tests with report
