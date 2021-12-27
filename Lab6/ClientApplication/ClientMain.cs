@@ -1,5 +1,4 @@
-﻿
-namespace LAB6
+﻿namespace LAB6
 {
     using System;
     using System.Net;
@@ -11,16 +10,12 @@ namespace LAB6
     {
         class Program
         {
+            static Socket _ListenSockeet;
+            private static Socket _sendSocket;
+
             static void Main(string[] args)
             {
-                Socket m_ListenSockeet;
-                m_ListenSockeet = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-                int iPort = 2084; // Set port number
-                IPEndPoint m_LocalIPEndPoint = new IPEndPoint(IPAddress.Any, iPort);
-                m_ListenSockeet.Bind(m_LocalIPEndPoint);
-                m_ListenSockeet.Listen(4);
-
-
+                _ListenSockeet = InitListenSocket();
                 // Create the socket
                 //Input IP address and port
                 string srvrIP = "";
@@ -30,48 +25,26 @@ namespace LAB6
                 Console.Write("Enter Server Port Number : ");
                 srvrPort = Console.ReadLine();
                 Console.WriteLine("\nSending to : " + srvrIP + " : " + srvrPort);
-
-                // Create the socket based on date input
-                Socket m_sendSocket;
-                m_sendSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-
-
-                //Connect to the endpoint (Server)
-                // convert string IP and Port into IPAddress and int data types
-                IPAddress destinationIP = IPAddress.Parse(srvrIP);
-                int destinationPort = System.Convert.ToInt16(srvrPort);
-                IPEndPoint destinationEP = new IPEndPoint(destinationIP, destinationPort);
-
-                // User Message
-                Console.WriteLine("\nWaiting to Connect... ");
-
-
-                m_sendSocket.Connect(destinationEP);
-                Socket m_AcceptedSocket = m_ListenSockeet.Accept();
-                // User Message
+                _sendSocket = MSendSocket(srvrIP, srvrPort);
+                Socket m_AcceptedSocket = _ListenSockeet.Accept();
                 Console.WriteLine("Connected... ");
 
-
-                //Send Information
-                // Input data from user
                 string msg = "";
                 byte[] ReceiveBuffer = new byte[1024];
                 int iReceiveByteCount;
                 string response = "";
-
                 iReceiveByteCount = m_AcceptedSocket.Receive(ReceiveBuffer, SocketFlags.None);
-                response = Encoding.ASCII.GetString(ReceiveBuffer, 0, iReceiveByteCount);
+                response = ParseBytes(ReceiveBuffer, iReceiveByteCount);
                 Console.WriteLine(response);
 
                 while (msg != "quit")
                 {
                     Console.Write("\nEnter Message to Send : ");
                     msg = Console.ReadLine();
-                    byte[] b_Data = System.Text.Encoding.ASCII.GetBytes(msg);
+                    byte[] b_Data = TransformToBytes(msg);
                     // User Message
                     Console.WriteLine("\nSending Data... ");
-
-                    m_sendSocket.Send(b_Data, SocketFlags.None);
+                    _sendSocket.Send(b_Data, SocketFlags.None);
                     // User Message
                     Console.WriteLine("Sending Complete... " + iReceiveByteCount);
                     Console.WriteLine("\nGetting Data... ");
@@ -80,6 +53,39 @@ namespace LAB6
                     Console.WriteLine(response);
                     Console.WriteLine("\n Data Got ");
                 }
+            }
+
+            private static string ParseBytes(byte[] ReceiveBuffer, int iReceiveByteCount)
+            {
+                return Encoding.ASCII.GetString(ReceiveBuffer, 0, iReceiveByteCount);
+            }
+
+            private static Socket MSendSocket(string srvrIP, string srvrPort)
+            {
+                Socket m_sendSocket;
+                m_sendSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+                IPAddress destinationIP = IPAddress.Parse(srvrIP);
+                int destinationPort = System.Convert.ToInt16(srvrPort);
+                IPEndPoint destinationEP = new IPEndPoint(destinationIP, destinationPort);
+                Console.WriteLine("\nWaiting to Connect... ");
+                m_sendSocket.Connect(destinationEP);
+                return m_sendSocket;
+            }
+
+            private static byte[] TransformToBytes(string msg)
+            {
+                return System.Text.Encoding.ASCII.GetBytes(msg);
+            }
+
+            private static Socket InitListenSocket()
+            {
+                Socket m_ListenSocket;
+                m_ListenSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+                int iPort = 2084; // Set port number
+                IPEndPoint m_LocalIPEndPoint = new IPEndPoint(IPAddress.Any, iPort);
+                m_ListenSocket.Bind(m_LocalIPEndPoint);
+                m_ListenSocket.Listen(4);
+                return m_ListenSocket;
             }
 
             public static string LocalIPAddress()
