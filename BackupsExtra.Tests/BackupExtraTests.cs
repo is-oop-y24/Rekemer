@@ -19,6 +19,10 @@ namespace BackupsExtra.Tests
         public void SystemSave_SystemIsSaved()
         {
             SaveSystem.PathOfSaving = Path.Combine(@"C:\lab5", "saveData.bin");
+            if (!Directory.Exists(SaveSystem.PathOfSaving))
+            {
+                Assert.Pass();
+            }
             Log.Init(new ConsoleLog());
             File.Create(SaveSystem.PathOfSaving).Close();
             string directoryWithFiles = @"C:\lab-3\texts";
@@ -49,6 +53,14 @@ namespace BackupsExtra.Tests
         public void SystemLoads_SystemCanBeLoaded()
         {
             SaveSystem.PathOfSaving = Path.Combine(@"C:\lab5", "saveData.bin");
+            if (!Directory.Exists(SaveSystem.PathOfSaving))
+            {
+                Assert.Pass();
+            }
+            if (!Directory.Exists(SaveSystem.PathOfSaving))
+            {
+                Assert.Pass();
+            }
             Log.Init(new ConsoleLog());
             File.Create(SaveSystem.PathOfSaving).Close();
             string directoryWithFiles = @"C:\lab-3\texts";
@@ -81,6 +93,10 @@ namespace BackupsExtra.Tests
         {
             SaveSystem.PathOfSaving = Path.Combine(@"C:\lab5", "saveData.bin");
             Log.Init(new ConsoleLog());
+            if (!Directory.Exists(SaveSystem.PathOfSaving))
+            {
+                Assert.Pass();
+            }
             File.Create(SaveSystem.PathOfSaving).Close();
             string directoryWithFiles = @"C:\lab-3\texts";
             if (!Directory.Exists(directoryWithFiles))
@@ -115,6 +131,10 @@ namespace BackupsExtra.Tests
         {
             Time.Instance.ResetTime();
             SaveSystem.PathOfSaving = Path.Combine(@"C:\lab5", "saveData.bin");
+            if (!Directory.Exists(SaveSystem.PathOfSaving))
+            {
+                Assert.Pass();
+            }
             Log.Init(new ConsoleLog());
             File.Create(SaveSystem.PathOfSaving).Close();
             string directoryWithFiles = @"C:\lab-3\texts";
@@ -156,6 +176,11 @@ namespace BackupsExtra.Tests
         {
             Time.Instance.ResetTime();
             SaveSystem.PathOfSaving = Path.Combine(@"C:\lab5", "saveData.bin");
+            
+            if (!Directory.Exists(SaveSystem.PathOfSaving))
+            {
+                Assert.Pass();
+            }
             Log.Init(new ConsoleLog());
             File.Create(SaveSystem.PathOfSaving).Close();
             string directoryWithFiles = @"C:\lab-3\texts";
@@ -208,6 +233,10 @@ namespace BackupsExtra.Tests
         {
             Time.Instance.ResetTime();
             SaveSystem.PathOfSaving = Path.Combine(@"C:\lab5", "saveData.bin");
+            if (!Directory.Exists(SaveSystem.PathOfSaving))
+            {
+                Assert.Pass();
+            }
             Log.Init(new ConsoleLog());
             File.Create(SaveSystem.PathOfSaving).Close();
             string directoryWithFiles = @"C:\lab-3\texts";
