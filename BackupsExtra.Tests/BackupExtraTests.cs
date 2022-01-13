@@ -266,7 +266,7 @@ namespace BackupsExtra.Tests
             backupJob.AddFiles(files);
             backupJob.Save();
             backupJob.Save();
-            string path = Path.Combine(directoryWithFiles +@"\texts", "helloWorld.txt");
+            string path = Path.Combine(directoryWithFiles , "helloWorld.txt");
             files.Add(path);
             backupJob.AddFiles(files);
             Time.Instance.AddTime(1, 0, 0);
@@ -287,7 +287,7 @@ namespace BackupsExtra.Tests
             BackupJob backupJob = new BackupJob(repository, algorithm, delete);
             DirectoryInfo directoryInfo = new DirectoryInfo(directoryWithFiles);
             List<string> files = new List<string>();
-            string path = Path.Combine(directoryWithFiles +@"\texts", "helloWorld.txt");
+            string path = Path.Combine(directoryWithFiles , "helloWorld.txt");
             var filesTosave = directoryInfo.GetFiles();
 
             foreach (var fileInfo in filesTosave)
