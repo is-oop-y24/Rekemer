@@ -17,8 +17,8 @@ namespace Backups.Tests
         [SetUp]
         public void Setup()
         {
-            directoryWithFiles = Path.GetFullPath(Path.Combine(curPath, @"..\..\..\..\Tests\texts"));
-            repositoryDirectory = Path.GetFullPath(Path.Combine(curPath, @"..\..\..\..\Tests\lab-3"));
+            directoryWithFiles = Path.GetFullPath(Path.Combine(curPath, @"../../../../Tests/texts"));
+            repositoryDirectory = Path.GetFullPath(Path.Combine(curPath, @"../../../../Tests/lab-3"));
         }
         
         [Test]

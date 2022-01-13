@@ -8,8 +8,8 @@ namespace ServerApplication.DataLayer.DataContext
 {
     public class JsonDataContext : DataContext
     {
-        public static string PathOfSavingForWorkers { get; set; } = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), @"..\..\..\..\..\Tests\lab5\workers.json"));
-        public static string PathOfSavingForTasks { get; set; } =  Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), @"..\..\..\..\..\Tests\lab5\tasks.json"));
+        public static string PathOfSavingForWorkers { get; set; } = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), @"../../../../../Tests/lab5/workers.json"));
+        public static string PathOfSavingForTasks { get; set; } =  Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), @"../../../../../Tests/lab5/tasks.json"));
 
         public override void Save()
         {

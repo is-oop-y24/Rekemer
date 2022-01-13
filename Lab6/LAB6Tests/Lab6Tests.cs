@@ -14,12 +14,13 @@ namespace LAB6Tests
         private string directoryWithFiles;
         private string repositoryDirectory;
         private string curPath = Directory.GetCurrentDirectory();
-
+        private string pathOfLog;
         [SetUp]
         public void Setup()
         {
-            directoryWithFiles = Path.GetFullPath(Path.Combine(curPath, @"..\..\..\..\Tests\texts"));
-            repositoryDirectory = Path.GetFullPath(Path.Combine(curPath, @"..\..\..\..\Tests\lab-3"));
+            pathOfLog =  Path.GetFullPath(Path.Combine(curPath, @"../../../../../Tests/lab5/log.txt"));
+            directoryWithFiles = Path.GetFullPath(Path.Combine(curPath, @"../../../../Tests/texts"));
+            repositoryDirectory = Path.GetFullPath(Path.Combine(curPath, @"../../../../Tests/lab-3"));
         }
         
         [Test]
@@ -68,7 +69,7 @@ namespace LAB6Tests
         public void SomethingWithLog()
         {
             
-            ILog log = new FileLog(Path.GetFullPath(Path.Combine(curPath, @"..\..\..\..\..\Tests\lab5\log.txt")));
+            ILog log = new FileLog( pathOfLog);
            
             Log.Init(log);
             var jsonContext = new JsonDataContext();
@@ -85,7 +86,7 @@ namespace LAB6Tests
         [Test]
         public void AddCommands_CommandsAreSaved()
         {
-            ILog log = new FileLog(Path.GetFullPath(Path.Combine(curPath, @"..\..\..\..\..\Tests\lab5\log.txt")));
+            ILog log = new FileLog( pathOfLog);
             Log.Init(log);
             var jsonContext = new JsonDataContext();
             Manager manager = new Manager(jsonContext);
@@ -107,7 +108,7 @@ namespace LAB6Tests
         [Test]
         public void CreateSubordinated_GetTheirTasks()
         {
-            ILog log = new FileLog(Path.GetFullPath(Path.Combine(curPath, @"..\..\..\..\..\Tests\lab5\log.txt")));
+            ILog log = new FileLog( pathOfLog);
             Log.Init(log);
             var jsonContext = new JsonDataContext();
             Manager manager = new Manager(jsonContext);
@@ -146,7 +147,7 @@ namespace LAB6Tests
         [Test]
         public void TryToSaveNotFinishedReport_ReportIsStillEdit()
         {
-            ILog log = new FileLog(Path.GetFullPath(Path.Combine(curPath, @"..\..\..\..\..\Tests\lab5\log.txt")));
+            ILog log = new FileLog( pathOfLog);
             Log.Init(log);
             Manager manager = new Manager(new JsonDataContext());
             Worker worker = new Worker("ilia");
@@ -165,7 +166,7 @@ namespace LAB6Tests
         [Test]
         public void ChangeAssignedWorker_AssignedWorkerIsChanged()
         {
-            ILog log = new FileLog(Path.GetFullPath(Path.Combine(curPath, @"..\..\..\..\..\Tests\lab5\log.txt")));
+            ILog log = new FileLog( pathOfLog);
             Log.Init(log);
             Manager manager = new Manager(new JsonDataContext());
             Worker worker = new Worker("ilia");
@@ -186,7 +187,7 @@ namespace LAB6Tests
         [Test]
         public void GetTasksAssignedToWorker_TasksGot()
         {
-            ILog log = new FileLog(Path.GetFullPath(Path.Combine(curPath, @"..\..\..\..\..\Tests\lab5\log.txt")));
+            ILog log = new FileLog( pathOfLog);
             Log.Init(log);
             Manager manager = new Manager(new JsonDataContext());
             Worker worker = new Worker("ilia");
