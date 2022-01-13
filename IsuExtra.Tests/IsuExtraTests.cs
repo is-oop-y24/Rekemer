@@ -8,7 +8,7 @@ using IsuExtra;
 
 namespace IsuExtra.Tests
 {
-    public class ExtraTests
+    public class IsuExtraTests
     {
         private OgnpService _manager;
         private Group.GroupBuilder groupBuilder;
