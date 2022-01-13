@@ -19,10 +19,10 @@ namespace Backups.Tests
             BackupJob backupJob = new BackupJob(repository, algorithm);
             DirectoryInfo directoryInfo = new DirectoryInfo(directoryWithFiles);
             List<FileInfo> files = new List<FileInfo>();
-            files.Add(directoryInfo.GetFiles().First(t => t.Name == "note.txt"));
+            files.Add(directoryInfo.GetFiles().First(t => t.Name == "nano.txt"));
             backupJob.AddFiles(files);
             backupJob.Save();
-            bool isSaved = File.Exists(Path.Combine(repositoryDirectory, "note.zip"));
+            bool isSaved = File.Exists(Path.Combine(repositoryDirectory, "nano.zip"));
             Assert.AreEqual(true, isSaved);
         }
 
@@ -56,7 +56,9 @@ namespace Backups.Tests
             BackupJob backupJob = new BackupJob(repository, algorithm);
             backupJob.AddFiles(files);
             backupJob.Save();
-            Assert.AreEqual(2, ZipFileCount(@"C:\lab-3/myzip.zip"));
+            var amountOfFiles = Directory.GetFiles(directoryWithFiles, "*", SearchOption.AllDirectories).Length;
+            Assert.AreEqual(amountOfFiles, 
+                ZipFileCount(@"C:\lab-3/myzip.zip"));
         }
 
         private int ZipFileCount(string zipFileName)

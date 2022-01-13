@@ -1,5 +1,7 @@
+using System;
 using System.Linq;
 using Isu.Services;
+using Isu.Tools;
 using NUnit.Framework;
 
 namespace Isu.Tests
@@ -35,24 +37,40 @@ namespace Isu.Tests
         [Test]
         public void ReachMaxStudentPerGroup_ThrowException()
         {
-            
-
-            Group group = groupBuilder.WithName("M3209").WithMaxAmountOfStudents(1);
-            _manager.AddGroup(group);
-            Student student = studentBuilder.WithName("ilia").WithGroup(group.GroupInfo);
-            for (int i = 0; i < group.maxStudents; i++)
+            try
             {
+                Group group = groupBuilder.WithName("M3209").WithMaxAmountOfStudents(1);
+                _manager.AddGroup(group);
+                Student student = studentBuilder.WithName("ilia").WithGroup(group.GroupInfo);
+                for (int i = 0; i < group.maxStudents; i++)
+                {
+                    _manager.AddStudent(group, student);
+                }
                 _manager.AddStudent(group, student);
             }
-            _manager.AddStudent(group, student);
+            catch (Exception e)
+            {
+                Assert.Pass();
+            }
+            Assert.Fail();
+
+            
         }
 
         [Test]
         public void CreateGroupWithInvalidName_ThrowException()
         {
-           
-            Group group = groupBuilder.WithName("M3632").WithMaxAmountOfStudents(21);
+            try
+            {
+                groupBuilder.WithName("M3632").WithMaxAmountOfStudents(21);
+            }
+            catch (Exception e)
+            {
+                Assert.Pass();
+            }
+            Assert.Fail();
         }
+       
 
         [Test]
         public void TransferStudentToAnotherGroup_GroupChanged()
@@ -77,9 +95,19 @@ namespace Isu.Tests
         [Test]
         public void SameGroupesAreAdded_ThrowException()
         {
-            Group group0 = groupBuilder.WithName("M3209").WithMaxAmountOfStudents(21);
-            _manager.AddGroup(group0);
-            _manager.AddGroup(group0);
+            try
+            {
+                Group group0 = groupBuilder.WithName("M3209").WithMaxAmountOfStudents(21);
+                _manager.AddGroup(group0);
+                _manager.AddGroup(group0);
+            }
+            catch (Exception e)
+            {
+                Assert.Pass();
+            }
+            Assert.Fail();
+          
+           
         }
     }
 
@@ -97,7 +125,16 @@ namespace Isu.Tests
         [Test]
         public void GroupIsNotNamedCorrectly_ThrowException()
         {
-            Group groupToFail = groupBuilder.WithName("M23b2").WithMaxAmountOfStudents(21);
+            try
+            {
+                Group groupToFail = groupBuilder.WithName("M23b2").WithMaxAmountOfStudents(21);
+            }
+            catch (Exception e)
+            {
+                Assert.Pass();
+            }
+            Assert.Fail();
+          
         }
 
         [Test]
