@@ -1,0 +1,53 @@
+{
+  "$type": "System.Collections.Generic.List`1[[ServerApplication.Common.Models.Worker, ServerApplication]], System.Private.CoreLib",
+  "$values": [
+    {
+      "$type": "ServerApplication.Common.Models.Worker, ServerApplication",
+      "leaderWorker": null,
+      "Report": null,
+      "IsLeader": true,
+      "ID": "fb35f6ee-28e3-403c-b526-ad6f2ce9c267",
+      "AssignedTasksString": "{\r\n  \"$type\": \"System.Collections.Generic.List`1[[ServerApplication.Common.Models.Task, ServerApplication]], System.Private.CoreLib\",\r\n  \"$values\": []\r\n}",
+      "ActionsOnTasksString": "{\r\n  \"$type\": \"System.Collections.Generic.List`1[[ServerApplication.Common.Commands.Command, ServerApplication]], System.Private.CoreLib\",\r\n  \"$values\": []\r\n}",
+      "Name": "boss"
+    },
+    {
+      "$type": "ServerApplication.Common.Models.Worker, ServerApplication",
+      "leaderWorker": {
+        "$type": "ServerApplication.Common.Models.Worker, ServerApplication",
+        "leaderWorker": null,
+        "Report": null,
+        "IsLeader": true,
+        "ID": "fb35f6ee-28e3-403c-b526-ad6f2ce9c267",
+        "AssignedTasksString": "{\r\n  \"$type\": \"System.Collections.Generic.List`1[[ServerApplication.Common.Models.Task, ServerApplication]], System.Private.CoreLib\",\r\n  \"$values\": []\r\n}",
+        "ActionsOnTasksString": "{\r\n  \"$type\": \"System.Collections.Generic.List`1[[ServerApplication.Common.Commands.Command, ServerApplication]], System.Private.CoreLib\",\r\n  \"$values\": []\r\n}",
+        "Name": "boss"
+      },
+      "Report": null,
+      "IsLeader": false,
+      "ID": "99140737-cb5d-4db2-8910-318759420ce0",
+      "AssignedTasksString": "{\r\n  \"$type\": \"System.Collections.Generic.List`1[[ServerApplication.Common.Models.Task, ServerApplication]], System.Private.CoreLib\",\r\n  \"$values\": []\r\n}",
+      "ActionsOnTasksString": "{\r\n  \"$type\": \"System.Collections.Generic.List`1[[ServerApplication.Common.Commands.Command, ServerApplication]], System.Private.CoreLib\",\r\n  \"$values\": []\r\n}",
+      "Name": "ilia"
+    },
+    {
+      "$type": "ServerApplication.Common.Models.Worker, ServerApplication",
+      "leaderWorker": {
+        "$type": "ServerApplication.Common.Models.Worker, ServerApplication",
+        "leaderWorker": null,
+        "Report": null,
+        "IsLeader": true,
+        "ID": "fb35f6ee-28e3-403c-b526-ad6f2ce9c267",
+        "AssignedTasksString": "{\r\n  \"$type\": \"System.Collections.Generic.List`1[[ServerApplication.Common.Models.Task, ServerApplication]], System.Private.CoreLib\",\r\n  \"$values\": []\r\n}",
+        "ActionsOnTasksString": "{\r\n  \"$type\": \"System.Collections.Generic.List`1[[ServerApplication.Common.Commands.Command, ServerApplication]], System.Private.CoreLib\",\r\n  \"$values\": []\r\n}",
+        "Name": "boss"
+      },
+      "Report": null,
+      "IsLeader": false,
+      "ID": "b592c8f9-d861-48aa-80a1-93d18ec0abc3",
+      "AssignedTasksString": "{\r\n  \"$type\": \"System.Collections.Generic.List`1[[ServerApplication.Common.Models.Task, ServerApplication]], System.Private.CoreLib\",\r\n  \"$values\": []\r\n}",
+      "ActionsOnTasksString": "{\r\n  \"$type\": \"System.Collections.Generic.List`1[[ServerApplication.Common.Commands.Command, ServerApplication]], System.Private.CoreLib\",\r\n  \"$values\": []\r\n}",
+      "Name": "maria"
+    }
+  ]
+}

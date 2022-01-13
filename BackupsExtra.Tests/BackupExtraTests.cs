@@ -15,22 +15,23 @@ namespace BackupsExtra.Tests
 {
     public class BackupExtraTests
     {
+        private string directoryWithFiles;
+        private string repositoryDirectory;
+        private string curPath = Directory.GetCurrentDirectory();
+
+        [SetUp]
+        public void Setup()
+        {
+            directoryWithFiles = Path.GetFullPath(Path.Combine(curPath, @"..\..\..\..\Tests\texts"));
+            SaveSystem.PathOfSaving = Path.GetFullPath(Path.Combine(curPath, @"..\..\..\..\Tests\lab5\saveData.bin"));
+            repositoryDirectory = Path.GetFullPath(Path.Combine(curPath, @"..\..\..\..\Tests\lab-3"));
+        }
+
         [Test]
         public void SystemSave_SystemIsSaved()
         {
-            SaveSystem.PathOfSaving = Path.Combine(@"C:\lab5", "saveData.bin");
-            if (!Directory.Exists(SaveSystem.PathOfSaving))
-            {
-                Assert.Pass();
-            }
             Log.Init(new ConsoleLog());
             File.Create(SaveSystem.PathOfSaving).Close();
-            string directoryWithFiles = @"C:\lab-3\texts";
-            if (!Directory.Exists(directoryWithFiles))
-            {
-                Assert.Pass();
-            }
-            string repositoryDirectory = @"C:\lab-3";
             IAlgorithm algorithm = new SingleStorageSave();
             Repository repository = new Repository(repositoryDirectory);
             var delete = new AmountOfPointsDelete(3);
@@ -43,6 +44,7 @@ namespace BackupsExtra.Tests
             {
                 files.Add(fileInfo.FullName);
             }
+
             backupJob.AddFiles(files);
             backupJob.Save();
             bool isFileEmpty = new FileInfo(SaveSystem.PathOfSaving).Length == 0;
@@ -52,23 +54,9 @@ namespace BackupsExtra.Tests
         [Test]
         public void SystemLoads_SystemCanBeLoaded()
         {
-            SaveSystem.PathOfSaving = Path.Combine(@"C:\lab5", "saveData.bin");
-            if (!Directory.Exists(SaveSystem.PathOfSaving))
-            {
-                Assert.Pass();
-            }
-            if (!Directory.Exists(SaveSystem.PathOfSaving))
-            {
-                Assert.Pass();
-            }
             Log.Init(new ConsoleLog());
             File.Create(SaveSystem.PathOfSaving).Close();
-            string directoryWithFiles = @"C:\lab-3\texts";
-            if (!Directory.Exists(directoryWithFiles))
-            {
-                Assert.Pass();
-            }
-            string repositoryDirectory = @"C:\lab-3";
+
             IAlgorithm algorithm = new SingleStorageSave();
             Repository repository = new Repository(repositoryDirectory);
             var delete = new AmountOfPointsDelete(3);
@@ -82,6 +70,7 @@ namespace BackupsExtra.Tests
             {
                 files.Add(fileInfo.FullName);
             }
+
             backupJob1.AddFiles(files);
             backupJob1.Save();
             BackupJob backupJob = new BackupJob();
@@ -91,19 +80,8 @@ namespace BackupsExtra.Tests
         [Test]
         public void PointsAreTooMany_RestorePointsAreClearedWithAmountLimit()
         {
-            SaveSystem.PathOfSaving = Path.Combine(@"C:\lab5", "saveData.bin");
             Log.Init(new ConsoleLog());
-            if (!Directory.Exists(SaveSystem.PathOfSaving))
-            {
-                Assert.Pass();
-            }
             File.Create(SaveSystem.PathOfSaving).Close();
-            string directoryWithFiles = @"C:\lab-3\texts";
-            if (!Directory.Exists(directoryWithFiles))
-            {
-                Assert.Pass();
-            }
-            string repositoryDirectory = @"C:\lab-3";
             IAlgorithm algorithm = new SingleStorageSave();
             Repository repository = new Repository(repositoryDirectory);
             var delete = new AmountOfPointsDelete(3);
@@ -116,6 +94,7 @@ namespace BackupsExtra.Tests
             {
                 files.Add(fileInfo.FullName);
             }
+
             backupJob.AddFiles(files);
             backupJob.Save();
             backupJob.Save();
@@ -130,19 +109,14 @@ namespace BackupsExtra.Tests
         public void PointsAreTooMany_RestorePointsAreClearedWithDateLimit()
         {
             Time.Instance.ResetTime();
-            SaveSystem.PathOfSaving = Path.Combine(@"C:\lab5", "saveData.bin");
-            if (!Directory.Exists(SaveSystem.PathOfSaving))
-            {
-                Assert.Pass();
-            }
+
             Log.Init(new ConsoleLog());
             File.Create(SaveSystem.PathOfSaving).Close();
-            string directoryWithFiles = @"C:\lab-3\texts";
             if (!Directory.Exists(directoryWithFiles))
             {
                 Assert.Pass();
             }
-            string repositoryDirectory = @"C:\lab-3";
+
             IAlgorithm algorithm = new SingleStorageSave();
             Repository repository = new Repository(repositoryDirectory);
             var delete = new ValidTimeDelete(new Vector3(0, 2, 0));
@@ -154,6 +128,7 @@ namespace BackupsExtra.Tests
             {
                 files.Add(fileInfo.FullName);
             }
+
             backupJob.AddFiles(files);
             backupJob.Save();
             var firstPoint = backupJob.RestorePoints[0];
@@ -175,20 +150,10 @@ namespace BackupsExtra.Tests
         public void PointsAreTooMany_RestorePointsAreClearedWithHybridPartialLimit()
         {
             Time.Instance.ResetTime();
-            SaveSystem.PathOfSaving = Path.Combine(@"C:\lab5", "saveData.bin");
-            
-            if (!Directory.Exists(SaveSystem.PathOfSaving))
-            {
-                Assert.Pass();
-            }
+
+
             Log.Init(new ConsoleLog());
             File.Create(SaveSystem.PathOfSaving).Close();
-            string directoryWithFiles = @"C:\lab-3\texts";
-            if (!Directory.Exists(directoryWithFiles))
-            {
-                Assert.Pass();
-            }
-            string repositoryDirectory = @"C:\lab-3";
             IAlgorithm algorithm = new SingleStorageSave();
             Repository repository = new Repository(repositoryDirectory);
             var delete = new HybridDelete(new PartialHybrid(2, new Vector3(0, 2, 0)));
@@ -200,9 +165,10 @@ namespace BackupsExtra.Tests
             {
                 files.Add(fileInfo.FullName);
             }
+
             backupJob.AddFiles(files);
             backupJob.Save();
-           
+
             Time.Instance.AddTime(0, 1, 0);
             backupJob.Save();
             Time.Instance.AddTime(0, 1, 0);
@@ -232,24 +198,17 @@ namespace BackupsExtra.Tests
         public void PointsAreTooMany_RestorePointsAreClearedWithHybridAbsoluteLimit()
         {
             Time.Instance.ResetTime();
-            SaveSystem.PathOfSaving = Path.Combine(@"C:\lab5", "saveData.bin");
-            if (!Directory.Exists(SaveSystem.PathOfSaving))
-            {
-                Assert.Pass();
-            }
+
+
             Log.Init(new ConsoleLog());
             File.Create(SaveSystem.PathOfSaving).Close();
-            string directoryWithFiles = @"C:\lab-3\texts";
-            if (!Directory.Exists(directoryWithFiles))
-            {
-                Assert.Pass();
-            }
-            string repositoryDirectory = @"C:\lab-3";
+
+
             IAlgorithm algorithm = new SingleStorageSave();
             Repository repository = new Repository(repositoryDirectory);
             var delete = new HybridDelete(new AbsoluteHybrid(2, new Vector3(0, 2, 0)));
             BackupJob backupJob = new BackupJob(repository, algorithm, delete);
-            
+
             DirectoryInfo directoryInfo = new DirectoryInfo(directoryWithFiles);
             List<string> files = new List<string>();
             var filesTosave = directoryInfo.GetFiles();
@@ -257,6 +216,7 @@ namespace BackupsExtra.Tests
             {
                 files.Add(fileInfo.FullName);
             }
+
             backupJob.AddFiles(files);
             backupJob.Save();
             Time.Instance.AddTime(0, 1, 0);
@@ -288,14 +248,6 @@ namespace BackupsExtra.Tests
         public void PointsAreSame_RepeatedPointsAreDeleted()
         {
             Time.Instance.ResetTime();
-            string directoryWithFiles = @"C:\lab-3\texts";
-            if (!Directory.Exists(directoryWithFiles))
-            {
-                Assert.Pass();
-            }
-            string repositoryDirectory = @"C:\lab-3";
-
-            SaveSystem.PathOfSaving = Path.Combine(@"C:\lab5", "saveData.bin");
             Log.Init(new ConsoleLog());
             File.Create(SaveSystem.PathOfSaving).Close();
             IAlgorithm algorithm = new SingleStorageSave();
@@ -326,14 +278,6 @@ namespace BackupsExtra.Tests
         public void OldPointsHaveNewObject_UpdateNewPoint()
         {
             Time.Instance.ResetTime();
-            string directoryWithFiles = @"C:\lab-3\texts";
-            if (!Directory.Exists(directoryWithFiles))
-            {
-                Assert.Pass();
-            }
-            string repositoryDirectory = @"C:\lab-3";
-
-            SaveSystem.PathOfSaving = Path.Combine(@"C:\lab5", "saveData.bin");
             Log.Init(new ConsoleLog());
             File.Create(SaveSystem.PathOfSaving).Close();
             IAlgorithm algorithm = new SingleStorageSave();
@@ -365,14 +309,7 @@ namespace BackupsExtra.Tests
         public void NewPointIsSingleStorage_DeleteOldPoint()
         {
             Time.Instance.ResetTime();
-            string directoryWithFiles = @"C:\lab-3\texts";
-            if (!Directory.Exists(directoryWithFiles))
-            {
-                Assert.Pass();
-            }
-            string repositoryDirectory = @"C:\lab-3";
 
-            SaveSystem.PathOfSaving = Path.Combine(@"C:\lab5", "saveData.bin");
             Log.Init(new ConsoleLog());
             File.Create(SaveSystem.PathOfSaving).Close();
             IAlgorithm algorithm = new SplitStorageSave();
@@ -404,14 +341,6 @@ namespace BackupsExtra.Tests
         public void TryDeleteAllPoints_ThrowException()
         {
             Time.Instance.ResetTime();
-            string directoryWithFiles = @"C:\lab-3\texts";
-            if (!Directory.Exists(directoryWithFiles))
-            {
-                Assert.Pass();
-            }
-            string repositoryDirectory = @"C:\lab-3";
-
-            SaveSystem.PathOfSaving = Path.Combine(@"C:\lab5", "saveData.bin");
             Log.Init(new ConsoleLog());
             File.Create(SaveSystem.PathOfSaving).Close();
             IAlgorithm algorithm = new SplitStorageSave();
@@ -441,14 +370,6 @@ namespace BackupsExtra.Tests
         public void RestoreFilesToOriginalLocation_FilesAreRestored()
         {
             Time.Instance.ResetTime();
-            string directoryWithFiles = @"C:\lab-3\texts";
-            if (!Directory.Exists(directoryWithFiles))
-            {
-                Assert.Pass();
-            }
-            string repositoryDirectory = @"C:\lab-3";
-
-            SaveSystem.PathOfSaving = Path.Combine(@"C:\lab5", "saveData.bin");
             Log.Init(new ConsoleLog());
             File.Create(SaveSystem.PathOfSaving).Close();
             IAlgorithm algorithm = new SplitStorageSave();
@@ -474,14 +395,7 @@ namespace BackupsExtra.Tests
         public void RestoreFilesToCustomLocation_FilesAreRestored()
         {
             Time.Instance.ResetTime();
-            string directoryWithFiles = @"C:\lab-3\texts";
-            if (!Directory.Exists(directoryWithFiles))
-            {
-                Assert.Pass();
-            }
-            string repositoryDirectory = @"C:\lab-3";
 
-            SaveSystem.PathOfSaving = Path.Combine(@"C:\lab5", "saveData.bin");
             Log.Init(new ConsoleLog());
             File.Create(SaveSystem.PathOfSaving).Close();
             IAlgorithm algorithm = new SplitStorageSave();
@@ -490,8 +404,8 @@ namespace BackupsExtra.Tests
             BackupJob backupJob = new BackupJob(repository, algorithm, delete);
             DirectoryInfo directoryInfo = new DirectoryInfo(directoryWithFiles);
             List<string> files = new List<string>();
-         
-           
+
+
             var filesTosave = directoryInfo.GetFiles();
 
             foreach (var fileInfo in filesTosave)
@@ -501,7 +415,7 @@ namespace BackupsExtra.Tests
 
             backupJob.AddFiles(files);
             backupJob.Save();
-            string location = @"C:\lab5\files";
+            string location = Path.GetFullPath(Path.Combine(curPath, @"..\..\..\..\Tests\lab5\files"));
             backupJob.Restore(backupJob.RestorePoints[0], new RestoreInCustomLocation(location));
             Assert.AreEqual(filesTosave.Length, new DirectoryInfo(location).GetFiles().Length);
         }
