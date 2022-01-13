@@ -266,7 +266,7 @@ namespace BackupsExtra.Tests
             backupJob.AddFiles(files);
             backupJob.Save();
             backupJob.Save();
-            string path = Path.Combine(directoryWithFiles, "helloWorld.txt");
+            string path = Path.Combine(directoryWithFiles +@"\texts", "helloWorld.txt");
             files.Add(path);
             backupJob.AddFiles(files);
             Time.Instance.AddTime(1, 0, 0);
@@ -287,7 +287,7 @@ namespace BackupsExtra.Tests
             BackupJob backupJob = new BackupJob(repository, algorithm, delete);
             DirectoryInfo directoryInfo = new DirectoryInfo(directoryWithFiles);
             List<string> files = new List<string>();
-            string path = Path.Combine(directoryWithFiles, "helloWorld.txt");
+            string path = Path.Combine(directoryWithFiles +@"\texts", "helloWorld.txt");
             var filesTosave = directoryInfo.GetFiles();
 
             foreach (var fileInfo in filesTosave)
@@ -415,7 +415,7 @@ namespace BackupsExtra.Tests
 
             backupJob.AddFiles(files);
             backupJob.Save();
-            string location = Path.GetFullPath(Path.Combine(curPath, @"..\..\..\..\Tests\lab5\files"));
+            string location = Path.GetFullPath(Path.Combine(curPath, @"../../../../Tests/lab5/files"));
             backupJob.Restore(backupJob.RestorePoints[0], new RestoreInCustomLocation(location));
             Assert.AreEqual(filesTosave.Length, new DirectoryInfo(location).GetFiles().Length);
         }
