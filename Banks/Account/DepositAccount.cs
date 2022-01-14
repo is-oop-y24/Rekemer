@@ -11,10 +11,13 @@ namespace Banks
         private DateTime _lastUpdate;
         private bool canGetOutside;
 
-        public DepositAccount(DateTime endTime, Bank bank, decimal money, Client client) : base(endTime,
-            bank, money, client)
+        public DepositAccount(DateTime endTime, Bank bank, decimal money, Client client)
+            : base(
+                endTime,
+                bank,
+                money,
+                client)
         {
-            
         }
 
         public override decimal Money
@@ -30,7 +33,6 @@ namespace Banks
             }
         }
 
-      
         public override float Percent
         {
             get => Bank.DeterminePercent(_money);
@@ -57,6 +59,7 @@ namespace Banks
 
                 return false;
             }
+
             if (Time.Instance.CurrentTime >= EndTime)
             {
                 if (money < Money)
@@ -75,18 +78,18 @@ namespace Banks
                 canGetOutside = true;
                 return;
             }
-            
 
             // find out how many days are passed
             var passedDays = (Time.Instance.CurrentTime - StartTime).Days;
             if (Math.Abs(Time.Instance.CurrentTime.Day - _lastUpdate.Day) == 1) _isBonusMoney = true;
+
             // consider all passed days
             for (int i = 0; i < passedDays; i++)
             {
                 Command.Command command = new ReplenishCommand(this,  CalculateMoney());
                 CommandsToExecuteInTheEndOfMonth.Add(command);
             }
-            
+
             List<Command.Command> commandsToDelete = new List<Command.Command>();
             foreach (var comm in CommandsToExecuteInTheEndOfMonth)
             {
@@ -109,14 +112,9 @@ namespace Banks
             return true;
         }
 
-
         protected override decimal CalculateMoney()
         {
             return _money * (decimal)Bank.PercentDebAccount / (decimal)(100f * 365f);
         }
-
-      
-
-        
     }
 }

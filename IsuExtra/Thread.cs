@@ -5,23 +5,25 @@ namespace IsuExtra
 {
     public class Thread
     {
+#pragma warning disable SA1401
         public readonly int Num;
-        public List<Student> Students { get; set; }
-        
-        public List<Lesson> Lessons { get; private set; }
-        public int AmountOfStudents { get; private set; }
+#pragma warning restore SA1401
         private int _maxAmountStudents;
-
-        public int maxStudents
-        {
-            get => _maxAmountStudents;
-        }
-
         public Thread(int num)
         {
             this.Num = num;
             Students = new List<Student>();
             Lessons = new List<Lesson>();
+        }
+
+        public List<Student> Students { get; set; }
+
+        public List<Lesson> Lessons { get; private set; }
+        public int AmountOfStudents { get; private set; }
+
+        public int MaxStudents
+        {
+            get => _maxAmountStudents;
         }
 
         public void AddStudent(Student student)

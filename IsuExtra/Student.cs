@@ -1,23 +1,29 @@
 ﻿using System;
 
-
 namespace IsuExtra
 {
     public class Student
     {
-        public GroupID GroupId{get; private set;}
-        public Course Course1{get; private set;}
-        public Course Course2{get; private set;}
-        public Thread Thread1{get; private set;}
-        public Thread Thread2{get; private set;}
+#pragma warning disable SA1401
+        public readonly Guid Id = Guid.NewGuid();
+#pragma warning restore SA1401
+        private Student(string name, GroupID group)
+        {
+            this.Name = name;
+            StudentsGroup = group;
+        }
+
+        public GroupID GroupId { get; private set; }
+        public Course Course1 { get; private set; }
+        public Course Course2 { get; private set; }
+        public Thread Thread1 { get; private set; }
+        public Thread Thread2 { get; private set; }
 
         public GroupID StudentsGroup
         {
             get => new GroupID(GroupId);
             private set => GroupId = value;
         }
-
-        public readonly Guid Id = Guid.NewGuid();
 
         public string Name { get; private set; }
 
@@ -49,7 +55,6 @@ namespace IsuExtra
                     Thread1 = null;
                 }
             }
-
             else if (Course2 != null)
             {
                 if (Course2.Faculty == faculty)
@@ -60,17 +65,15 @@ namespace IsuExtra
             }
         }
 
-        private Student(string name, GroupID group)
-        {
-            this.Name = name;
-            StudentsGroup = group;
-        }
-
-
         public class StudentBuilder
         {
             private string _studentName;
             private GroupID _groupID;
+
+            public static implicit operator Student(StudentBuilder builder)
+            {
+                return builder.Build();
+            }
 
             public StudentBuilder WithName(string name)
             {
@@ -93,11 +96,6 @@ namespace IsuExtra
             public Student Build()
             {
                 return new Student(_studentName, _groupID);
-            }
-
-            public static implicit operator Student(StudentBuilder builder)
-            {
-                return builder.Build();
             }
         }
     }

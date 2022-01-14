@@ -6,7 +6,8 @@ namespace Banks.UI
 {
     public class DepositAccountUI : AccountUI
     {
-        public DepositAccountUI(DepositAccount account) : base(account)
+        public DepositAccountUI(DepositAccount account)
+            : base(account)
         {
         }
 
@@ -25,9 +26,8 @@ namespace Banks.UI
                     // let him go and check
                     if (UIManager.Instance != null)
                     {
-                        UIManager.Instance.ShowClientMenu(new ClientUI(_account.Client),_account.Bank);
+                        UIManager.Instance.ShowClientMenu(new ClientUI(_account.Client), _account.Bank);
                     }
-
                 }
             }
 
@@ -39,7 +39,8 @@ namespace Banks.UI
             while (true)
             {
                 Console.WriteLine("Do you want to replenish(1), Withdraw(2) or transfer(3) or quit(q)? ");
-                //let choose command
+
+                // let choose command
                 string input = Console.ReadLine();
                 if (input == "1")
                 {
@@ -102,7 +103,6 @@ namespace Banks.UI
                         Console.WriteLine(
                             $"Due to status of your account, you have limit for withdrawing money from account {_account.Bank.LimitForWithdrawAndTransfer}");
 
-
                         while (true)
                         {
                             Console.WriteLine("how much money do you want to withdraw?");
@@ -121,11 +121,15 @@ namespace Banks.UI
                         {
                             if (_account.CanWithdraw(money))
                             {
-                                _account.CommandProccesor.ExecuteCommand(new WithdrawCommand(_account,
+                                _account.CommandProccesor.ExecuteCommand(new WithdrawCommand(
+                                    _account,
                                     money));
                                 Console.WriteLine("Operation is Successful");
                             }
-                            else Console.WriteLine("Operation is not possible since account is not expired yet");
+                            else
+                            {
+                                Console.WriteLine("Operation is not possible since account is not expired yet");
+                            }
                         }
                     }
                     else if (_account.Client.Status == ClientStatus.Full)
@@ -133,11 +137,15 @@ namespace Banks.UI
                         money = Convert.ToDecimal(Console.ReadLine());
                         if (_account.CanWithdraw(money))
                         {
-                            _account.CommandProccesor.ExecuteCommand(new WithdrawCommand(_account,
+                            _account.CommandProccesor.ExecuteCommand(new WithdrawCommand(
+                                _account,
                                 money));
                             Console.WriteLine("Operation is Successful");
                         }
-                        else Console.WriteLine("Operation is not possible since account is not expired yet");
+                        else
+                        {
+                            Console.WriteLine("Operation is not possible since account is not expired yet");
+                        }
                     }
                 }
                 else if (input == "3")
@@ -241,7 +249,6 @@ namespace Banks.UI
                     }
 
                     // check input money and if transatcion is possible
-
                     if (_account.CanWithdraw(money))
                     {
                         var transferCommand =
@@ -249,7 +256,10 @@ namespace Banks.UI
                         _account.CommandProccesor.ExecuteCommand(transferCommand);
                         Console.WriteLine("Operation is Successful");
                     }
-                    else Console.WriteLine("Operation is not possible since account is not expired yet");
+                    else
+                    {
+                        Console.WriteLine("Operation is not possible since account is not expired yet");
+                    }
                 }
                 else if (input == "q")
                 {
@@ -257,6 +267,7 @@ namespace Banks.UI
                     {
                         UIManager.Instance.ShowBankMenu(new UIBank(_account.Bank));
                     }
+
                     return;
                 }
                 else

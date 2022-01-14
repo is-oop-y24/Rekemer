@@ -30,7 +30,6 @@ namespace BackupsExtra.Algorithms.RestoreAlgorithms
                             File.Delete(Path.Combine(_customLocation, name));
                         }
 
-
                         File.Move(newLocation, Path.Combine(_customLocation, name));
                         restorePoint.Files.Remove(newLocation);
                     }

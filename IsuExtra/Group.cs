@@ -1,21 +1,19 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-
 using Isu.Tools;
 
 namespace IsuExtra
 {
     public class Group
     {
+#pragma warning disable SA1401
         public readonly int MaxStudents;
+#pragma warning restore SA1401
 
+#pragma warning disable SA1401
         public List<Lesson> Lessons = new List<Lesson>();
-        public GroupID GroupInfo { get; private set; }
-
-
-        private List<Student> _students;
-
-        public List<Student> Students => new List<Student>(_students);
+#pragma warning restore SA1401
+        private readonly List<Student> _students;
 
         private Group(GroupID id, int maxStudents, List<Student> students)
         {
@@ -23,6 +21,10 @@ namespace IsuExtra
             this.MaxStudents = maxStudents;
             _students = students;
         }
+
+        public GroupID GroupInfo { get; private set; }
+
+        public List<Student> Students => new List<Student>(_students);
 
         public void AddLessons(List<Lesson> lessons)
         {
@@ -61,6 +63,10 @@ namespace IsuExtra
             private GroupID _groupId;
             private List<Student> _students;
 
+            public static implicit operator Group(GroupBuilder builder)
+            {
+                return builder.Build();
+            }
 
             public GroupBuilder WithName(string name)
             {
@@ -83,11 +89,6 @@ namespace IsuExtra
             public Group Build()
             {
                 return new Group(_groupId, _maxStudents, _students ?? new List<Student>());
-            }
-
-            public static implicit operator Group(GroupBuilder builder)
-            {
-                return builder.Build();
             }
 
             public GroupBuilder ToBuild()

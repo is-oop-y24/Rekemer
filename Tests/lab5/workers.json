@@ -6,7 +6,7 @@
       "leaderWorker": null,
       "Report": null,
       "IsLeader": true,
-      "ID": "fb35f6ee-28e3-403c-b526-ad6f2ce9c267",
+      "ID": "1d84808d-7235-4442-8124-b6dbddbaea82",
       "AssignedTasksString": "{\r\n  \"$type\": \"System.Collections.Generic.List`1[[ServerApplication.Common.Models.Task, ServerApplication]], System.Private.CoreLib\",\r\n  \"$values\": []\r\n}",
       "ActionsOnTasksString": "{\r\n  \"$type\": \"System.Collections.Generic.List`1[[ServerApplication.Common.Commands.Command, ServerApplication]], System.Private.CoreLib\",\r\n  \"$values\": []\r\n}",
       "Name": "boss"
@@ -18,14 +18,14 @@
         "leaderWorker": null,
         "Report": null,
         "IsLeader": true,
-        "ID": "fb35f6ee-28e3-403c-b526-ad6f2ce9c267",
+        "ID": "1d84808d-7235-4442-8124-b6dbddbaea82",
         "AssignedTasksString": "{\r\n  \"$type\": \"System.Collections.Generic.List`1[[ServerApplication.Common.Models.Task, ServerApplication]], System.Private.CoreLib\",\r\n  \"$values\": []\r\n}",
         "ActionsOnTasksString": "{\r\n  \"$type\": \"System.Collections.Generic.List`1[[ServerApplication.Common.Commands.Command, ServerApplication]], System.Private.CoreLib\",\r\n  \"$values\": []\r\n}",
         "Name": "boss"
       },
       "Report": null,
       "IsLeader": false,
-      "ID": "99140737-cb5d-4db2-8910-318759420ce0",
+      "ID": "e83ef3d4-4a2a-4921-bd04-7adacac1d181",
       "AssignedTasksString": "{\r\n  \"$type\": \"System.Collections.Generic.List`1[[ServerApplication.Common.Models.Task, ServerApplication]], System.Private.CoreLib\",\r\n  \"$values\": []\r\n}",
       "ActionsOnTasksString": "{\r\n  \"$type\": \"System.Collections.Generic.List`1[[ServerApplication.Common.Commands.Command, ServerApplication]], System.Private.CoreLib\",\r\n  \"$values\": []\r\n}",
       "Name": "ilia"
@@ -37,14 +37,14 @@
         "leaderWorker": null,
         "Report": null,
         "IsLeader": true,
-        "ID": "fb35f6ee-28e3-403c-b526-ad6f2ce9c267",
+        "ID": "1d84808d-7235-4442-8124-b6dbddbaea82",
         "AssignedTasksString": "{\r\n  \"$type\": \"System.Collections.Generic.List`1[[ServerApplication.Common.Models.Task, ServerApplication]], System.Private.CoreLib\",\r\n  \"$values\": []\r\n}",
         "ActionsOnTasksString": "{\r\n  \"$type\": \"System.Collections.Generic.List`1[[ServerApplication.Common.Commands.Command, ServerApplication]], System.Private.CoreLib\",\r\n  \"$values\": []\r\n}",
         "Name": "boss"
       },
       "Report": null,
       "IsLeader": false,
-      "ID": "b592c8f9-d861-48aa-80a1-93d18ec0abc3",
+      "ID": "958a43b8-d27e-4377-96f8-fde284d8f2ee",
       "AssignedTasksString": "{\r\n  \"$type\": \"System.Collections.Generic.List`1[[ServerApplication.Common.Models.Task, ServerApplication]], System.Private.CoreLib\",\r\n  \"$values\": []\r\n}",
       "ActionsOnTasksString": "{\r\n  \"$type\": \"System.Collections.Generic.List`1[[ServerApplication.Common.Commands.Command, ServerApplication]], System.Private.CoreLib\",\r\n  \"$values\": []\r\n}",
       "Name": "maria"

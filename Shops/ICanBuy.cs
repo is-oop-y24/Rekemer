@@ -7,6 +7,6 @@ namespace Shops
         public float Money { get; }
         public List<Product> ProductsToBuy { get; }
         public void DecreaseMoney(float money);
-        public void AddProducts( Product newGood);
+        public void AddProducts(Product newGood);
     }
 }

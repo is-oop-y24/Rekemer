@@ -30,7 +30,7 @@ namespace Isu.Tests
             _manager.AddGroup(group);
             Student student = studentBuilder.WithName("ilia").WithGroup(group.GroupInfo);
             _manager.AddStudent(group, student);
-            string nameOfStudent = _manager.FindGroup("M3209").students[0].name;
+            string nameOfStudent = _manager.FindGroup("M3209").Students[0].Name;
             Assert.AreEqual("ilia", nameOfStudent );
         }
 
@@ -42,7 +42,7 @@ namespace Isu.Tests
                 Group group = groupBuilder.WithName("M3209").WithMaxAmountOfStudents(1);
                 _manager.AddGroup(group);
                 Student student = studentBuilder.WithName("ilia").WithGroup(group.GroupInfo);
-                for (int i = 0; i < group.maxStudents; i++)
+                for (int i = 0; i < group.MaxStudents; i++)
                 {
                     _manager.AddStudent(group, student);
                 }
@@ -87,8 +87,8 @@ namespace Isu.Tests
             _manager.AddStudent(group1, student1);
             _manager.ChangeStudentGroup(student0, group1);
             _manager.ChangeStudentGroup(student1, group0);
-            bool isTransferred_fromM309 = _manager.FindGroup("M3212").students.Any(t => t.name == "ilia");
-            bool isTransferred_fromM312 = _manager.FindGroup("M3209").students.Any(t => t.name == "kiriil");
+            bool isTransferred_fromM309 = _manager.FindGroup("M3212").Students.Any(t => t.Name == "ilia");
+            bool isTransferred_fromM312 = _manager.FindGroup("M3209").Students.Any(t => t.Name == "kiriil");
             Assert.AreEqual(isTransferred_fromM309, isTransferred_fromM312);
         }
 
@@ -141,8 +141,8 @@ namespace Isu.Tests
         public void CanGroupIdNumberBeFormed_IdNumberIsFormed()
         {
             Group group = groupBuilder.WithName("M3398");
-            int courseNum = (int)group.GroupInfo.courseNum;
-            Assert.AreEqual(398, group.GroupInfo.num + courseNum * 100);
+            int courseNum = (int)group.GroupInfo.CourseNum;
+            Assert.AreEqual(398, group.GroupInfo.Num + courseNum * 100);
         }
     }
 }

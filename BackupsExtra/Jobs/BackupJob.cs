@@ -17,19 +17,6 @@ namespace BackupsExtra.Jobs
         private List<Job> _jobs = new List<Job>();
         private List<string> _filesToSave = new List<string>();
         private Repository _repository;
-
-
-        public List<RestorePoint> RestorePoints
-        {
-            get { return _restorePoints; }
-        }
-
-
-        public IRepository Repository
-        {
-            get { return new Repository(_repository.DirectoryInfo); }
-        }
-
         public BackupJob()
         {
         }
@@ -39,45 +26,25 @@ namespace BackupsExtra.Jobs
             this._repository = repository;
             _algorithm = algorithm;
 
-
             _deleteAlgorithm = deleteAlgorithm;
+        }
+
+        public List<RestorePoint> RestorePoints
+        {
+            get { return _restorePoints; }
+        }
+
+        public IRepository Repository
+        {
+            get { return new Repository(_repository.DirectoryInfo); }
         }
 
         public void AddFiles(List<string> fileInfos)
         {
             _filesToSave = _filesToSave.Union(fileInfos).ToList();
-            // add in log
             string message = AddedFiles(fileInfos);
             Log.Instance.Log(message);
         }
-
-        private string AddedFiles(List<string> fileInfos)
-        {
-            string message = "FilesToSave are added to BackupJob" + Environment.NewLine;
-            foreach (var fileInfo in fileInfos)
-            {
-                message += fileInfo + Environment.NewLine;
-            }
-
-            return message;
-        }
-
-        private string RestorePointIsAdded(RestorePoint restorePoint)
-        {
-            string message = "job is added" + Environment.NewLine;
-            var time = restorePoint._time;
-            var alghoritm = restorePoint.Alghoritm;
-            var files = restorePoint.Files;
-            message += "Time: " + time + " algorithm: " + alghoritm + "files: " + files;
-            return message;
-        }
-
-        private string SystemIsSaved()
-        {
-            string message = "system is saved in ";
-            return message;
-        }
-
 
         public void RemoveFile(string fileInfo)
         {
@@ -133,6 +100,33 @@ namespace BackupsExtra.Jobs
         public void Restore(RestorePoint restorePoint, Restore restore)
         {
             restore.RestoreFiles(restorePoint);
+        }
+
+        private string SystemIsSaved()
+        {
+            string message = "system is saved in ";
+            return message;
+        }
+
+        private string AddedFiles(List<string> fileInfos)
+        {
+            string message = "FilesToSave are added to BackupJob" + Environment.NewLine;
+            foreach (var fileInfo in fileInfos)
+            {
+                message += fileInfo + Environment.NewLine;
+            }
+
+            return message;
+        }
+
+        private string RestorePointIsAdded(RestorePoint restorePoint)
+        {
+            string message = "job is added" + Environment.NewLine;
+            var time = restorePoint._time;
+            var alghoritm = restorePoint.Alghoritm;
+            var files = restorePoint.Files;
+            message += "Time: " + time + " algorithm: " + alghoritm + "files: " + files;
+            return message;
         }
     }
 }

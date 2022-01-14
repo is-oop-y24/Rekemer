@@ -9,6 +9,12 @@ namespace Backups
         private DateTime _time;
         private string _directory;
         private List<FileInfo> _files;
+        public RestorePoint(DateTime time, string directory, List<FileInfo> files)
+        {
+            this._time = time;
+            this._directory = directory;
+            this._files = files;
+        }
 
         public List<FileInfo> Files
         {
@@ -16,13 +22,6 @@ namespace Backups
             {
                 return new List<FileInfo>(_files);
             }
-        }
-
-        public RestorePoint(DateTime time, string directory, List<FileInfo> files)
-        {
-            this._time = time;
-            this._directory = directory;
-            this._files = files;
         }
     }
 }

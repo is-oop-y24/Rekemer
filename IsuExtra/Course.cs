@@ -6,7 +6,9 @@ namespace IsuExtra
 {
     public class Course
     {
+#pragma warning disable SA1401
         public readonly string Faculty;
+#pragma warning restore SA1401
         private List<Thread> _threads = new List<Thread>();
 
         public Course(string faculty, int amountOfThreads, params int[] sizeOfGroups)
@@ -62,7 +64,7 @@ namespace IsuExtra
 
             if (threadToGet.Num == -1) throw new Exception($"There is no group {num} in faculty{Faculty}");
 
-            if (threadToGet.AmountOfStudents + 1 > threadToGet.maxStudents)
+            if (threadToGet.AmountOfStudents + 1 > threadToGet.MaxStudents)
             {
                 throw new Exception(
                     $"Group {threadToGet.Num} in Faculty{Faculty} hasn't got any spaces for adding student");
@@ -95,7 +97,7 @@ namespace IsuExtra
             if (thread != null) RemoveFrom(thread, student);
         }
 
-        void RemoveFrom(Thread thread, Student student)
+        private void RemoveFrom(Thread thread, Student student)
         {
             var thread0 = GetThread(thread.Num);
             thread0.ReduceAmountOfStudents(1);

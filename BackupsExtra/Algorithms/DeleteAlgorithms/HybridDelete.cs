@@ -12,7 +12,6 @@ namespace BackupsExtra.Algorithms.DeleteAlgorithms
             this._typeOfHybrid = typeOfHybrid;
         }
 
-
         public void Delete(ref List<RestorePoint> restorePoints)
         {
             if (restorePoints == null || restorePoints.Count == 0)

@@ -4,7 +4,9 @@ namespace Banks
 {
     public class CommandProccesor
     {
+#pragma warning disable SA1401
         public List<Command.Command> Commands = new List<Command.Command>();
+#pragma warning restore SA1401
         private int _currentIndex;
 
         public void ExecuteCommand(Command.Command command)

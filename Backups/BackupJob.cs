@@ -8,32 +8,28 @@ namespace Backups
     {
         private List<RestorePoint> restorePoints = new List<RestorePoint>();
         private IAlgorithm _algorithm;
+        private IRepository repository;
+        private List<FileInfo> filesToSave = new List<FileInfo>();
+        public BackupJob(IRepository repository, IAlgorithm algorithm)
+        {
+            this.repository = repository;
+            _algorithm = algorithm;
+        }
 
         public List<RestorePoint> RestorePoints
         {
             get { return new List<RestorePoint>(restorePoints); }
         }
 
-        private IRepository repository;
-
         public IRepository Repository
         {
             get { return new Repository(repository.DirectoryInfo.FullName); }
-        }
-
-        private List<FileInfo> filesToSave = new List<FileInfo>();
-
-        public BackupJob(IRepository repository,IAlgorithm algorithm)
-        {
-            this.repository = repository;
-            _algorithm = algorithm;
         }
 
         public void AddFiles(List<FileInfo> fileInfos)
         {
             filesToSave = filesToSave.Union(fileInfos).ToList();
         }
-
 
         public void RemoveFile(FileInfo fileInfo)
         {

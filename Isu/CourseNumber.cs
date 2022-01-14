@@ -2,6 +2,11 @@
 {
     public enum CourseNumber
     {
-        First = 1, Second = 2, Third = 3, Fourth = 4
+#pragma warning disable SA1602
+        Fourth = 4,
+        First = 1,
+        Second = 2,
+        Third = 3,
+#pragma warning restore SA1602
     }
 }

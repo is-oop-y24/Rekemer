@@ -39,10 +39,12 @@ namespace BackupsExtra.Algorithms.RestoreAlgorithms
             foreach (var file in files)
             {
                 using (ZipArchive zip = ZipFile.Open(file, ZipArchiveMode.Read))
+                {
                     foreach (ZipArchiveEntry entry in zip.Entries)
                     {
                         filesOfNewPoints.Add(Path.Combine(Path.GetDirectoryName(file), entry.Name));
                     }
+                }
             }
 
             return filesOfNewPoints;

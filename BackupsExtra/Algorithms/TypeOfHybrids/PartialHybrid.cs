@@ -7,7 +7,8 @@ namespace BackupsExtra.Algorithms.TypeOfHybrids
 {
     public class PartialHybrid : Hybrid
     {
-        public PartialHybrid(int amountOfPoints, Vector3 validTime) : base(amountOfPoints, validTime)
+        public PartialHybrid(int amountOfPoints, Vector3 validTime)
+            : base(amountOfPoints, validTime)
         {
         }
 

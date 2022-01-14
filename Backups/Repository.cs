@@ -7,12 +7,6 @@ namespace Backups
     public class Repository : IRepository
     {
         private DirectoryInfo _directoryInfo;
-
-        public DirectoryInfo DirectoryInfo
-        {
-            get { return new DirectoryInfo(_directoryInfo.FullName); }
-        }
-
         public Repository(string directory)
         {
             if (Directory.Exists(directory))
@@ -25,20 +19,23 @@ namespace Backups
             }
         }
 
+        public DirectoryInfo DirectoryInfo
+        {
+            get { return new DirectoryInfo(_directoryInfo.FullName); }
+        }
+
         public string CreateZipCopyOfFile(FileInfo file)
         {
             var name = Path.GetFileNameWithoutExtension(file.Name);
             var zipFile = Path.Combine(_directoryInfo.FullName, name + ".zip");
-            ;
             int i = 1;
             while (File.Exists(zipFile))
             {
-                //string path = @"photo\myFolder\image.jpg";
                 string newFileName = $@"{name}_" + i.ToString();
 
                 string dir = Path.GetDirectoryName(zipFile);
                 string ext = Path.GetExtension(zipFile);
-                zipFile = Path.Combine(dir, newFileName + ext); // @"photo\myFolder\image-resize.jpg"
+                zipFile = Path.Combine(dir, newFileName + ext);
                 i++;
             }
 
@@ -53,12 +50,11 @@ namespace Backups
             int i = 1;
             while (File.Exists(zipFile))
             {
-                //string path = @"photo\myFolder\image.jpg";
                 string newFileName = @"myzip_" + i.ToString();
 
                 string dir = Path.GetDirectoryName(zipFile);
                 string ext = Path.GetExtension(zipFile);
-                zipFile = Path.Combine(dir, newFileName + ext); // @"photo\myFolder\image-resize.jpg"
+                zipFile = Path.Combine(dir, newFileName + ext);
                 i++;
             }
 

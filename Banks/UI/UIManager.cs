@@ -8,10 +8,10 @@ namespace Banks.UI
     {
         private static UIManager _instance;
 
-        List<string> menuItems = new List<string>()
+        private List<string> menuItems = new List<string>()
         {
             "FindBanks",
-            "q"
+            "q",
         };
         public static UIManager Instance
         {
@@ -36,11 +36,11 @@ namespace Banks.UI
             clientUI.Menu(bank);
         }
 
-        public void ShowBankMenu(UIBank UIBank)
+        public void ShowBankMenu(UIBank uiBank)
         {
-            UIBank.Menu();
+            uiBank.Menu();
         }
-        
+
         public void MainMenu()
         {
             Console.Clear();
@@ -89,6 +89,7 @@ namespace Banks.UI
                     {
                         UIManager.Instance.ShowBankMenu(new UIBank(bank));
                     }
+
                     break;
                 }
                 else

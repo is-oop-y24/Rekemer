@@ -10,10 +10,20 @@ namespace Shops
         public float Money { get; private set; }
         public List<Product> ProductsToBuy { get; private set; }
 
-
+#pragma warning disable SA1201
         private string _nameOfShop;
+#pragma warning restore SA1201
         private string _address;
-        public Guid _id { get; private set; }
+        public Shop(string nameOfShop = "Ilia's shop", string address = "Street 5", float startCapital = 500f)
+        {
+            Money = startCapital;
+            this._nameOfShop = nameOfShop;
+            this._address = address;
+
+            Goods = new Dictionary<string, Product>();
+        }
+
+        public Guid Id { get; private set; }
         public Dictionary<string, Product> Goods { get; private set; }
 
         public void DecreaseMoney(float money)
@@ -26,15 +36,6 @@ namespace Shops
             ProductsToBuy = new List<Product>(products);
         }
 
-        public Shop(string nameOfShop = "Ilia's shop", string address = "Street 5", float startCapital = 500f)
-        {
-            Money = startCapital;
-            this._nameOfShop = nameOfShop;
-            this._address = address;
-
-            Goods = new Dictionary<string, Product>();
-        }
-
         public int GetAmountOfGoodWithThisName(string name)
         {
             if (Goods[name] != null)
@@ -45,8 +46,6 @@ namespace Shops
 
             return 0;
         }
-
-       
 
         public void SetPriceForGoodsWithName(string name, float price)
         {
@@ -95,7 +94,6 @@ namespace Shops
             return good;
         }
 
-
         public void ServeGood(ICanBuy customer)
         {
             if (customer == null) return;
@@ -111,11 +109,13 @@ namespace Shops
                 {
                     throw new Exception($"there is no products with name: {name}");
                 }
+
                 if (Goods[name].Amount < amountOfGood)
                     throw new Exception("Not enough goods in shop for buying");
                 good.ChangePrice(Goods[name].Price);
                 productsToBuy.Add(good);
             }
+
             Handle(customer, productsToBuy);
         }
 
@@ -123,27 +123,6 @@ namespace Shops
         {
             Money += money;
         }
-
-        private void Handle(ICanBuy customer, List<Product> products)
-        {
-            if (customer == null || products == null) return;
-            foreach (var product in products)
-            {
-                if (product == null) continue;
-                float totalSum = product.Amount * product.Price;
-                if (customer.Money >= totalSum)
-                {
-                    ProductBuilder productBuilder = new ProductBuilder();
-                    var productToAdd = productBuilder.WithAmount(product.Amount).WithName(product.Name)
-                        .WithPrice(product.Price);
-                    customer.AddProducts(productToAdd);
-                    customer.DecreaseMoney(totalSum);
-                    Goods[product.Name].DecreaseAmount(product.Amount);
-                    AddMoney(totalSum);
-                }
-            }
-        }
-
 
         public float CalculateSum(Product[] productsToBuy)
         {
@@ -187,59 +166,25 @@ namespace Shops
                 Goods[newGood.Name] = newGood;
             }
         }
-    }
 
-    public class ShopBuilder
-    {
-        public float Money { get; private set; }
-        public List<Product> ProductsToBuy { get; private set; }
-        private string _nameOfShop;
-        private string _address;
-
-        public ShopBuilder WithMoney(float money)
+        private void Handle(ICanBuy customer, List<Product> products)
         {
-            Money = money;
-            return this;
-        }
-
-        public ShopBuilder WithProducts(params Product[] newGoods)
-        {
-            ProductsToBuy = new List<Product>(newGoods);
-            return this;
-        }
-
-        public ShopBuilder WithProducts(List<Product> newGoods)
-        {
-            ProductsToBuy = newGoods;
-            return this;
-        }
-
-        public ShopBuilder WithName(string name)
-        {
-            _nameOfShop = name;
-            return this;
-        }
-
-        public ShopBuilder WithAddress(string addres)
-        {
-            _address = addres;
-            return this;
-        }
-
-        public Shop Build()
-        {
-            return new Shop(_nameOfShop, _address, Money);
-        }
-
-        public static implicit operator Shop(ShopBuilder builder)
-        {
-            return builder.Build();
-        }
-
-        public ShopBuilder ToBuild()
-        {
-            ShopBuilder shopBuilder = new ShopBuilder();
-            return shopBuilder.WithName(_nameOfShop).WithMoney(Money).WithAddress(_address);
+            if (customer == null || products == null) return;
+            foreach (var product in products)
+            {
+                if (product == null) continue;
+                float totalSum = product.Amount * product.Price;
+                if (customer.Money >= totalSum)
+                {
+                    ProductBuilder productBuilder = new ProductBuilder();
+                    var productToAdd = productBuilder.WithAmount(product.Amount).WithName(product.Name)
+                        .WithPrice(product.Price);
+                    customer.AddProducts(productToAdd);
+                    customer.DecreaseMoney(totalSum);
+                    Goods[product.Name].DecreaseAmount(product.Amount);
+                    AddMoney(totalSum);
+                }
+            }
         }
     }
 }

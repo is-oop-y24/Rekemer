@@ -7,8 +7,6 @@ namespace Banks
     public class CentralBank
     {
         private static CentralBank _instance;
-        public List<Bank> Banks { get; private set; } = new List<Bank>();
-
         public static CentralBank Instance
         {
             get
@@ -22,12 +20,13 @@ namespace Banks
             }
         }
 
+        public List<Bank> Banks { get; private set; } = new List<Bank>();
+
         public void AddBanks(List<Bank> banks)
         {
             if (banks == null) return;
             Banks = Banks.Union(banks).ToList();
         }
-
 
         public void Notify()
         {
@@ -53,9 +52,11 @@ namespace Banks
                     {
                         return accountToReturn;
                     }
+
                     allAccounts = allAccounts.Union(bankAccounts).ToList();
                 }
             }
+
             return null;
         }
     }

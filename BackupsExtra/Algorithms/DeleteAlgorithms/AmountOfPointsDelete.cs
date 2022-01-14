@@ -11,7 +11,6 @@ namespace BackupsExtra.Algorithms.DeleteAlgorithms
             _validPoints = validPoints;
         }
 
-
         public void Delete(ref List<RestorePoint> restorePoints)
         {
             if (restorePoints == null || restorePoints.Count == 0 || restorePoints.Count < _validPoints)
@@ -22,7 +21,7 @@ namespace BackupsExtra.Algorithms.DeleteAlgorithms
             var restorePointsToDelete = GetRestorePointsToDelete(restorePoints);
             ProccessOldPoints(ref restorePoints, restorePointsToDelete);
         }
-        
+
         public List<RestorePoint> GetRestorePointsToDelete(List<RestorePoint> restorePoints)
         {
             List<RestorePoint> points = new List<RestorePoint>();

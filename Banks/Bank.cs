@@ -14,12 +14,11 @@ namespace Banks
             new Dictionary<Client, List<Account.Account>>();
 
         // setting for debAccount
-
         public Bank(string name)
         {
             Name = name;
         }
-        
+
         public float PercentDebAccount { get; private set; }
         public Vector3 ValidTimeDeb { get; private set; }
 
@@ -39,13 +38,13 @@ namespace Banks
 
         public Vector3 ValidTimeCredit { get; private set; }
 
-
         // set settings for doubtful clients
         public decimal LimitForWithdrawAndTransfer { get; private set; }
 
         public void ChangeValidTimeCredit(int year, int month, int days)
         {
             ValidTimeCredit = new Vector3(year, month, days);
+
             // notify
             var clients = new List<Client>(_accountsOfClients.Keys);
             string notification =
@@ -56,10 +55,10 @@ namespace Banks
             }
         }
 
-
         public void ChangeValidTimeDeb(int year, int month, int days)
         {
             ValidTimeDeb = new Vector3(year, month, days);
+
             // notify
             var clients = new List<Client>(_accountsOfClients.Keys);
             string notification =
@@ -70,10 +69,10 @@ namespace Banks
             }
         }
 
-
         public void ChangeDebAccSettings(float percent)
         {
             PercentDebAccount = percent;
+
             // notify
             var clients = new List<Client>(_accountsOfClients.Keys);
             string notification = $"in bank {Name} new percent for debit accounts: {PercentDebAccount} %";
@@ -82,7 +81,6 @@ namespace Banks
                 client.Update(notification);
             }
         }
-
 
         public void ChangeDepAccSettings(List<decimal> moneyThresholds, List<float> percentThresholds)
         {
@@ -106,7 +104,7 @@ namespace Banks
             string notification = $"in bank {Name} new conditions for deposit accounts:" + Environment.NewLine;
             for (int i = 0; i < moneyThresholds.Count; i++)
             {
-                bool isLast = (i == moneyThresholds.Count - 1);
+                bool isLast = i == moneyThresholds.Count - 1;
                 notification += $"{percentThresholds[i]} : {(isLast ? ">" : "<")} {moneyThresholds[i]}" +
                                 Environment.NewLine;
             }
@@ -121,6 +119,7 @@ namespace Banks
         {
             Limit = limit;
             Commission = commission;
+
             // notify
             var clients = new List<Client>(_accountsOfClients.Keys);
             string notification = $"in bank {Name} new limit and commission for creditAccounts: {limit} {commission}";
@@ -133,6 +132,7 @@ namespace Banks
         public void ChangeLimitForShadyAccountsSettings(decimal limit)
         {
             LimitForWithdrawAndTransfer = limit;
+
             // notify
             var clients = new List<Client>(_accountsOfClients.Keys);
             string notification = $"in bank {Name} new limit for users with not fully activated accounts: {limit}";
@@ -141,7 +141,6 @@ namespace Banks
                 client.Update(notification);
             }
         }
-
 
         public float DeterminePercent(decimal amount)
         {
@@ -228,13 +227,13 @@ namespace Banks
 
             return null;
         }
-        
+
         public Client IsUserExist(string id)
         {
             if (_accountsOfClients == null) return null;
             foreach (var client in _accountsOfClients.Keys)
             {
-                if (client.id.ToString() == id)
+                if (client.Id.ToString() == id)
                 {
                     return client;
                 }
@@ -243,19 +242,17 @@ namespace Banks
             return null;
         }
 
-        
         public List<Account.Account> GetAllAccounts()
         {
             List<Account.Account> accounts = new List<Account.Account>();
             foreach (var key in _accountsOfClients.Keys)
             {
-             
                 accounts = accounts.Union(_accountsOfClients[key]).ToList();
             }
 
             return accounts;
-
         }
+
         public List<Account.Account> GetAccountsOfUser(Client client)
         {
             List<Account.Account> accounts = new List<Account.Account>();

@@ -1,17 +1,16 @@
-﻿using Isu.Tools;
-using System;
-
+﻿using System;
+using Isu.Tools;
 
 namespace IsuExtra
 {
     public class GroupID
     {
+#pragma warning disable SA1401
         public readonly CourseNumber CourseNum;
         public readonly int Num;
 
         public readonly string Faculty;
-
-        public string Name { get; private set; }
+#pragma warning restore SA1401
 
         public GroupID(GroupID groupId)
         {
@@ -26,6 +25,8 @@ namespace IsuExtra
             this.Num = num;
             Faculty = megaFaculty;
         }
+
+        public string Name { get; private set; }
 
         public static implicit operator string(GroupID id)
         {
@@ -50,18 +51,21 @@ namespace IsuExtra
             if (MegaFaculty.Instance != null)
             {
                 bool isTherePrefix = MegaFaculty.Instance.IsTherePrefix(name[0]);
-            
+
                 if (name.Length != 5 || !isTherePrefix ||
                     !isCourseNumberExists || !areInts)
                     throw new IsuException("Invalid group name (K3XYY)");
                 string megaFaculty = MegaFaculty.Instance.GetMegafaculty(name[0]);
                 if (megaFaculty != null)
                 {
-                    GroupID groupInfo = new GroupID((CourseNumber) int.Parse(name[2].ToString()),
-                        byte.Parse(numSubstring.Substring(2)), megaFaculty);
+                    GroupID groupInfo = new GroupID(
+                        (CourseNumber)int.Parse(name[2].ToString()),
+                        byte.Parse(numSubstring.Substring(2)),
+                        megaFaculty);
                     return groupInfo;
                 }
             }
+
             return null;
         }
     }

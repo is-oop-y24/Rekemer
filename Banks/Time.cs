@@ -29,10 +29,12 @@ namespace Banks
         {
             _instance._dateTime = DateTime.Now;
         }
-        public void AddTime( int years, int months, int days)
+
+        public void AddTime(int years, int months, int days)
         {
             // add time
-           _dateTime =  _dateTime.AddYears(years).AddMonths(months).AddDays(days);
+           _dateTime = _dateTime.AddYears(years).AddMonths(months).AddDays(days);
+
            // notify banks
            if (CentralBank.Instance != null)
            {

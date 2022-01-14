@@ -1,5 +1,4 @@
-﻿
-namespace Backups
+﻿namespace Backups
 {
     internal class Program
     {

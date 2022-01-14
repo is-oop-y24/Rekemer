@@ -5,7 +5,6 @@ using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using BackupsExtra.Algorithms.LogInterface;
 
-
 namespace BackupsExtra.Save
 {
     public static class SaveSystem
@@ -21,13 +20,6 @@ namespace BackupsExtra.Save
                 string message = SaveDataIsCreated();
                 Log.Instance.Log(message);
             }
-        }
-
-        private static string SaveDataIsCreated()
-        {
-            string message = "";
-            message += $"saveData is succesfully created in {PathOfSaving}";
-            return message;
         }
 
         public static BinaryFormatter GetBinaryFormatter()
@@ -47,7 +39,6 @@ namespace BackupsExtra.Save
                 BinaryFormatter formatter = GetBinaryFormatter();
 
                 FileStream stream = File.Open(PathOfSaving, FileMode.Open);
-                //var saveData1 = formatter.Deserialize(stream) as Job;
                 var saveData = formatter.Deserialize(stream) as SaveData;
                 stream.Close();
                 return saveData;
@@ -56,6 +47,13 @@ namespace BackupsExtra.Save
             {
                 throw new Exception($"Loading is failed, since file {PathOfSaving} doesnt exist");
             }
+        }
+
+        private static string SaveDataIsCreated()
+        {
+            string message = string.Empty;
+            message += $"saveData is succesfully created in {PathOfSaving}";
+            return message;
         }
     }
 }

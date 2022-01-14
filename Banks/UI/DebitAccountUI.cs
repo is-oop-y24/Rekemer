@@ -7,7 +7,8 @@ namespace Banks.UI
 {
     public class DebitAccountUI : AccountUI
     {
-        public DebitAccountUI(DebitAccount account) : base(account)
+        public DebitAccountUI(DebitAccount account)
+            : base(account)
         {
         }
 
@@ -26,9 +27,8 @@ namespace Banks.UI
                     // let him go and check
                     if (UIManager.Instance != null)
                     {
-                        UIManager.Instance.ShowClientMenu(new ClientUI(_account.Client),_account.Bank);
+                        UIManager.Instance.ShowClientMenu(new ClientUI(_account.Client), _account.Bank);
                     }
-
                 }
             }
 
@@ -40,7 +40,8 @@ namespace Banks.UI
             while (true)
             {
                 Console.WriteLine("Do you want to replenish(1), Withdraw(2) or transfer(3) or quit(q)? ");
-                //let choose command
+
+                // let choose command
                 string input = Console.ReadLine();
                 if (input == "1")
                 {
@@ -95,7 +96,6 @@ namespace Banks.UI
                         Console.WriteLine(
                             $"Due to status of your account, you have limit for withdrawing money from account {_account.Bank.LimitForWithdrawAndTransfer}");
 
-
                         while (true)
                         {
                             Console.WriteLine("how much money do you want to withdraw?");
@@ -143,7 +143,6 @@ namespace Banks.UI
                         Console.WriteLine("Sorry, There is no such account");
                         Menu();
                     }
-
 
                     if (accounts == null)
                     {
@@ -235,11 +234,11 @@ namespace Banks.UI
                 }
                 else if (input == "q")
                 {
-                    
                     if (UIManager.Instance != null)
                     {
                         UIManager.Instance.ShowBankMenu(new UIBank(_account.Bank));
                     }
+
                     return;
                 }
                 else

@@ -44,7 +44,8 @@ namespace BackupsExtra.Algorithms.DeleteAlgorithms
                             }
 
                             var singleStorageSave = new SingleStorageSave();
-                            singleStorageSave.Operation(newPoint.Files,
+                            singleStorageSave.Operation(
+                                newPoint.Files,
                                 new Repository(Path.GetDirectoryName(files[0])));
                             DeleteFiles(newPoint.Files);
                         }
@@ -52,7 +53,8 @@ namespace BackupsExtra.Algorithms.DeleteAlgorithms
                         {
                             // archive every single one
                             var splitStorageSave = new SplitStorageSave();
-                            splitStorageSave.Operation(newPoint.Files,
+                            splitStorageSave.Operation(
+                                newPoint.Files,
                                 new Repository(Path.GetDirectoryName(filesOfNewPoints[0])));
                         }
 
@@ -101,7 +103,7 @@ namespace BackupsExtra.Algorithms.DeleteAlgorithms
 
         private string RestorePointIsDeleted(List<RestorePoint> restorePoints)
         {
-            var message = "";
+            var message = string.Empty;
             foreach (var point in restorePoints)
             {
                 message += RestorePointIsDeleted(point);
@@ -150,10 +152,12 @@ namespace BackupsExtra.Algorithms.DeleteAlgorithms
             foreach (var file in files)
             {
                 using (ZipArchive zip = ZipFile.Open(file, ZipArchiveMode.Read))
+                {
                     foreach (ZipArchiveEntry entry in zip.Entries)
                     {
                         filesOfNewPoints.Add(Path.Combine(Path.GetDirectoryName(file), entry.Name));
                     }
+                }
             }
 
             return filesOfNewPoints;

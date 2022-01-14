@@ -7,7 +7,8 @@ namespace BackupsExtra.Algorithms.TypeOfHybrids
 {
     public class AbsoluteHybrid : Hybrid
     {
-        public AbsoluteHybrid(int amountOfPoints, Vector3 validTime) : base(amountOfPoints, validTime)
+        public AbsoluteHybrid(int amountOfPoints, Vector3 validTime)
+            : base(amountOfPoints, validTime)
         {
         }
 

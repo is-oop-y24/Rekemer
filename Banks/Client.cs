@@ -5,13 +5,22 @@ namespace Banks
 {
     public class Client
     {
-        private string _address = String.Empty;
-        private string _passport = String.Empty;
+    #pragma warning disable SA1401
+        public Guid Id = Guid.NewGuid();
+    #pragma warning restore SA1401
+        private string _address = string.Empty;
+        private string _passport = string.Empty;
         private ClientStatus _status = ClientStatus.Dubious;
         private List<Account.Account> _accounts = new List<Account.Account>();
+
+        public Client(string name, string surname)
+        {
+            Name = name;
+            Surname = surname;
+        }
+
         public decimal PocketMoney { get; private set; }
-        
-        public Guid id = Guid.NewGuid();
+
         public List<Account.Account> Accounts
         {
             get => _accounts;
@@ -38,17 +47,10 @@ namespace Banks
             set => _passport = value;
         }
 
-        public Client(string name, string surname)
-        {
-            Name = name;
-            Surname = surname;
-           
-        }
-
         public void SetPassport(string passport)
         {
             Passport = passport;
-            if (Address != String.Empty)
+            if (Address != string.Empty)
             {
                 Status = ClientStatus.Full;
             }
@@ -59,10 +61,10 @@ namespace Banks
             // do something with this notification - show on his phone, client's accounts are  already updated  at this point
         }
 
-        public void SetAddress(string Address)
+        public void SetAddress(string address)
         {
-            this.Address = Address;
-            if (Passport != String.Empty)
+            this.Address = address;
+            if (Passport != string.Empty)
             {
                 Status = ClientStatus.Full;
             }

@@ -42,10 +42,11 @@ namespace Banks.UI
                                     {
                                         UIManager.Instance.ShowBankMenu(new UIBank(bank));
                                     }
+
                                     break;
                                 }
 
-                                if (input != String.Empty)
+                                if (input != string.Empty)
                                 {
                                     if (input == "y")
                                     {
@@ -65,8 +66,6 @@ namespace Banks.UI
                                 {
                                     Console.WriteLine("surname is empty, enter surname please");
                                 }
-
-                               
                             }
 
                             break;
@@ -85,9 +84,11 @@ namespace Banks.UI
                                     {
                                         UIManager.Instance.ShowBankMenu(new UIBank(bank));
                                     }
+
                                     break;
                                 }
-                                if (input != String.Empty)
+
+                                if (input != string.Empty)
                                 {
                                     if (input == "y")
                                     {
@@ -126,10 +127,11 @@ namespace Banks.UI
                                     {
                                         UIManager.Instance.ShowBankMenu(new UIBank(bank));
                                     }
+
                                     break;
                                 }
 
-                                if (newUserData != String.Empty)
+                                if (newUserData != string.Empty)
                                 {
                                     if (input == "y")
                                     {
@@ -150,7 +152,6 @@ namespace Banks.UI
                                 {
                                     Console.WriteLine("address is empty, enter address please");
                                 }
-                               
                             }
 
                             break;
@@ -169,9 +170,11 @@ namespace Banks.UI
                                     {
                                         UIManager.Instance.ShowBankMenu(new UIBank(bank));
                                     }
+
                                     break;
                                 }
-                                if (newUserData != String.Empty)
+
+                                if (newUserData != string.Empty)
                                 {
                                     if (input == "y")
                                     {
@@ -206,6 +209,7 @@ namespace Banks.UI
                     {
                         UIManager.Instance.ShowBankMenu(new UIBank(bank));
                     }
+
                     break;
                 }
                 else if (input == "n")

@@ -6,7 +6,8 @@ namespace Banks.UI
 {
     public class CreditAccountUI : AccountUI
     {
-        public CreditAccountUI(Account.CreditAccount account) : base(account)
+        public CreditAccountUI(Account.CreditAccount account)
+            : base(account)
         {
         }
 
@@ -25,9 +26,8 @@ namespace Banks.UI
                     // let him go and check
                     if (UIManager.Instance != null)
                     {
-                        UIManager.Instance.ShowClientMenu(new ClientUI(_account.Client),_account.Bank);
+                        UIManager.Instance.ShowClientMenu(new ClientUI(_account.Client), _account.Bank);
                     }
-                 
                 }
             }
 
@@ -37,7 +37,8 @@ namespace Banks.UI
             while (true)
             {
                 Console.WriteLine("Do you want to replenish(1), Withdraw(2) or transfer(3) or quit(q)? ");
-                //let choose command
+
+                // let choose command
                 string input = Console.ReadLine();
                 if (input == "1")
                 {
@@ -93,7 +94,6 @@ namespace Banks.UI
                             $"Due to status of your account, you have limit for withdrawing money from account {_account.Bank.LimitForWithdrawAndTransfer}");
                         Console.WriteLine("how much money do you want to withdraw?");
 
-
                         while (true)
                         {
                             money = Convert.ToDecimal(Console.ReadLine());
@@ -121,7 +121,10 @@ namespace Banks.UI
                                     Console.WriteLine("Not enough money for commission");
                                 }
                             }
-                            else Console.WriteLine("not enough money on account");
+                            else
+                            {
+                                Console.WriteLine("not enough money on account");
+                            }
                         }
                     }
                     else if (_account.Client.Status == ClientStatus.Full)
@@ -141,7 +144,10 @@ namespace Banks.UI
 
                             _account.CommandProccesor.ExecuteCommand(new WithdrawCommand(_account, money));
                         }
-                        else Console.WriteLine("not enough money on account");
+                        else
+                        {
+                            Console.WriteLine("not enough money on account");
+                        }
                     }
                 }
                 else if (input == "3")
@@ -244,7 +250,6 @@ namespace Banks.UI
                     }
 
                     // check input money and if transatcion is possible
-
                     if (_account.CanWithdraw(money))
                     {
                         if (_account.Bank.Commission <= _account.Client.PocketMoney)
@@ -258,7 +263,10 @@ namespace Banks.UI
                             Console.WriteLine("Not enough money for commission");
                         }
                     }
-                    else Console.WriteLine("Operation is not possible since account is not expired yet");
+                    else
+                    {
+                        Console.WriteLine("Operation is not possible since account is not expired yet");
+                    }
                 }
                 else if (input == "q")
                 {
@@ -266,6 +274,7 @@ namespace Banks.UI
                     {
                         UIManager.Instance.ShowBankMenu(new UIBank(_account.Bank));
                     }
+
                     return;
                 }
                 else

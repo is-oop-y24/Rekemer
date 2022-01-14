@@ -29,7 +29,6 @@ namespace Backups
                 return restorePoint;
             }
 
-            
             return null;
         }
     }

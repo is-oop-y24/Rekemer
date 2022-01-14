@@ -8,12 +8,19 @@ namespace Banks.Account
 {
     public class DebitAccount : Account
     {
+        public DebitAccount(DateTime endTime, Bank bank, decimal money, Client client)
+            : base(
+                endTime,
+                bank,
+                money,
+                client)
+        {
+        }
+
         public override decimal Money
         {
             get => _money;
         }
-
-       
 
         public override float Percent
         {
@@ -30,7 +37,9 @@ namespace Banks.Account
             _money += money;
         }
 
+#pragma warning disable SA1201
         private DateTime _lastUpdate = default;
+#pragma warning restore SA1201
 
         public override bool CanWithdraw(decimal money)
         {
@@ -54,7 +63,6 @@ namespace Banks.Account
             return false;
         }
 
-
         // in the end of every month need to withdraw money
         public override void Update()
         {
@@ -63,10 +71,10 @@ namespace Banks.Account
                 return;
             }
 
-
             // find out how many days are passed
             var passedDays = (Time.Instance.CurrentTime - (_lastUpdate == default ? StartTime : _lastUpdate)).Days;
             if (Math.Abs(Time.Instance.CurrentTime.Day - _lastUpdate.Day) == 1) _isBonusMoney = true;
+
             // consider all passed days
             for (int i = 0; i < passedDays; i++)
             {
@@ -94,7 +102,7 @@ namespace Banks.Account
 
             if (_isBonusMoney)
             {
-                increase = money / 100 * (decimal) Bank.PercentDebAccount / 365;
+                increase = money / 100 * (decimal)Bank.PercentDebAccount / 365;
                 _isBonusMoney = false;
             }
 
@@ -103,17 +111,9 @@ namespace Banks.Account
             return true;
         }
 
-
-        public DebitAccount(DateTime endTime, Bank bank, decimal money, Client client) : base(endTime,
-            bank, money,
-            client)
-        {
-           
-        }
-
         protected override decimal CalculateMoney()
         {
-            return _money * (decimal) Bank.PercentDebAccount / (decimal) (100f * 365f);
+            return _money * (decimal)Bank.PercentDebAccount / (decimal)(100f * 365f);
         }
     }
 }

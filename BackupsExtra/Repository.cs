@@ -3,18 +3,13 @@ using System.IO;
 using System.IO.Compression;
 using System.Runtime.Serialization;
 
-
 namespace BackupsExtra
 {
     [DataContract]
     public class Repository : IRepository
     {
-        [DataMember] private string _directoryInfo;
-
-        public string DirectoryInfo
-        {
-            get { return _directoryInfo; }
-        }
+        [DataMember]
+        private string _directoryInfo;
 
         public Repository()
         {
@@ -25,6 +20,11 @@ namespace BackupsExtra
             _directoryInfo = directory;
         }
 
+        public string DirectoryInfo
+        {
+            get { return _directoryInfo; }
+        }
+
         public string CreateZipCopyOfFile(string file)
         {
             var name = Path.GetFileNameWithoutExtension(file);
@@ -32,12 +32,11 @@ namespace BackupsExtra
             int i = 1;
             while (File.Exists(zipFile))
             {
-                //string path = @"photo\myFolder\image.jpg";
                 string newFileName = $@"{name}_" + i.ToString();
 
                 string dir = Path.GetDirectoryName(zipFile);
                 string ext = Path.GetExtension(zipFile);
-                zipFile = Path.Combine(dir, newFileName + ext); // @"photo\myFolder\image-resize.jpg"
+                zipFile = Path.Combine(dir, newFileName + ext);
                 i++;
             }
 
@@ -52,12 +51,11 @@ namespace BackupsExtra
             int i = 1;
             while (File.Exists(zipFile))
             {
-                //string path = @"photo\myFolder\image.jpg";
                 string newFileName = @"myzip_" + i.ToString();
 
                 string dir = Path.GetDirectoryName(zipFile);
                 string ext = Path.GetExtension(zipFile);
-                zipFile = Path.Combine(dir, newFileName + ext); // @"photo\myFolder\image-resize.jpg"
+                zipFile = Path.Combine(dir, newFileName + ext);
                 i++;
             }
 

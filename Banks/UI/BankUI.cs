@@ -4,22 +4,15 @@ using Banks.Account;
 
 namespace Banks.UI
 {
+#pragma warning disable SA1649
     public class UIBank
+#pragma warning restore SA1649
     {
         private Bank _bank;
 
         public UIBank(Bank bank)
         {
             _bank = bank;
-        }
-
-
-        private void ChooseAccount(List<Account.Account> accounts, int nAccount)
-        {
-            if (accounts == null) return;
-            if (nAccount > accounts.Count) return;
-            var account = accounts[nAccount];
-            UIManager.Instance.ShowAccountMenu(account.DeriveUI());
         }
 
         public List<Account.Account> ShowAccounts(Client client)
@@ -66,13 +59,16 @@ namespace Banks.UI
             }
 
             // get information about bank
-
+#pragma warning disable SA1123
             #region ShowingConditionAccountToUser
+#pragma warning restore SA1123
 
             Console.WriteLine("Debit account condition: ");
             Console.WriteLine(_bank.PercentDebAccount);
 
+#pragma warning disable SA1123
             #region ShowingDepositAccountCondition
+#pragma warning restore SA1123
 
             var moneyThresholds = _bank.MoneyThresholdsDepAcc;
             var percentThresholds = _bank.PercentThreshldsDepAcc;
@@ -98,7 +94,6 @@ namespace Banks.UI
 
             #endregion
 
-
             Console.WriteLine($"Credit account condition: ");
             Console.WriteLine($"Limit of spending {_bank.Limit}");
             Console.WriteLine($"Commission of spending limit {_bank.Commission}");
@@ -112,6 +107,7 @@ namespace Banks.UI
                 if (input == "y")
                 {
                     var client = ReadClientsInput();
+
                     // which account will user get ?
                     Account.Account account = null;
                     Console.WriteLine($"1 - debit, 2 - credit, 3 - deposit?");
@@ -129,30 +125,33 @@ namespace Banks.UI
                         {
                             isChooseMoney = true;
                         }
-                        else continue;
+                        else
+                        {
+                            continue;
+                        }
                     }
 
                     if (input == "1")
                     {
                         DateTime endTime = DateTime.Now;
-                        endTime = endTime.AddYears((int) _bank.ValidTimeDeb.X).AddMonths((int) _bank.ValidTimeDeb.Y)
-                            .AddDays((int) _bank.ValidTimeDeb.Z);
+                        endTime = endTime.AddYears((int)_bank.ValidTimeDeb.X).AddMonths((int)_bank.ValidTimeDeb.Y)
+                            .AddDays((int)_bank.ValidTimeDeb.Z);
                         account = new DebitAccount(endTime, _bank, amount, client);
                     }
                     else if (input == "2")
                     {
                         DateTime endTime = DateTime.Now;
-                        endTime = endTime.AddYears((int) _bank.ValidTimeCredit.X)
-                            .AddMonths((int) _bank.ValidTimeCredit.Y)
-                            .AddDays((int) _bank.ValidTimeCredit.Z);
+                        endTime = endTime.AddYears((int)_bank.ValidTimeCredit.X)
+                            .AddMonths((int)_bank.ValidTimeCredit.Y)
+                            .AddDays((int)_bank.ValidTimeCredit.Z);
 
                         account = new CreditAccount(endTime, _bank, amount, client);
                     }
                     else if (input == "3")
                     {
                         DateTime endTime = DateTime.Now;
-                        endTime = endTime.AddYears((int) _bank.ValidTimeDep.X).AddMonths((int) _bank.ValidTimeDep.Y)
-                            .AddDays((int) _bank.ValidTimeDep.Z);
+                        endTime = endTime.AddYears((int)_bank.ValidTimeDep.X).AddMonths((int)_bank.ValidTimeDep.Y)
+                            .AddDays((int)_bank.ValidTimeDep.Z);
                         float percent = _bank.DeterminePercent(amount);
                         account = new DepositAccount(endTime, _bank, amount, client);
                     }
@@ -169,7 +168,6 @@ namespace Banks.UI
                     {
                         UIManager.Instance.BanksMenu();
                     }
-                   
                 }
             }
         }
@@ -183,12 +181,14 @@ namespace Banks.UI
                 bool isAddressOk = false;
                 bool isPassportOk = false;
                 string input;
-                string name = String.Empty;
-                string surname = String.Empty;
-                string address = String.Empty;
-                string passport = String.Empty;
+                string name = string.Empty;
+                string surname = string.Empty;
+                string address = string.Empty;
+                string passport = string.Empty;
 
+#pragma warning disable SA1123
                 #region readingName
+#pragma warning restore SA1123
 
                 while (!isNameOk)
                 {
@@ -198,10 +198,11 @@ namespace Banks.UI
                     input = Console.ReadLine();
                     if (input == "q")
                     {
-                        name = String.Empty;
+                        name = string.Empty;
                         break;
                     }
-                    if (name != String.Empty)
+
+                    if (name != string.Empty)
                     {
                         if (input == "y")
                         {
@@ -212,7 +213,6 @@ namespace Banks.UI
                         {
                             continue;
                         }
-                        
                     }
                     else
                     {
@@ -222,7 +222,9 @@ namespace Banks.UI
 
                 #endregion
 
+#pragma warning disable SA1123
                 #region readingSurname
+#pragma warning restore SA1123
 
                 while (!isSurnameOk)
                 {
@@ -232,21 +234,21 @@ namespace Banks.UI
                     input = Console.ReadLine();
                     if (input == "q")
                     {
-                        surname = String.Empty;
+                        surname = string.Empty;
                         break;
                     }
-                    if (surname != String.Empty)
+
+                    if (surname != string.Empty)
                     {
                         if (input == "y")
                         {
-                            isSurnameOk= true;
+                            isSurnameOk = true;
                             break;
                         }
                         else if (input == "n")
                         {
                             continue;
                         }
-                        
                     }
                     else
                     {
@@ -256,7 +258,9 @@ namespace Banks.UI
 
                 #endregion
 
+#pragma warning disable SA1123
                 #region readingOptionalData
+#pragma warning restore SA1123
 
                 while (!isAddressOk && !isPassportOk)
                 {
@@ -265,7 +269,9 @@ namespace Banks.UI
                     input = Console.ReadLine();
                     if (input == "y")
                     {
+#pragma warning disable SA1123
                         #region readingAddress
+#pragma warning restore SA1123
 
                         while (!isAddressOk)
                         {
@@ -273,12 +279,13 @@ namespace Banks.UI
                             address = Console.ReadLine();
                             Console.WriteLine($"is {address} good address for you? y/n or q to exit");
                             input = Console.ReadLine();
-                             if (input == "q")
+                            if (input == "q")
                             {
-                                address = String.Empty;
+                                address = string.Empty;
                                 break;
                             }
-                            if (address != String.Empty)
+
+                            if (address != string.Empty)
                             {
                                 if (input == "y")
                                 {
@@ -289,7 +296,6 @@ namespace Banks.UI
                                 {
                                     continue;
                                 }
-                              
                             }
                             else
                             {
@@ -299,7 +305,9 @@ namespace Banks.UI
 
                         #endregion
 
+#pragma warning disable SA1123
                         #region readingPassport
+#pragma warning restore SA1123
 
                         while (!isPassportOk)
                         {
@@ -309,10 +317,11 @@ namespace Banks.UI
                             input = Console.ReadLine();
                             if (input == "q")
                             {
-                                passport = String.Empty;
+                                passport = string.Empty;
                                 break;
                             }
-                            if (passport != String.Empty)
+
+                            if (passport != string.Empty)
                             {
                                 if (input == "y")
                                 {
@@ -323,7 +332,6 @@ namespace Banks.UI
                                 {
                                     continue;
                                 }
-                             
                             }
                             else
                             {
@@ -352,15 +360,16 @@ namespace Banks.UI
                 {
                     break;
                 }
+
                 if (input == "y")
                 {
                     Client client = new Client(name, surname);
-                    if (address != String.Empty)
+                    if (address != string.Empty)
                     {
                         client.SetAddress(address);
                     }
 
-                    if (passport != String.Empty)
+                    if (passport != string.Empty)
                     {
                         client.SetPassport(passport);
                     }
@@ -369,10 +378,17 @@ namespace Banks.UI
                 {
                     continue;
                 }
-               
             }
 
             return null;
+        }
+
+        private void ChooseAccount(List<Account.Account> accounts, int nAccount)
+        {
+            if (accounts == null) return;
+            if (nAccount > accounts.Count) return;
+            var account = accounts[nAccount];
+            UIManager.Instance.ShowAccountMenu(account.DeriveUI());
         }
     }
 }

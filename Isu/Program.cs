@@ -8,7 +8,6 @@ namespace Isu
     {
         private static void Main()
         {
-            
         }
     }
 }

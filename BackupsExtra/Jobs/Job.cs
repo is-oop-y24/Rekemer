@@ -8,12 +8,12 @@ namespace BackupsExtra.Jobs
     [Serializable]
     public class Job
     {
-        string _repositoryPath;
+        private string _repositoryPath;
 
-
-        List<string> _filesToSave;
+        private List<string> _filesToSave;
         private string _algorithmName;
-        [NonSerialized] IAlgorithm _algorithm;
+        [NonSerialized]
+        private IAlgorithm _algorithm;
 
         public Job()
         {
@@ -36,10 +36,11 @@ namespace BackupsExtra.Jobs
             if (directoryName != null)
             {
                 RestorePoint restorePoint = new RestorePoint(Time.Instance.CurrentTime.ToString(), files,
+#pragma warning disable SA1117
                     _algorithmName, _filesToSave);
+#pragma warning restore SA1117
                 return restorePoint;
             }
-
 
             return null;
         }

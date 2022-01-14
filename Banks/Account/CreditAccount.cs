@@ -7,12 +7,13 @@ namespace Banks.Account
 {
     public class CreditAccount : Account
     {
-      
-
-        public CreditAccount(DateTime endTime, Bank bank, decimal initialMoney, Client client) : base(endTime, bank,
-            initialMoney, client)
+        public CreditAccount(DateTime endTime, Bank bank, decimal initialMoney, Client client)
+            : base(
+                endTime,
+                bank,
+                initialMoney,
+                client)
         {
-            
         }
 
         public override decimal Money
@@ -24,7 +25,6 @@ namespace Banks.Account
         {
             get => 0f;
         }
-
 
         public override AccountUI DeriveUI()
         {
